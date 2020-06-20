@@ -1,17 +1,5 @@
 package de.lisp_unleashed.sceme.parser
 
-//sealed trait SExpression
-//sealed trait Atom extends SExpression
-//
-//object SExpression {
-//  case class List(elements: Seq[SExpression])               extends SExpression
-//  case class DottedList(car: SExpression, cdr: SExpression) extends SExpression
-//  case class Symbol(value: String)                          extends Atom
-//  case class String(value: scala.Predef.String)             extends Atom
-//  case class FixNum(value: Long)                            extends Atom
-//  case class FlowNum(value: Float)                          extends Atom
-//}
-
 case class Location(sourceId: String, index: Int, line: Int, column: Int)
 
 object Location {
@@ -23,6 +11,24 @@ object Ast {
     def location: Option[Location]
   }
 
-  sealed trait Atom                                                   extends Expression
-  case class BooleanValue(value: Boolean, location: Option[Location]) extends Atom
+  sealed trait Literal extends Expression
+
+  sealed trait Constant extends Literal
+
+  case class Variable(name: String, location: Option[Location]) extends Expression
+
+  case class ProcedureCall(operator: Expression, operands: Vector[Expression], location: Option[Location])
+      extends Expression
+
+  case class Lambda(variables: Vector[Variable], body: Vector[Expression], location: Option[Location])
+      extends Expression
+
+  case class Assignment(variable: Variable, expr: Expression, location: Option[Location]) extends Expression
+
+  case class Quoted(datum: Expression)
+
+  case class BooleanValue(value: Boolean, location: Option[Location]) extends Constant
+  case class CharValue(value: Char, location: Option[Location])       extends Constant
+  case class StringValue(value: String, location: Option[Location])   extends Constant
+  // TODO: NumberValue
 }

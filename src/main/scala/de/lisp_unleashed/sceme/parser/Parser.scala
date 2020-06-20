@@ -3,11 +3,12 @@ import java.util.UUID
 import org.parboiled2._
 import scala.util.{ Failure, Success, Try }
 
+// https://people.csail.mit.edu/jaffer/r5rs_9.html
+
 trait Tokens extends StringBuilding with PositionTracking { this: Parser with Ignored =>
-  def Token              = rule { Punctuator }
-  val PunctuatorChar     = CharPredicate("()[].")
-  def Punctuator         = rule { PunctuatorChar }
-  def Keyword(s: String) = rule { atomic(Ignored.* ~ s ~ IgnoredNoComment.*) }
+  val PunctuatorChar = CharPredicate("()'`,.")
+  def Punctuator     = rule { PunctuatorChar }
+
 }
 
 trait Ignored extends PositionTracking { this: Parser =>
@@ -25,21 +26,56 @@ trait Ignored extends PositionTracking { this: Parser =>
   def ws(s: String): Rule0           = rule { quiet(Ignored.* ~ str(s) ~ Ignored.*) }
 }
 
-trait Values extends PositionTracking { this: Parser with Tokens with Ignored =>
-  def Value = rule { BooleanValue }
+trait Keywords extends PositionTracking { this: Parser with Ignored =>
+  val syntacticKeywords = Set("else", "=>", "define", "unquote", "unquote-splicing")
+  val expresssionKeywords =
+    Set("quote",
+        "lambda",
+        "if",
+        "set!",
+        "begin",
+        "cond",
+        "and",
+        "or",
+        "case",
+        "let",
+        "let*",
+        "letrec",
+        "do",
+        "delay",
+        "quasiquote")
 
-  def BooleanValue = rule {
-    Ignored.* ~ trackPos ~ Keyword("#t") ~> ((location) => Ast.BooleanValue(true, location)) |
-      Ignored.* ~ trackPos ~ Keyword("#f") ~> ((location) => Ast.BooleanValue(false, location))
+  def Keyword(s: String) = rule { atomic(Ignored.* ~ s ~ IgnoredNoComment.*) }
+}
+
+trait Program { this: Parser with Expressions with Ignored =>
+  def Program = rule {
+    Ignored.* ~ trackPos ~ Expression.+ ~ Ignored.* ~ EOI ~> ((_, p) => p.toVector)
   }
 }
 
-trait Expressions { this: Parser with Values with Ignored =>
-  def Source = rule {
-    Ignored.* ~ trackPos ~ Expr.+ ~ Ignored.* ~ EOI ~> ((_, e) => e.toVector)
+trait Expressions { this: Parser with Literals with Ignored =>
+  def Expression = rule { Literal }
+}
+
+trait Literals extends PositionTracking { this: Parser with Keywords with Ignored =>
+  def Literal        = rule { SelfEvaluating }
+  def SelfEvaluating = rule { BoolLiteral | CharLiteral } //| NumberLiteral | StringLiteral }
+
+  def BoolLiteral = rule {
+    Ignored.* ~ trackPos ~ Keyword("#t") ~> ((location) => Ast.BooleanValue(true, location)) |
+      Ignored.* ~ trackPos ~ Keyword("#f") ~> ((location) => Ast.BooleanValue(false, location))
   }
 
-  def Expr = rule { Value }
+  def CharLiteral = rule {
+    Ignored.* ~ trackPos ~ quiet(str("#\\")) ~ SingleCharacter ~> ((location, c) => Ast.CharValue(c, location))
+  }
+
+  def SingleCharacter = rule {
+    str("space") ~> (() => ' ') |
+      str("newline") ~> (() => '\n') |
+      capture(ANY) ~> ((c) => c(0))
+  }
 }
 
 case class SyntaxError(parser: Parser, input: ParserInput, originalError: ParseError) extends Exception(originalError) {
@@ -58,8 +94,10 @@ class ScemeParser private (val input: ParserInput, val sourceId: String)
     extends Parser
     with Tokens
     with Ignored
-    with Values
-    with Expressions {
+    with Keywords
+    with Literals
+    with Expressions
+    with Program {
   override def parseLocations: Boolean = true
 }
 
@@ -72,7 +110,7 @@ object ScemeParser {
     val sourceMapper = new DefaultSourceMapper(id, input)
     val parser       = new ScemeParser(input, id)
 
-    parser.Source.run() match {
+    parser.Program.run() match {
       case Success(exprs)          => Success(Result(exprs, sourceMapper))
       case Failure(ex: ParseError) => Failure(SyntaxError(parser, parserInput, ex))
       case Failure(ex)             => Failure(ex)
