@@ -17,14 +17,12 @@ trait Ignored extends PositionTracking { this: Parser =>
   def CRLF           = rule { '\u000D' ~ '\u000A' }
   val LineTerminator = CharPredicate("\u000A")
 
-  def Ignored          = rule { quiet(WhiteSpace | (CRLF | LineTerminator) ~ trackNewLine | Comment) }
-  def IgnoredNoComment = rule { quiet(WhiteSpace | (CRLF | LineTerminator) ~ trackNewLine) }
-  def Comment          = rule { ";" ~ CommentChar.* }
-  def CommentChar      = rule { !(CRLF | LineTerminator) ~ ANY }
+  def Ignored     = rule { quiet(WhiteSpace | (CRLF | LineTerminator) ~ trackNewLine | Comment) }
+  def Comment     = rule { ";" ~ CommentChar.* }
+  def CommentChar = rule { !(CRLF | LineTerminator) ~ ANY }
 
-  def ws(char: Char): Rule0          = rule { quiet(Ignored.* ~ ch(char) ~ Ignored.*) }
-  def wsNoComment(char: Char): Rule0 = rule { quiet(Ignored.* ~ ch(char) ~ IgnoredNoComment.*) }
-  def ws(s: String): Rule0           = rule { quiet(Ignored.* ~ str(s) ~ Ignored.*) }
+  def ws(char: Char): Rule0 = rule { quiet(Ignored.* ~ ch(char) ~ Ignored.*) }
+  def ws(s: String): Rule0  = rule { quiet(Ignored.* ~ str(s) ~ Ignored.*) }
 }
 
 trait Keywords extends PositionTracking { this: Parser with Ignored =>
@@ -46,7 +44,7 @@ trait Keywords extends PositionTracking { this: Parser with Ignored =>
         "delay",
         "quasiquote")
 
-  def Keyword(s: String) = rule { atomic(Ignored.* ~ s ~ IgnoredNoComment.*) }
+  def Keyword(s: String) = rule { atomic(Ignored.* ~ s ~ Ignored.*) }
 }
 
 trait Program { this: Parser with Expressions with Ignored =>
@@ -61,14 +59,14 @@ trait Expressions { this: Parser with Literals with Ignored =>
 
 trait Literals extends StringBuilding with PositionTracking { this: Parser with Keywords with Ignored =>
   def Literal        = rule { SelfEvaluating }
-  def SelfEvaluating = rule { BoolLiteral | CharLiteral | StringLiteral } //| NumberLiteral | StringLiteral }
+  def SelfEvaluating = rule { BoolLiteral | CharacterLiteral | StringLiteral }
 
   def BoolLiteral = rule {
     Ignored.* ~ trackPos ~ Keyword("#t") ~> ((location) => Ast.BooleanValue(true, location)) |
       Ignored.* ~ trackPos ~ Keyword("#f") ~> ((location) => Ast.BooleanValue(false, location))
   }
 
-  def CharLiteral = rule {
+  def CharacterLiteral = rule {
     Ignored.* ~ trackPos ~ quiet(str("#\\")) ~ SingleCharacter ~> ((location, c) => Ast.CharValue(c, location))
   }
 

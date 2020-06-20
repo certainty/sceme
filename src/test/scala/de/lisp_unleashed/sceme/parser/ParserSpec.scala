@@ -20,6 +20,20 @@ class ParserSpec extends Specification {
         parse("#\\a") must beLike {
           case Success(Vector(Ast.CharValue(v, _))) => v mustEqual 'a'
         }
+
+        parse("#\\ ") must beLike {
+          case Success(Vector(Ast.CharValue(v, _))) => v mustEqual ' '
+        }
+
+        parse("""#\
+          """) must beLike {
+          case Success(Vector(Ast.CharValue(v, _))) => v mustEqual '\n'
+        }
+
+        parse("#\\\\") must beLike {
+          case Success(Vector(Ast.CharValue(v, _))) => v mustEqual '\\'
+        }
+
       }
 
       "unicode" >> {
@@ -40,7 +54,7 @@ class ParserSpec extends Specification {
     }
 
     "string" >> {
-      parse("""\"this is my string\"""") must beLike {
+      parse(""" "this is my string" """) must beLike {
         case Success(Vector(Ast.StringValue(v, _))) => v mustEqual ("this is my string")
       }
     }
