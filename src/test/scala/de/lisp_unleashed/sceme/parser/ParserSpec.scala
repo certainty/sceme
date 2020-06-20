@@ -1,19 +1,15 @@
 package de.lisp_unleashed.sceme.parser
 import org.specs2.mutable.Specification
 
-import scala.util.Success
+import scala.util.{ Success, Try }
 
 class ParserSpec extends Specification {
-  "ignores whitespace" >> {
-    assertParses("   \t\r\n", Seq.empty)
-  }
-
   "parses atoms" >> {
-    assertParses("   #t", Seq(Ast.BooleanValue(true, Some(Location(1, 1, 1)))))
+    parse("#t") must beLike {
+      case Success(Vector(Ast.BooleanValue(v, _))) => v must beTrue
+    }
   }
 
-  private def assertParses(input: String, expected: Seq[Ast.Expression]) =
-    ScemeParser.parse(input) must beLike {
-      case Success(result) => result.exps mustEqual (expected)
-    }
+  private def parse(input: String): Try[Vector[Ast.Expression]] =
+    ScemeParser.parse(input).map(_.exps.toVector)
 }
