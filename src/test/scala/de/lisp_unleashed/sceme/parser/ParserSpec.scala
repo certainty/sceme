@@ -21,6 +21,12 @@ class ParserSpec extends Specification {
           case Success(Vector(Ast.CharValue(v, _))) => v mustEqual 'a'
         }
       }
+
+      "unicode" >> {
+        parse("#\\u3434") must beLike {
+          case Success(Vector(Ast.CharValue(v, _))) => v mustEqual '㐴'
+        }
+      }
     }
 
     "boolean" >> {
@@ -30,6 +36,12 @@ class ParserSpec extends Specification {
 
       parse("#f") must beLike {
         case Success(Vector(Ast.BooleanValue(v, _))) => v must beFalse
+      }
+    }
+
+    "string" >> {
+      parse("""\"this is my string\"""") must beLike {
+        case Success(Vector(Ast.StringValue(v, _))) => v mustEqual ("this is my string")
       }
     }
   }

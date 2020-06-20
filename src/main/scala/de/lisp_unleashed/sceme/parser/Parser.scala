@@ -1,5 +1,6 @@
 package de.lisp_unleashed.sceme.parser
 import java.util.UUID
+import org.parboiled2.CharPredicate.{ HexDigit }
 import org.parboiled2._
 import scala.util.{ Failure, Success, Try }
 
@@ -58,9 +59,9 @@ trait Expressions { this: Parser with Literals with Ignored =>
   def Expression = rule { Literal }
 }
 
-trait Literals extends PositionTracking { this: Parser with Keywords with Ignored =>
+trait Literals extends StringBuilding with PositionTracking { this: Parser with Keywords with Ignored =>
   def Literal        = rule { SelfEvaluating }
-  def SelfEvaluating = rule { BoolLiteral | CharLiteral } //| NumberLiteral | StringLiteral }
+  def SelfEvaluating = rule { BoolLiteral | CharLiteral | StringLiteral } //| NumberLiteral | StringLiteral }
 
   def BoolLiteral = rule {
     Ignored.* ~ trackPos ~ Keyword("#t") ~> ((location) => Ast.BooleanValue(true, location)) |
@@ -74,8 +75,33 @@ trait Literals extends PositionTracking { this: Parser with Keywords with Ignore
   def SingleCharacter = rule {
     str("space") ~> (() => ' ') |
       str("newline") ~> (() => '\n') |
+      Unicode ~> ((code) => code.asInstanceOf[Char]) |
       capture(ANY) ~> ((c) => c(0))
   }
+
+  def StringLiteral = rule {
+    Ignored.* ~ trackPos ~ '"' ~ clearSB() ~ Characters ~ '"' ~ push(sb.toString) ~ Ignored.* ~>
+      ((location, s) => Ast.StringValue(s, location))
+  }
+
+  def Characters      = rule { (NormalCharacter | '\\' ~ EscapedChar).* }
+  def NormalCharacter = rule { !(QuoteBackslash | LineTerminator) ~ ANY ~ appendSB() }
+  val QuoteBackslash  = CharPredicate("\"\\")
+
+  def EscapedChar = rule {
+    QuoteBackslash ~ appendSB() |
+      'b' ~ appendSB('\b') |
+      'f' ~ appendSB('\f') |
+      'n' ~ appendSB('\n') |
+      'r' ~ appendSB('\r') |
+      't' ~ appendSB('\t') |
+      Unicode ~> { code =>
+        sb.append(code.asInstanceOf[Char]);
+        ()
+      }
+  }
+
+  def Unicode = rule { 'u' ~ capture(4 times HexDigit) ~> (Integer.parseInt(_, 16)) }
 }
 
 case class SyntaxError(parser: Parser, input: ParserInput, originalError: ParseError) extends Exception(originalError) {
