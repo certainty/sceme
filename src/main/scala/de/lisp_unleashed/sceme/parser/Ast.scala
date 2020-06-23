@@ -27,8 +27,9 @@ object Ast {
 
   case class Quoted(datum: Expression)
 
-  case class BooleanValue(value: Boolean, location: Option[Location]) extends Constant
-  case class CharValue(value: Char, location: Option[Location])       extends Constant
-  case class StringValue(value: String, location: Option[Location])   extends Constant
-  // TODO: NumberValue
+  case class BooleanValue(value: Boolean, location: Option[Location])  extends Constant
+  case class CharValue(value: Char, location: Option[Location])        extends Constant
+  case class StringValue(value: String, location: Option[Location])    extends Constant
+  case class IntegerValue(value: BigInt, location: Option[Location])   extends Constant
+  case class FloatValue(value: BigDecimal, location: Option[Location]) extends Constant
 }

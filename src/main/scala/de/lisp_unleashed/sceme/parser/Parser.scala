@@ -1,6 +1,6 @@
 package de.lisp_unleashed.sceme.parser
 import java.util.UUID
-import org.parboiled2.CharPredicate.{ HexDigit }
+import org.parboiled2.CharPredicate.{ Digit19, HexDigit }
 import org.parboiled2._
 import scala.util.{ Failure, Success, Try }
 
@@ -28,21 +28,23 @@ trait Ignored extends PositionTracking { this: Parser =>
 trait Keywords extends PositionTracking { this: Parser with Ignored =>
   val syntacticKeywords = Set("else", "=>", "define", "unquote", "unquote-splicing")
   val expresssionKeywords =
-    Set("quote",
-        "lambda",
-        "if",
-        "set!",
-        "begin",
-        "cond",
-        "and",
-        "or",
-        "case",
-        "let",
-        "let*",
-        "letrec",
-        "do",
-        "delay",
-        "quasiquote")
+    Set(
+      "quote",
+      "lambda",
+      "if",
+      "set!",
+      "begin",
+      "cond",
+      "and",
+      "or",
+      "case",
+      "let",
+      "let*",
+      "letrec",
+      "do",
+      "delay",
+      "quasiquote"
+    )
 
   def Keyword(s: String) = rule { atomic(Ignored.* ~ s ~ Ignored.*) }
 }
@@ -57,7 +59,7 @@ trait Expressions { this: Parser with Literals with Ignored =>
   def Expression = rule { Literal }
 }
 
-trait Literals extends StringBuilding with PositionTracking { this: Parser with Keywords with Ignored =>
+trait Literals extends StringBuilding with PositionTracking { this: Parser with Keywords with Numbers with Ignored =>
   def Literal        = rule { SelfEvaluating }
   def SelfEvaluating = rule { BoolLiteral | CharacterLiteral | StringLiteral }
 
@@ -102,6 +104,38 @@ trait Literals extends StringBuilding with PositionTracking { this: Parser with 
   def Unicode = rule { 'u' ~ capture(4 times HexDigit) ~> (Integer.parseInt(_, 16)) }
 }
 
+// TODO: add support for full numeric types
+trait Numbers { this: Parser with Ignored =>
+  def NumberLiteral = rule {
+    atomic(trackPos ~ IntegerValuePart ~ FloatValuePart.? ~ Ignored.*) ~>
+      ((location, intPart, floatPart) => {
+        floatPart.map { f =>
+          Ast.FloatValue(BigDecimal(intPart + f), location)
+        }.getOrElse(Ast.IntegerValue(BigInt(intPart), location))
+      })
+  }
+
+  def FloatValuePart = rule { atomic(capture(FractionalPart ~ ExponentPart.? | ExponentPart)) }
+
+  def FractionalPart = rule { '.' ~ Digit.+ }
+
+  def IntegerValuePart = rule { capture(NegativeSign.? ~ IntegerPart) }
+
+  def IntegerPart = rule { ch('0') | NonZeroDigit ~ Digit.* }
+
+  def ExponentPart = rule { ExponentIndicator ~ Sign.? ~ Digit.+ }
+
+  def ExponentIndicator = rule { ch('e') | ch('E') }
+
+  def Sign = rule { ch('-') | '+' }
+
+  val NegativeSign = '-'
+
+  val NonZeroDigit = Digit19
+
+  def Digit = rule { ch('0') | NonZeroDigit }
+}
+
 case class SyntaxError(parser: Parser, input: ParserInput, originalError: ParseError) extends Exception(originalError) {
   lazy val formattedError: String = formattedError()
 
@@ -119,6 +153,7 @@ class ScemeParser private (val input: ParserInput, val sourceId: String)
     with Tokens
     with Ignored
     with Keywords
+    with Numbers
     with Literals
     with Expressions
     with Program {
