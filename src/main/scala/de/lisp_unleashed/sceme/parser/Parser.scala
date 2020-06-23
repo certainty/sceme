@@ -1,15 +1,80 @@
 package de.lisp_unleashed.sceme.parser
 import java.util.UUID
-import org.parboiled2.CharPredicate.{ Digit19, HexDigit }
+import org.parboiled2.CharPredicate.{ Digit, Digit19, HexDigit }
 import org.parboiled2._
 import scala.util.{ Failure, Success, Try }
 
 // https://people.csail.mit.edu/jaffer/r5rs_9.html
 
-trait Tokens extends StringBuilding with PositionTracking { this: Parser with Ignored =>
-  val PunctuatorChar = CharPredicate("()'`,.")
-  def Punctuator     = rule { PunctuatorChar }
+/*
+At a very fundamental level we only need to be able to parse <Datum>.
+The AST for that will be walked and turned into values in a later phase.
 
+<datum> --> <simple datum> | <compound datum>
+<simple datum> --> <boolean> | <number>
+     | <character> | <string> |  <symbol>
+<symbol> --> <identifier>
+<compound datum> --> <list> | <vector>
+<list> --> (<datum>*) | (<datum>+ . <datum>)
+       | <abbreviation>
+<abbreviation> --> <abbrev prefix> <datum>
+<abbrev prefix> --> ' | ` | , | ,@
+<vector> --> #(<datum>*)
+ */
+
+trait Program { this: Parser with Datum with Ignored =>
+  def Program = rule {
+    Ignored.* ~ trackPos ~ Datum.+ ~ Ignored.* ~ EOI ~> ((_, p) => p.toVector)
+  }
+}
+
+trait Datum extends PositionTracking { this: Parser with Ignored with Tokens with Numbers with Strings =>
+  def Datum: Rule1[Ast.Datum] = rule { SimpleDatum | CompoundDatum }
+
+  def SimpleDatum = rule { BoolLiteral | NumberLiteral | CharacterLiteral | StringLiteral | SymbolLiteral }
+
+  def BoolLiteral = rule {
+    Ignored.* ~ trackPos ~ Keyword("#t") ~> ((location) => Ast.Boolean(true, location)) |
+      Ignored.* ~ trackPos ~ Keyword("#f") ~> ((location) => Ast.Boolean(false, location))
+  }
+
+  def SymbolLiteral = rule {
+    Ignored.* ~ trackPos ~ capture(Identifier) ~>
+      ((pos, identifier) => Ast.Symbol(identifier, pos))
+  }
+
+  def CompoundDatum = rule { ListLiteral | VectorLiteral }
+
+  def ListLiteral = rule { ProperList | ImproperList | Abbreviation }
+
+  def ProperList = rule {
+    Ignored.* ~ trackPos ~ ch('(') ~ Ignored.* ~ Datum.* ~ Ignored.* ~ ch(')') ~>
+      ((pos, dat) => Ast.ProperList(dat.toList, pos))
+  }
+
+  def ImproperList = rule {
+    Ignored.* ~ trackPos ~ ch('(') ~ Ignored.* ~ Datum.+ ~ Ignored.* ~ ch('.') ~ Ignored.* ~ Datum ~ Ignored.* ~ ch(')') ~>
+      ((pos, h, t) => Ast.ImproperList(h.toList, t, pos))
+  }
+
+  def Abbreviation = rule {
+    Ignored.* ~ trackPos ~ capture(CharPredicate("'`,") | str(",@")) ~ Datum ~>
+      ((pos, pref, datum) => Ast.Abbreviation(pref, datum, pos))
+  }
+
+  def VectorLiteral = rule {
+    Ignored.* ~ trackPos ~ str("#(") ~ Ignored.* ~ Datum.* ~ Ignored.* ~ ch(')') ~>
+      ((pos, data) => Ast.Vector(data.toVector, pos))
+  }
+}
+
+trait Tokens extends PositionTracking { this: Parser with Ignored =>
+  def Identifier        = rule { Initial ~ Subsequent.* }
+  def Initial           = CharPredicate("!$%&*/:<=>?^_~")
+  def Subsequent        = rule { Initial | Digit | SpecialSubsequent }
+  def SpecialSubsequent = CharPredicate("+-.@")
+
+  def Keyword(s: String) = rule { atomic(Ignored.* ~ s ~ Ignored.*) }
 }
 
 trait Ignored extends PositionTracking { this: Parser =>
@@ -25,51 +90,10 @@ trait Ignored extends PositionTracking { this: Parser =>
   def ws(s: String): Rule0  = rule { quiet(Ignored.* ~ str(s) ~ Ignored.*) }
 }
 
-trait Keywords extends PositionTracking { this: Parser with Ignored =>
-  val syntacticKeywords = Set("else", "=>", "define", "unquote", "unquote-splicing")
-  val expresssionKeywords =
-    Set(
-      "quote",
-      "lambda",
-      "if",
-      "set!",
-      "begin",
-      "cond",
-      "and",
-      "or",
-      "case",
-      "let",
-      "let*",
-      "letrec",
-      "do",
-      "delay",
-      "quasiquote"
-    )
-
-  def Keyword(s: String) = rule { atomic(Ignored.* ~ s ~ Ignored.*) }
-}
-
-trait Program { this: Parser with Expressions with Ignored =>
-  def Program = rule {
-    Ignored.* ~ trackPos ~ Expression.+ ~ Ignored.* ~ EOI ~> ((_, p) => p.toVector)
-  }
-}
-
-trait Expressions { this: Parser with Literals with Ignored =>
-  def Expression = rule { Literal }
-}
-
-trait Literals extends StringBuilding with PositionTracking { this: Parser with Keywords with Numbers with Ignored =>
-  def Literal        = rule { SelfEvaluating }
-  def SelfEvaluating = rule { BoolLiteral | CharacterLiteral | StringLiteral }
-
-  def BoolLiteral = rule {
-    Ignored.* ~ trackPos ~ Keyword("#t") ~> ((location) => Ast.BooleanValue(true, location)) |
-      Ignored.* ~ trackPos ~ Keyword("#f") ~> ((location) => Ast.BooleanValue(false, location))
-  }
+trait Strings extends StringBuilding with PositionTracking { this: Parser with Tokens with Ignored =>
 
   def CharacterLiteral = rule {
-    Ignored.* ~ trackPos ~ quiet(str("#\\")) ~ SingleCharacter ~> ((location, c) => Ast.CharValue(c, location))
+    Ignored.* ~ trackPos ~ quiet(str("#\\")) ~ SingleCharacter ~> ((location, c) => Ast.Char(c, location))
   }
 
   def SingleCharacter = rule {
@@ -81,7 +105,7 @@ trait Literals extends StringBuilding with PositionTracking { this: Parser with 
 
   def StringLiteral = rule {
     Ignored.* ~ trackPos ~ '"' ~ clearSB() ~ Characters ~ '"' ~ push(sb.toString) ~ Ignored.* ~>
-      ((location, s) => Ast.StringValue(s, location))
+      ((location, s) => Ast.String(s, location))
   }
 
   def Characters      = rule { (NormalCharacter | '\\' ~ EscapedChar).* }
@@ -104,14 +128,13 @@ trait Literals extends StringBuilding with PositionTracking { this: Parser with 
   def Unicode = rule { 'u' ~ capture(4 times HexDigit) ~> (Integer.parseInt(_, 16)) }
 }
 
-// TODO: add support for full numeric types
 trait Numbers { this: Parser with Ignored =>
   def NumberLiteral = rule {
     atomic(trackPos ~ IntegerValuePart ~ FloatValuePart.? ~ Ignored.*) ~>
       ((location, intPart, floatPart) => {
         floatPart.map { f =>
-          Ast.FloatValue(BigDecimal(intPart + f), location)
-        }.getOrElse(Ast.IntegerValue(BigInt(intPart), location))
+          Ast.Flonum(BigDecimal(intPart + f), location)
+        }.getOrElse(Ast.Fixnum(BigInt(intPart), location))
       })
   }
 
@@ -150,18 +173,17 @@ case class SyntaxError(parser: Parser, input: ParserInput, originalError: ParseE
 
 class ScemeParser private (val input: ParserInput, val sourceId: String)
     extends Parser
-    with Tokens
     with Ignored
-    with Keywords
     with Numbers
-    with Literals
-    with Expressions
+    with Strings
+    with Tokens
+    with Datum
     with Program {
   override def parseLocations: Boolean = true
 }
 
 object ScemeParser {
-  case class Result(exps: Seq[Ast.Expression], sourceMapper: SourceMapper)
+  case class Result(data: Seq[Ast.Datum], sourceMapper: SourceMapper)
 
   def parse(input: String): Try[Result] = {
     val parserInput  = ParserInput(input)

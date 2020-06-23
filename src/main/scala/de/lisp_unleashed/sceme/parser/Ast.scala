@@ -1,4 +1,6 @@
 package de.lisp_unleashed.sceme.parser
+import scala.{ Boolean => ScalaBoolean, Char => ScalaChar, List => ScalaList, Vector => ScalaVector }
+import scala.Predef.{ String => ScalaString }
 
 case class Location(sourceId: String, index: Int, line: Int, column: Int)
 
@@ -7,29 +9,58 @@ object Location {
 }
 
 object Ast {
-  sealed trait Expression {
+  sealed trait Datum {
     def location: Option[Location]
+    def print: ScalaString
   }
 
-  sealed trait Literal extends Expression
+  sealed trait SimpleDatum   extends Datum
+  sealed trait CompoundDatum extends Datum
 
-  sealed trait Constant extends Literal
+  case class Symbol(value: ScalaString, location: Option[Location]) extends SimpleDatum {
+    override def print: ScalaString = value
+  }
 
-  case class Variable(name: String, location: Option[Location]) extends Expression
+  case class Boolean(value: ScalaBoolean, location: Option[Location]) extends SimpleDatum {
+    override def print: ScalaString = value match {
+      case true  => "#t"
+      case false => "#f"
+    }
+  }
 
-  case class ProcedureCall(operator: Expression, operands: Vector[Expression], location: Option[Location])
-      extends Expression
+  case class Char(value: ScalaChar, location: Option[Location]) extends SimpleDatum {
+    override def print: ScalaString = value match {
+      case '\n'       => "#\\newline"
+      case ' ' | '\t' => "#\\space"
+      case other      => s"#\\$other"
+    }
+  }
 
-  case class Lambda(variables: Vector[Variable], body: Vector[Expression], location: Option[Location])
-      extends Expression
+  case class String(value: ScalaString, location: Option[Location]) extends SimpleDatum {
+    override def print: ScalaString = s""""${value}""""
+  }
 
-  case class Assignment(variable: Variable, expr: Expression, location: Option[Location]) extends Expression
+  case class Fixnum(value: BigInt, location: Option[Location]) extends SimpleDatum {
+    override def print: ScalaString = value.toString()
+  }
 
-  case class Quoted(datum: Expression)
+  case class Flonum(value: BigDecimal, location: Option[Location]) extends SimpleDatum {
+    override def print: ScalaString = value.toString()
+  }
 
-  case class BooleanValue(value: Boolean, location: Option[Location])  extends Constant
-  case class CharValue(value: Char, location: Option[Location])        extends Constant
-  case class StringValue(value: String, location: Option[Location])    extends Constant
-  case class IntegerValue(value: BigInt, location: Option[Location])   extends Constant
-  case class FloatValue(value: BigDecimal, location: Option[Location]) extends Constant
+  case class ProperList(value: ScalaList[Datum], location: Option[Location]) extends CompoundDatum {
+    override def print: ScalaString = value.map(_.print).mkString("(", " ", ")")
+  }
+
+  case class ImproperList(values: ScalaList[Datum], last: Datum, location: Option[Location]) extends CompoundDatum {
+    override def print: ScalaString = s"""(${values.map(_.print).mkString(" ")} . ${last.print})"""
+  }
+
+  case class Abbreviation(prefix: ScalaString, value: Datum, location: Option[Location]) extends CompoundDatum {
+    override def print: ScalaString = s"""$prefix${value.print}"""
+  }
+
+  case class Vector(value: ScalaVector[Datum], location: Option[Location]) extends CompoundDatum {
+    override def print: ScalaString = value.map(_.print).mkString("#(", " ", ")")
+  }
 }

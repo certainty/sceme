@@ -8,58 +8,67 @@ class ParserSpec extends Specification {
     "chars" >> {
       "whitespace" >> {
         parse("#\\newline") must beLike {
-          case Success(Vector(Ast.CharValue(v, _))) => v mustEqual '\n'
+          case Success(Vector(Ast.Char(v, _))) => v mustEqual '\n'
         }
 
         parse("#\\space") must beLike {
-          case Success(Vector(Ast.CharValue(v, _))) => v mustEqual ' '
+          case Success(Vector(Ast.Char(v, _))) => v mustEqual ' '
         }
       }
 
       "any char" >> {
         parse("#\\a") must beLike {
-          case Success(Vector(Ast.CharValue(v, _))) => v mustEqual 'a'
+          case Success(Vector(Ast.Char(v, _))) => v mustEqual 'a'
         }
 
         parse("#\\ ") must beLike {
-          case Success(Vector(Ast.CharValue(v, _))) => v mustEqual ' '
+          case Success(Vector(Ast.Char(v, _))) => v mustEqual ' '
         }
 
         parse("""#\
           """) must beLike {
-          case Success(Vector(Ast.CharValue(v, _))) => v mustEqual '\n'
+          case Success(Vector(Ast.Char(v, _))) => v mustEqual '\n'
         }
 
         parse("#\\\\") must beLike {
-          case Success(Vector(Ast.CharValue(v, _))) => v mustEqual '\\'
+          case Success(Vector(Ast.Char(v, _))) => v mustEqual '\\'
         }
 
       }
 
       "unicode" >> {
         parse("#\\u3434") must beLike {
-          case Success(Vector(Ast.CharValue(v, _))) => v mustEqual '㐴'
+          case Success(Vector(Ast.Char(v, _))) => v mustEqual '㐴'
         }
       }
     }
 
     "boolean" >> {
       parse("#t") must beLike {
-        case Success(Vector(Ast.BooleanValue(v, _))) => v must beTrue
+        case Success(Vector(Ast.Boolean(v, _))) => v must beTrue
       }
 
       parse("#f") must beLike {
-        case Success(Vector(Ast.BooleanValue(v, _))) => v must beFalse
+        case Success(Vector(Ast.Boolean(v, _))) => v must beFalse
       }
     }
 
     "string" >> {
       parse(""" "this is my string" """) must beLike {
-        case Success(Vector(Ast.StringValue(v, _))) => v mustEqual ("this is my string")
+        case Success(Vector(Ast.String(v, _))) => v mustEqual ("this is my string")
+      }
+    }
+
+    "lists" >> {
+      "proper" >> {
+        parse(""" (1 "foo") """) must beLike {
+          case Success(Vector(Ast.ProperList(List(Ast.Fixnum(v, _), Ast.String("foo", _)), _))) =>
+            v mustEqual 1
+        }
       }
     }
   }
 
-  private def parse(input: String): Try[Vector[Ast.Expression]] =
-    ScemeParser.parse(input).map(_.exps.toVector)
+  private def parse(input: String): Try[Vector[Ast.Datum]] =
+    ScemeParser.parse(input).map(_.data.toVector)
 }

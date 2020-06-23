@@ -15,7 +15,7 @@ object Repl extends App {
   private def parse(line: String): String =
     ScemeParser.parse(line) match {
       case Failure(exception) => s"Error: ${exception.getMessage}"
-      case Success(value)     => value.toString
+      case Success(value)     => value.data.map(_.print).mkString("\n")
     }
 
   private val printBanner: ZIO[Console, Nothing, Unit] = console.putStrLn("""
