@@ -1,8 +1,0 @@
-language: scala
-branches:
-  only:
-    - main
-jdk:
-  - openjdk14
-scala:
-  - 2.13.2
