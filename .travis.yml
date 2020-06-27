@@ -3,6 +3,6 @@ branches:
   only:
     - main
 jdk:
-  - oraclejdk8
+  - openjdk14
 scala:
   - 2.13.2
