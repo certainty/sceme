@@ -59,12 +59,32 @@ class ParserSpec extends Specification {
       }
     }
 
+    "symbol" >> {
+      parse(""" 'foo """) must beLike {
+        case Success(Vector(Ast.Abbreviation(Ast.Quote, Ast.Symbol(v, _), _))) => v mustEqual "foo"
+      }
+    }
+
     "lists" >> {
       "proper" >> {
         parse(""" (1 "foo") """) must beLike {
           case Success(Vector(Ast.ProperList(List(Ast.Fixnum(v, _), Ast.String("foo", _)), _))) =>
             v mustEqual 1
         }
+      }
+
+      "improper" >> {
+        parse(""" (1 . "foo") """) must beLike {
+          case Success(Vector(Ast.ImproperList(List(Ast.Fixnum(v, _)), Ast.String("foo", _), _))) =>
+            v mustEqual 1
+        }
+      }
+    }
+
+    "vectors" >> {
+      parse("""#(1 "foo") """) must beLike {
+        case Success(Vector(Ast.Vector(Vector(Ast.Fixnum(v, _), Ast.String("foo", _)), _))) =>
+          v mustEqual 1
       }
     }
   }
