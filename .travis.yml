@@ -1,7 +1,7 @@
 language: scala
 branches:
   only:
-    - master
+    - main
 jdk:
   - oraclejdk8
 scala:
