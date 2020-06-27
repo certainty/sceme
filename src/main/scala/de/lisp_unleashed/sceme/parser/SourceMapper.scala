@@ -1,6 +1,6 @@
 package de.lisp_unleashed.sceme.parser
 import org.parboiled2.ParserInput
-
+// Shamelessly stolen from Sangria:https://github.com/sangria-graphql/sangria/blob/master/modules/core/src/main/scala/sangria/parser/SourceMapper.scala
 trait SourceMapper {
   def id: String
   def source: String
