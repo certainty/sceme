@@ -27,7 +27,7 @@ class ReplPrinterSpec extends Specification {
     }
 
     "symbols" >> {
-      printer.print(Ast.Symbol("Foo", None)) mustEqual "'Foo"
+      printer.print(Ast.Symbol("Foo", None)) mustEqual "Foo"
     }
 
     "lists" >> {

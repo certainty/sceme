@@ -41,7 +41,7 @@ class ReplPrinter(config: PrinterConfig) extends Printer {
       builder.append("\"")
       ellipsis(value, config.maxStringLength, builder)
       builder.append("\"")
-    case Ast.Symbol(value, _) => builder.append("'").append(value)
+    case Ast.Symbol(value, _) => builder.append(value)
 
     case Ast.Fixnum(value, _) => builder.append(value.toString())
 
