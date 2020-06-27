@@ -33,7 +33,7 @@ object Value {
 
   case class Vector(value: ScalaVector[Value], location: Option[Location]) extends Compound
 
-  case class Procedure(body: Seq[Value] => Seq[Value], location: Option[Location]) extends Value
+  case class Procedure[T](body: Seq[Value] => T, location: Option[Location]) extends Value
 
   sealed trait AbbreviationPrefix
   case object Quote           extends AbbreviationPrefix

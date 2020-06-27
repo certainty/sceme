@@ -20,5 +20,4 @@ class DefaultReader extends Reader {
       case Failure(ex)             => Left(new ReadError("Failed to read", ex))
     }
   }
-
 }
