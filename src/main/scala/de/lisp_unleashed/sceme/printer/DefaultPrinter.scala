@@ -51,8 +51,20 @@ class DefaultPrinter(config: Configuration) extends Printer {
       ellipsis(v, config.maxCollectionElements, builder)
       builder.append(")")
 
-    case Value.Abbreviation(prefix, value, _) =>
-      builder.append(abbrevPrefix(prefix))
+    case Value.Quote(value, _) =>
+      builder.append('\'')
+      print(value, builder)
+
+    case Value.QuasiQuote(value, _) =>
+      builder.append('`')
+      print(value, builder)
+
+    case Value.Unquote(value, _) =>
+      builder.append(',')
+      print(value, builder)
+
+    case Value.UnquoteSplicing(value, _) =>
+      builder.append(",@")
       print(value, builder)
 
     case Value.Void(_) => builder.appendAll("#<void>")
@@ -95,13 +107,6 @@ class DefaultPrinter(config: Configuration) extends Printer {
       builder.appendAll(DefaultPrinter.ellipsisSuffix)
     }
     ()
-  }
-
-  def abbrevPrefix(prefix: Value.AbbreviationPrefix): String = prefix match {
-    case Value.Quote           => "'"
-    case Value.QuasiQuote      => "`"
-    case Value.Unquote         => ","
-    case Value.UnquoteSplicing => ",@"
   }
 
   private def charLiteral(ch: Char): String = ch match {

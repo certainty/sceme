@@ -65,7 +65,7 @@ class DefaultReaderSpec extends Specification {
 
     "symbol" >> {
       read(""" 'foo """) must beLike {
-        case Success(Value.Abbreviation(Value.Quote, Value.Symbol(v, _), _)) => v mustEqual "foo"
+        case Success(Value.Quote(Value.Symbol(v, _), _)) => v mustEqual "foo"
       }
     }
 

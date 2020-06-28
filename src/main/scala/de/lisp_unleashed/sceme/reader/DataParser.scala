@@ -60,15 +60,23 @@ trait Datum extends PositionTracking { this: Parser with Ignored with Tokens wit
   }
 
   def Abbreviation = rule {
-    Ignored.* ~ trackPos ~ AbbreviationPrefix ~ Datum ~>
-      ((pos, pref, datum) => Value.Abbreviation(pref, datum, pos))
+    Ignored.* ~ (Quote | QuasiQuote | Unquote | UnquoteSplicing)
   }
 
-  def AbbreviationPrefix = rule {
-    ch('\'') ~> (() => Value.Quote) |
-      ch('`') ~> (() => Value.QuasiQuote) |
-      str(",@") ~> (() => Value.UnquoteSplicing) |
-      ch(',') ~> (() => Value.Unquote)
+  def Quote = rule {
+    trackPos ~ atomic(ch('\'') ~ Datum) ~> ((pos, datum) => Value.Quote(datum, pos))
+  }
+
+  def QuasiQuote = rule {
+    trackPos ~ atomic(ch('`') ~ Datum) ~> ((pos, datum) => Value.QuasiQuote(datum, pos))
+  }
+
+  def Unquote = rule {
+    trackPos ~ atomic(ch(',') ~ Datum) ~> ((pos, datum) => Value.Unquote(datum, pos))
+  }
+
+  def UnquoteSplicing = rule {
+    trackPos ~ atomic(str(",@") ~ Datum) ~> ((pos, datum) => Value.UnquoteSplicing(datum, pos))
   }
 
   def VectorLiteral = rule {

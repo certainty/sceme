@@ -36,11 +36,11 @@ object Value {
 
   case class MultipleValues(values: Seq[Value], location: Option[Location]) extends Value
 
-  sealed trait AbbreviationPrefix
-  case object Quote           extends AbbreviationPrefix
-  case object QuasiQuote      extends AbbreviationPrefix
-  case object Unquote         extends AbbreviationPrefix
-  case object UnquoteSplicing extends AbbreviationPrefix
+  case class Quote(value: Value, location: Option[Location]) extends Compound
 
-  case class Abbreviation(prefix: AbbreviationPrefix, value: Value, location: Option[Location]) extends Compound
+  case class QuasiQuote(value: Value, location: Option[Location]) extends Compound
+
+  case class Unquote(value: Value, location: Option[Location]) extends Compound
+
+  case class UnquoteSplicing(value: Value, location: Option[Location]) extends Compound
 }

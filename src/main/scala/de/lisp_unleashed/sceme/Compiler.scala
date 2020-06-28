@@ -40,5 +40,5 @@ class ZIOCompiler extends Compiler[Program] {
 
 object ZIOCompiler {
   type Program     = ProgramT[Value]
-  type ProgramT[T] = ZIO[Environment, Exception, T]
+  type ProgramT[T] = ZIO[Environment, Throwable, T]
 }
