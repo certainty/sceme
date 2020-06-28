@@ -27,13 +27,14 @@ object Value {
   case class Void(location: Option[Location]) extends Simple
 
   case class ProperList(value: ScalaList[Value], location: Option[Location]) extends Compound
-  case class EmptyList(location: Option[Location])                           extends Compound
 
   case class ImproperList(values: ScalaList[Value], last: Value, location: Option[Location]) extends Compound
 
   case class Vector(value: ScalaVector[Value], location: Option[Location]) extends Compound
 
-  case class Procedure[T](body: Seq[Value] => T, location: Option[Location]) extends Value
+  case class Procedure[F[_]](f: Seq[Value] => F[MultipleValues], location: Option[Location]) extends Value
+
+  case class MultipleValues(values: Seq[Value], location: Option[Location]) extends Value
 
   sealed trait AbbreviationPrefix
   case object Quote           extends AbbreviationPrefix

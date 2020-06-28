@@ -40,6 +40,8 @@ class DefaultPrinter(config: Configuration) extends Printer {
       print(tail, builder)
       builder.append(")")
     }
+    case Value.ProperList(Nil, _) => builder.appendAll("'()")
+
     case Value.ProperList(ls, _) =>
       builder.append("'(")
       ellipsis(ls, config.maxCollectionElements, builder)
@@ -53,9 +55,17 @@ class DefaultPrinter(config: Configuration) extends Printer {
       builder.append(abbrevPrefix(prefix))
       print(value, builder)
 
-    case Value.EmptyList(_)    => builder.appendAll("'()")
-    case Value.Void(_)         => builder.appendAll("#<void>")
+    case Value.Void(_) => builder.appendAll("#<void>")
+
     case Value.Procedure(_, _) => builder.appendAll("#<procedure>")
+
+    case Value.MultipleValues(values, _) => {
+      values.foreach { v =>
+        print(v, builder)
+        builder.append("\n")
+      }
+      builder
+    }
   }
 
   private def ellipsis(str: String, length: Int, builder: StringBuilder): Unit = {
