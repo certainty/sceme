@@ -52,7 +52,6 @@ class DefaultPrinter(config: Configuration) extends Printer {
       builder.append(")")
 
     case Value.Quote(value, _) =>
-      builder.append('\'')
       print(value, builder)
 
     case Value.QuasiQuote(value, _) =>

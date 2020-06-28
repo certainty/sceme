@@ -1,7 +1,15 @@
 package de.lisp_unleashed.sceme
+import de.lisp_unleashed.sceme.Value.{ Procedure, Symbol }
 import de.lisp_unleashed.sceme.parser.Location
+
 import scala.Predef.{ String => ScalaString }
-import scala.{ Boolean => ScalaBoolean, Vector => ScalaVector, List => ScalaList, Char => ScalaChar }
+import scala.{
+  Boolean => ScalaBoolean,
+  Char => ScalaChar,
+  List => ScalaList,
+  Symbol => ScalaSymbol,
+  Vector => ScalaVector
+}
 
 sealed trait Value {
   def location: Option[Location]
@@ -12,7 +20,19 @@ object Value {
 
   sealed trait Compound extends Value
 
-  case class Symbol(value: ScalaString, location: Option[Location]) extends Simple
+  case class Symbol(value: ScalaString, location: Option[Location]) extends Simple {
+    override def canEqual(that: Any): ScalaBoolean = that match {
+      case _: Symbol => true
+      case _         => false
+    }
+
+    override def equals(o: Any): ScalaBoolean = o match {
+      case Symbol(v, _) => v == value
+      case _            => false
+    }
+
+    override val hashCode: Int = ScalaSymbol(value).hashCode
+  }
 
   case class Boolean(value: ScalaBoolean, location: Option[Location]) extends Simple
 
@@ -32,7 +52,7 @@ object Value {
 
   case class Vector(value: ScalaVector[Value], location: Option[Location]) extends Compound
 
-  case class Procedure[F[_]](f: Seq[Value] => F[MultipleValues], location: Option[Location]) extends Value
+  case class Procedure[F[_]](f: Seq[Value] => F[Value], location: Option[Location]) extends Value
 
   case class MultipleValues(values: Seq[Value], location: Option[Location]) extends Value
 
@@ -43,4 +63,13 @@ object Value {
   case class Unquote(value: Value, location: Option[Location]) extends Compound
 
   case class UnquoteSplicing(value: Value, location: Option[Location]) extends Compound
+}
+
+object ValueOps {
+  def symbol(str: ScalaString): Symbol =
+    Value.Symbol(str, None)
+
+  def lambda[F[_]](impl: Seq[Value] => F[Value]): Procedure[F] =
+    Procedure(impl, None)
+
 }

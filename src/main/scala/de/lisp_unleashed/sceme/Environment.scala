@@ -1,18 +1,49 @@
 package de.lisp_unleashed.sceme
 
+import de.lisp_unleashed.sceme.ZIOCompiler.ProgramT
+import zio.ZIO
+
 trait Environment {
   def outer: Option[Environment]
-  def set(symbol: Symbol, datum: Value): Environment
-  def find(symbol: Symbol): Option[Environment]
-  def get(symbol: Symbol): Option[Value]
+  def set(symbol: Value.Symbol, datum: Value): Environment
+  def find(symbol: Value.Symbol): Option[Environment]
+  def get(symbol: Value.Symbol): Option[Value]
 }
 
-case class StandardEnvironment() extends Environment {
-  val outer: Option[Environment] = None
+case class DefaultEnvironment private (bindings: Map[Value.Symbol, Value], outer: Option[Environment])
+    extends Environment {
 
-  override def set(symbol: Symbol, datum: Value): Environment = this
+  override def set(symbol: Value.Symbol, datum: Value): Environment =
+    copy(bindings = (bindings + (symbol -> datum)))
 
-  override def find(symbol: Symbol): Option[Environment] = None
+  override def find(symbol: Value.Symbol): Option[Environment] =
+    if (bindings.contains(symbol)) {
+      Some(this)
+    } else {
+      outer.flatMap(_.find(symbol))
+    }
 
-  override def get(symbol: Symbol): Option[Value] = None
+  override def get(symbol: Value.Symbol): Option[Value] =
+    bindings.get(symbol).orElse(outer.flatMap(_.get(symbol)))
+}
+
+object DefaultEnvironment {
+  def apply(bindings: Map[Value.Symbol, Value]): DefaultEnvironment =
+    DefaultEnvironment(bindings, None)
+
+  def apply(bindings: Map[Value.Symbol, Value], outer: Environment): DefaultEnvironment =
+    DefaultEnvironment(bindings, Some(outer))
+}
+
+object Environment {
+  import ValueOps._
+
+  def standard = DefaultEnvironment(
+    Map(
+      symbol("+") -> lambda[ProgramT] {
+        case Seq(Value.Fixnum(a, _), Value.Fixnum(b, _)) => ZIO.succeed(Value.Fixnum(a + b, None))
+      }
+    ),
+    None
+  )
 }

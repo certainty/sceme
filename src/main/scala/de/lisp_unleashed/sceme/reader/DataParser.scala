@@ -29,7 +29,7 @@ trait Program { this: Parser with Datum with Ignored =>
 }
 
 trait Datum extends PositionTracking { this: Parser with Ignored with Tokens with Numbers with Strings =>
-  def Datum: Rule1[Value] = rule { SimpleDatum | CompoundDatum }
+  def Datum: Rule1[Value] = rule { Ignored.* ~ SimpleDatum | CompoundDatum }
 
   def SimpleDatum = rule { BoolLiteral | NumberLiteral | CharacterLiteral | StringLiteral | SymbolLiteral }
 
