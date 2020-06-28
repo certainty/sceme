@@ -24,23 +24,24 @@ class SimpleRepl extends Repl[ZIO[Console, Throwable, Unit]] {
   private def readDatum(line: String): ZIO[Console, Throwable, (Value, SourceMapper)] =
     ZIO.fromEither(reader.read(line, "repl"))
 
-  private def eval(form: (Value, SourceMapper)): ZIO[Console, Throwable, Value] = {
-    val (datum, _) = form
-    val program    = compiler.compile(Seq(datum))
-
+  private def eval(datum: Value): ZIO[Console, Throwable, Value] = {
+    val program = compiler.compile(Seq(datum))
     program.provide(Repl.environment)
   }
 
   private val loop: ZIO[Console, Throwable, Unit] = {
-    (read >>= eval >>= print).catchAll(handleErrors)
+    for {
+      (datum, sm) <- read
+      _           <- (eval(datum) >>= print).catchAll(handleErrors(sm))
+    } yield ()
   }
 
   private def print(datum: Value): ZIO[Console, Throwable, Unit] =
     console.putStrLn(printer.print(datum))
 
-  private def handleErrors: PartialFunction[Throwable, ZIO[Console, Throwable, Unit]] = {
+  private def handleErrors(sourceMapper: SourceMapper): PartialFunction[Throwable, ZIO[Console, Throwable, Unit]] = {
     case e: ReadError    => console.putStrLn(s"Error: ${e.getMessage} caused by: ${e.getCause.getMessage}")
-    case e: RuntimeError => console.putStrLn(s"RuntimeError: ${e.getMessage} ")
+    case e: RuntimeError => console.putStrLn(e.fullMessage(sourceMapper))
   }
 
   private val printBanner: ZIO[Console, Nothing, Unit] = console.putStrLn("""

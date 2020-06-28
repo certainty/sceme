@@ -1,6 +1,6 @@
 package de.lisp_unleashed.sceme
 import de.lisp_unleashed.sceme.ZIOCompiler.{ Program, ProgramT }
-import de.lisp_unleashed.sceme.parser.Location
+import de.lisp_unleashed.sceme.parser.{ Location, SourceMapper }
 import zio.ZIO
 
 trait Compiler[T] {
@@ -9,6 +9,12 @@ trait Compiler[T] {
 
 class RuntimeError(message: String, location: Option[Location]) extends Exception {
   override def getMessage: String = s"RuntimeError: $message at $location"
+
+  def fullMessage(sourceMapper: SourceMapper): String = {
+    val loc = location.map(sourceMapper.renderLocation(_))
+    //val source = location.map(sourceMapper.renderLinePosition(_))
+    s"RuntimeError: $message ${loc.getOrElse("")}"
+  }
 }
 
 class ZIOCompiler extends Compiler[Program] {

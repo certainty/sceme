@@ -1,5 +1,4 @@
 package de.lisp_unleashed.sceme
-
 import de.lisp_unleashed.sceme.ZIOCompiler.ProgramT
 import zio.ZIO
 
@@ -41,7 +40,12 @@ object Environment {
   def standard = DefaultEnvironment(
     Map(
       symbol("+") -> lambda[ProgramT] {
-        case Seq(Value.Fixnum(a, _), Value.Fixnum(b, _)) => ZIO.succeed(Value.Fixnum(a + b, None))
+        case Seq(Value.Fixnum(a, loc), Value.Fixnum(b, _)) => ZIO.succeed(Value.Fixnum(a + b, loc))
+        case Seq(Value.Flonum(a, loc), Value.Flonum(b, _)) => ZIO.succeed(Value.Flonum(a + b, loc))
+      },
+      symbol("-") -> lambda[ProgramT] {
+        case Seq(Value.Fixnum(a, loc), Value.Fixnum(b, _)) => ZIO.succeed(Value.Fixnum(a - b, loc))
+        case Seq(Value.Flonum(a, loc), Value.Flonum(b, _)) => ZIO.succeed(Value.Flonum(a - b, loc))
       }
     ),
     None
