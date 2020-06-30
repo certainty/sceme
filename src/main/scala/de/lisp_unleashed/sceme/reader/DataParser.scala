@@ -56,7 +56,7 @@ trait Datum extends PositionTracking { this: Parser with Ignored with Tokens wit
     Ignored.* ~ trackPos ~ atomic(
       ch('(') ~ Ignored.* ~ Datum.+ ~ Ignored.* ~ ch('.') ~ Ignored.* ~ Datum ~ Ignored.* ~ ch(')')
     ) ~>
-      ((pos, h, t) => Value.ImproperList(h.toList, t, pos))
+      ((pos, h, t) => Value.ImproperList((h.toList, t), pos))
   }
 
   def Abbreviation = rule {

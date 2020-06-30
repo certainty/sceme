@@ -79,7 +79,7 @@ class DefaultReaderSpec extends Specification {
 
       "improper" >> {
         read(""" (1 . "foo") """) must beLike {
-          case Success(Value.ImproperList(List(Value.Fixnum(v, _)), Value.String("foo", _), _)) =>
+          case Success(Value.ImproperList((List(Value.Fixnum(v, _)), Value.String("foo", _)), _)) =>
             v mustEqual 1
         }
       }

@@ -30,6 +30,13 @@ object Value {
     override def location: Option[Location] = None
   }
 
+  object ForeignFunction {
+    def apply[F[_]](f: Seq[Value] => F[Value]): ForeignFunction[F] =
+      new ForeignFunction[F] {
+        override def call(args: Seq[Value]): F[Value] = f(args)
+      }
+  }
+
   case class Symbol(value: ScalaString, location: Option[Location]) extends Simple {
     override def canEqual(that: Any): ScalaBoolean = that match {
       case _: Symbol => true
@@ -62,7 +69,7 @@ object Value {
 
   case class ProperList(value: ScalaList[Value], location: Option[Location]) extends Compound with RuntimeValue
 
-  case class ImproperList(values: ScalaList[Value], last: Value, location: Option[Location])
+  case class ImproperList(value: (ScalaList[Value], Value), location: Option[Location])
       extends Compound
       with RuntimeValue
 

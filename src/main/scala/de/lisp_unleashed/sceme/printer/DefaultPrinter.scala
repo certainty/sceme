@@ -35,7 +35,7 @@ class DefaultPrinter(config: Configuration) extends Printer {
         builder.append("#f")
       }
 
-    case Value.ImproperList(values, tail, _) => {
+    case Value.ImproperList((values, tail), _) => {
       builder.append("'(")
       ellipsis(values, config.maxCollectionElements, builder)
       builder.append(" . ")

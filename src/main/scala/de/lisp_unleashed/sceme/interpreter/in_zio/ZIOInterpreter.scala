@@ -42,4 +42,5 @@ class ZIOInterpreter extends Interpreter[Program] {
       case v: Value.Callable[Instruction] @unchecked => ZIO.succeed(v)
       case v                                         => ZIO.fail(new RuntimeError(s"Can't apply non procedure. ${v}", v.location))
     }
+
 }
