@@ -48,11 +48,13 @@ object Value {
 
   case class String(value: ScalaString, location: Option[Location]) extends Simple
 
-  trait Number extends Simple
+  trait Number[T] extends Simple {
+    def value: T
+  }
 
-  case class Fixnum(value: BigInt, location: Option[Location]) extends Number
+  case class Fixnum(value: BigInt, location: Option[Location]) extends Number[BigInt]
 
-  case class Flonum(value: BigDecimal, location: Option[Location]) extends Number
+  case class Flonum(value: BigDecimal, location: Option[Location]) extends Number[BigDecimal]
 
   case class Void(location: Option[Location]) extends Simple
 

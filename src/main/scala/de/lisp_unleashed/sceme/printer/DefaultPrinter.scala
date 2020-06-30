@@ -26,6 +26,8 @@ class DefaultPrinter(config: Configuration) extends Printer {
 
     case Value.Flonum(value, _) => builder.append(value.toString())
 
+    case num: Value.Number[_] => builder.appendAll(num.value.toString)
+
     case Value.Boolean(value, _) =>
       if (value) {
         builder.append("#t")

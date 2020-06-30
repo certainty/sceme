@@ -1,4 +1,5 @@
 package de.lisp_unleashed.sceme.interpreter.in_zio
+import de.lisp_unleashed.sceme.Value.Callable
 import de.lisp_unleashed.sceme.interpreter.RuntimeError
 import de.lisp_unleashed.sceme.{ Environment, Interpreter, Value }
 import zio.ZIO
@@ -28,12 +29,12 @@ class ZIOInterpreter extends Interpreter[Program] {
     for {
       proc   <- evalOperator(operator)
       args   <- eval(operands)
-      result <- proc(args)
+      result <- proc.call(args)
     } yield result
 
-  private def evalOperator(operator: Value): Instruction[Seq[Value] => Instruction[Value]] =
+  private def evalOperator(operator: Value): Instruction[Callable[Instruction]] =
     eval(operator).flatMap {
-      case v: Value.Procedure[Instruction] @unchecked => ZIO.succeed(v.f)
-      case v                                          => ZIO.fail(new RuntimeError(s"Can't apply non procedure. ${v}", v.location))
+      case v: Value.Callable[Instruction] @unchecked => ZIO.succeed(v)
+      case v                                         => ZIO.fail(new RuntimeError(s"Can't apply non procedure. ${v}", v.location))
     }
 }

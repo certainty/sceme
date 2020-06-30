@@ -1,5 +1,4 @@
 package de.lisp_unleashed.sceme
-import zio.ZIO
 
 trait Environment {
   def outer: Option[Environment]
@@ -31,22 +30,4 @@ object DefaultEnvironment {
 
   def apply(bindings: Map[Value.Symbol, Value], outer: Environment): DefaultEnvironment =
     DefaultEnvironment(bindings, Some(outer))
-}
-
-object Environment {
-  import ValueOps._
-
-  def standard = DefaultEnvironment(
-    Map(
-      symbol("+") -> lambda[Instruction] {
-        case Seq(Value.Fixnum(a, loc), Value.Fixnum(b, _)) => ZIO.succeed(Value.Fixnum(a + b, loc))
-        case Seq(Value.Flonum(a, loc), Value.Flonum(b, _)) => ZIO.succeed(Value.Flonum(a + b, loc))
-      },
-      symbol("-") -> lambda[Instruction] {
-        case Seq(Value.Fixnum(a, loc), Value.Fixnum(b, _)) => ZIO.succeed(Value.Fixnum(a - b, loc))
-        case Seq(Value.Flonum(a, loc), Value.Flonum(b, _)) => ZIO.succeed(Value.Flonum(a - b, loc))
-      }
-    ),
-    None
-  )
 }
