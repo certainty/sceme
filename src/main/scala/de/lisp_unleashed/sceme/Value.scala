@@ -15,8 +15,10 @@ sealed trait Value {
   def location: Option[Location]
 }
 
+sealed trait RuntimeValue
+
 object Value {
-  sealed trait Simple extends Value
+  sealed trait Simple extends Value with RuntimeValue
 
   sealed trait Compound extends Value
 
@@ -24,7 +26,7 @@ object Value {
     def call(args: Seq[Value]): F[Value]
   }
 
-  trait ForeignFunction[F[_]] extends Callable[F] {
+  trait ForeignFunction[F[_]] extends Callable[F] with RuntimeValue {
     override def location: Option[Location] = None
   }
 
@@ -48,23 +50,27 @@ object Value {
 
   case class String(value: ScalaString, location: Option[Location]) extends Simple
 
-  trait Number[T] extends Simple {
+  trait Number[T] {
     def value: T
   }
 
-  case class Fixnum(value: BigInt, location: Option[Location]) extends Number[BigInt]
+  case class Fixnum(value: BigInt, location: Option[Location]) extends Simple with Number[BigInt]
 
-  case class Flonum(value: BigDecimal, location: Option[Location]) extends Number[BigDecimal]
+  case class Flonum(value: BigDecimal, location: Option[Location]) extends Simple with Number[BigDecimal]
 
   case class Void(location: Option[Location]) extends Simple
 
-  case class ProperList(value: ScalaList[Value], location: Option[Location]) extends Compound
+  case class ProperList(value: ScalaList[Value], location: Option[Location]) extends Compound with RuntimeValue
 
-  case class ImproperList(values: ScalaList[Value], last: Value, location: Option[Location]) extends Compound
+  case class ImproperList(values: ScalaList[Value], last: Value, location: Option[Location])
+      extends Compound
+      with RuntimeValue
 
-  case class Vector(value: ScalaVector[Value], location: Option[Location]) extends Compound
+  case class Vector(value: ScalaVector[Value], location: Option[Location]) extends Compound with RuntimeValue
 
-  case class Procedure[F[_]](f: Seq[Value] => F[Value], location: Option[Location]) extends Callable[F] {
+  case class Procedure[F[_]](f: Seq[Value] => F[Value], location: Option[Location])
+      extends Callable[F]
+      with RuntimeValue {
     override def call(args: Seq[Value]): F[Value] = f(args)
   }
 
@@ -85,5 +91,4 @@ object ValueOps {
 
   def lambda[F[_]](impl: Seq[Value] => F[Value]): Procedure[F] =
     Procedure(impl, None)
-
 }

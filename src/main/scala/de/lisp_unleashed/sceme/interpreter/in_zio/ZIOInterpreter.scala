@@ -12,6 +12,7 @@ class ZIOInterpreter extends Interpreter[Program] {
   def eval(datum: Value): Instruction[Value] =
     datum match {
       case nil @ Value.ProperList(Nil, _)            => value(nil)
+      case Value.Quote(v, _)                         => value(v)
       case Value.ProperList(operator :: operands, _) => applyProcedure(operator, operands)
       case v: Value.Symbol                           => referenceVariable(v)
       case v                                         => value(v)

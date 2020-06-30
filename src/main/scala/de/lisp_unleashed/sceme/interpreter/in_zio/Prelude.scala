@@ -1,53 +1,45 @@
 package de.lisp_unleashed.sceme.interpreter.in_zio
-import de.lisp_unleashed.sceme.Value.{ Fixnum, ForeignFunction }
-import de.lisp_unleashed.sceme.ValueOps.symbol
+import de.lisp_unleashed.sceme.Value.ForeignFunction
 import de.lisp_unleashed.sceme.interpreter.RuntimeError
-import de.lisp_unleashed.sceme.interpreter.in_zio.Prelude.NumericOps.{ AddFix, MultFix }
+import de.lisp_unleashed.sceme.interpreter.in_zio.Prelude.Types.TypeOf
 import de.lisp_unleashed.sceme.parser.Location
-import de.lisp_unleashed.sceme.{ DefaultEnvironment, Value }
+import de.lisp_unleashed.sceme.{ DefaultEnvironment, RuntimeValue, Value }
 import zio.ZIO
 
 object Prelude {
+  import de.lisp_unleashed.sceme.ValueOps._
+
   object Errors {
     def error[T](message: String, location: Option[Location] = None): Instruction[T] =
       ZIO.fail(new RuntimeError(message, location))
   }
 
-  object TypeChecks {
-    def ensureType[T <: Value](s: Seq[Value], message: String): Instruction[Seq[T]] = s match {
-      case s if allSameType[T](s) => ZIO.succeed(s.asInstanceOf[Seq[T]])
-      case (head +: _)            => Errors.error(message, head.location)
+  object Types {
+    def typeOf(v: RuntimeValue): String = v match {
+      case _: Value.Fixnum       => "Fixnum"
+      case _: Value.Flonum       => "Flonum"
+      case _: Value.String       => "String"
+      case _: Value.Char         => "Char"
+      case _: Value.Boolean      => "Boolean"
+      case _: Value.Callable[_]  => "Procedure"
+      case _: Value.ProperList   => "Pair"
+      case _: Value.ImproperList => "Pair"
+      case _: Value.Vector       => "Vector"
+      case _: Value.Void         => "Void"
+      case _: Value.Symbol       => "Symbol"
     }
 
-    def allSameType[T <: Value](s: Seq[Value]): Boolean =
-      s.forall(_.isInstanceOf[T @unchecked])
-  }
-
-  object NumericOps {
-    // No numeric tower yet
-    object AddFix extends ForeignFunction[Instruction] {
-      override def call(args: Seq[Value]): Instruction[Fixnum] =
-        for {
-          numbers <- TypeChecks.ensureType[Fixnum](args, "Invalid type. Expected sequence of Fixnum")
-        } yield {
-          Value.Fixnum(numbers.map(_.value).sum, None)
-        }
-    }
-
-    object MultFix extends ForeignFunction[Instruction] {
-      override def call(args: Seq[Value]): Instruction[Fixnum] =
-        for {
-          numbers <- TypeChecks.ensureType[Fixnum](args, "Invalid type. Expected sequence of Fixnum")
-        } yield {
-          Value.Fixnum(numbers.map(_.value).product, None)
-        }
+    object TypeOf extends ForeignFunction[Instruction] {
+      override def call(args: Seq[Value]): Instruction[Value] = args match {
+        case Seq(v: RuntimeValue) => ZIO.succeed(Value.Symbol(typeOf(v), None))
+        case _                    => ZIO.succeed(Value.Symbol("Unknown", None))
+      }
     }
   }
 
   def env = DefaultEnvironment(
     Map(
-      symbol("+") -> AddFix,
-      symbol("*") -> MultFix
+      symbol("typeOf") -> TypeOf
     ),
     None
   )
