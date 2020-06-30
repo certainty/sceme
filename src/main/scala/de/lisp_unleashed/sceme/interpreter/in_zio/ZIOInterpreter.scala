@@ -11,11 +11,15 @@ class ZIOInterpreter extends Interpreter[Program] {
 
   def eval(datum: Value): Instruction[Value] =
     datum match {
-      case nil @ Value.ProperList(Nil, _)            => value(nil)
       case Value.Quote(v, _)                         => value(v)
+      case nil @ Value.ProperList(Nil, _)            => value(nil)
       case Value.ProperList(operator :: operands, _) => applyProcedure(operator, operands)
       case v: Value.Symbol                           => referenceVariable(v)
-      case v                                         => value(v)
+      case v: Value.Boolean                          => value(v)
+      case v: Value.Number[_]                        => value(v)
+      case v: Value.Char                             => value(v)
+      case v: Value.String                           => value(v)
+      case v                                         => ZIO.fail(new RuntimeError("Can't eval value", v.location))
     }
 
   @inline private def value[T](t: T) = ZIO.succeed(t)
