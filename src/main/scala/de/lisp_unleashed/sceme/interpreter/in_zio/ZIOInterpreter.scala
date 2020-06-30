@@ -1,5 +1,5 @@
-package de.lisp_unleashed.sceme.interpreter
-
+package de.lisp_unleashed.sceme.interpreter.in_zio
+import de.lisp_unleashed.sceme.interpreter.RuntimeError
 import de.lisp_unleashed.sceme.{ Environment, Interpreter, Value }
 import zio.ZIO
 
@@ -36,9 +36,4 @@ class ZIOInterpreter extends Interpreter[Program] {
       case v: Value.Procedure[Instruction] @unchecked => ZIO.succeed(v.f)
       case v                                          => ZIO.fail(new RuntimeError(s"Can't apply non procedure. ${v}", v.location))
     }
-}
-
-object ZIOInterpreter {
-  type Program        = Instruction[Value]
-  type Instruction[T] = ZIO[Environment, Throwable, T]
 }

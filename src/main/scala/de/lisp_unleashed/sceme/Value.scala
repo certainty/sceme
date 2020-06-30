@@ -24,7 +24,9 @@ object Value {
     def call(args: Seq[Value]): F[Value]
   }
 
-  trait ForeignFunction[F[_]] extends Callable[F]
+  trait ForeignFunction[F[_]] extends Callable[F] {
+    override def location: Option[Location] = None
+  }
 
   case class Symbol(value: ScalaString, location: Option[Location]) extends Simple {
     override def canEqual(that: Any): ScalaBoolean = that match {
@@ -46,9 +48,11 @@ object Value {
 
   case class String(value: ScalaString, location: Option[Location]) extends Simple
 
-  case class Fixnum(value: BigInt, location: Option[Location]) extends Simple
+  trait Number extends Simple
 
-  case class Flonum(value: BigDecimal, location: Option[Location]) extends Simple
+  case class Fixnum(value: BigInt, location: Option[Location]) extends Number
+
+  case class Flonum(value: BigDecimal, location: Option[Location]) extends Number
 
   case class Void(location: Option[Location]) extends Simple
 
