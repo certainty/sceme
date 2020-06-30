@@ -1,8 +1,8 @@
-package de.lisp_unleashed.sceme.parser
-import java.util.UUID
+package de.lisp_unleashed.sceme.reader
+import de.lisp_unleashed.sceme.Value
+import de.lisp_unleashed.sceme.parser.PositionTracking
 import org.parboiled2.CharPredicate.{ Digit, Digit19, HexDigit }
 import org.parboiled2._
-import scala.util.{ Failure, Success, Try }
 
 // https://people.csail.mit.edu/jaffer/r5rs_9.html
 
@@ -29,18 +29,18 @@ trait Program { this: Parser with Datum with Ignored =>
 }
 
 trait Datum extends PositionTracking { this: Parser with Ignored with Tokens with Numbers with Strings =>
-  def Datum: Rule1[Ast.Datum] = rule { SimpleDatum | CompoundDatum }
+  def Datum: Rule1[Value] = rule { Ignored.* ~ SimpleDatum | CompoundDatum }
 
   def SimpleDatum = rule { BoolLiteral | NumberLiteral | CharacterLiteral | StringLiteral | SymbolLiteral }
 
   def BoolLiteral = rule {
-    Ignored.* ~ trackPos ~ Keyword("#t") ~> ((location) => Ast.Boolean(true, location)) |
-      Ignored.* ~ trackPos ~ Keyword("#f") ~> ((location) => Ast.Boolean(false, location))
+    Ignored.* ~ trackPos ~ Keyword("#t") ~> ((location) => Value.Boolean(true, location)) |
+      Ignored.* ~ trackPos ~ Keyword("#f") ~> ((location) => Value.Boolean(false, location))
   }
 
   def SymbolLiteral = rule {
     Ignored.* ~ trackPos ~ capture(Identifier) ~>
-      ((pos, identifier) => Ast.Symbol(identifier, pos))
+      ((pos, identifier) => Value.Symbol(identifier, pos))
   }
 
   def CompoundDatum = rule { ListLiteral | VectorLiteral }
@@ -49,31 +49,39 @@ trait Datum extends PositionTracking { this: Parser with Ignored with Tokens wit
 
   def ProperList = rule {
     Ignored.* ~ trackPos ~ atomic(ch('(') ~ Ignored.* ~ Datum.* ~ Ignored.* ~ ch(')')) ~>
-      ((pos, dat) => Ast.ProperList(dat.toList, pos))
+      ((pos, dat) => Value.ProperList(dat.toList, pos))
   }
 
   def ImproperList = rule {
     Ignored.* ~ trackPos ~ atomic(
       ch('(') ~ Ignored.* ~ Datum.+ ~ Ignored.* ~ ch('.') ~ Ignored.* ~ Datum ~ Ignored.* ~ ch(')')
     ) ~>
-      ((pos, h, t) => Ast.ImproperList(h.toList, t, pos))
+      ((pos, h, t) => Value.ImproperList((h.toList, t), pos))
   }
 
   def Abbreviation = rule {
-    Ignored.* ~ trackPos ~ AbbreviationPrefix ~ Datum ~>
-      ((pos, pref, datum) => Ast.Abbreviation(pref, datum, pos))
+    Ignored.* ~ (Quote | QuasiQuote | Unquote | UnquoteSplicing)
   }
 
-  def AbbreviationPrefix = rule {
-    ch('\'') ~> (() => Ast.Quote) |
-      ch('`') ~> (() => Ast.QuasiQuote) |
-      str(",@") ~> (() => Ast.UnquoteSplicing) |
-      ch(',') ~> (() => Ast.Unquote)
+  def Quote = rule {
+    trackPos ~ atomic(ch('\'') ~ Datum) ~> ((pos, datum) => Value.Quote(datum, pos))
+  }
+
+  def QuasiQuote = rule {
+    trackPos ~ atomic(ch('`') ~ Datum) ~> ((pos, datum) => Value.QuasiQuote(datum, pos))
+  }
+
+  def Unquote = rule {
+    trackPos ~ atomic(ch(',') ~ Datum) ~> ((pos, datum) => Value.Unquote(datum, pos))
+  }
+
+  def UnquoteSplicing = rule {
+    trackPos ~ atomic(str(",@") ~ Datum) ~> ((pos, datum) => Value.UnquoteSplicing(datum, pos))
   }
 
   def VectorLiteral = rule {
     Ignored.* ~ trackPos ~ atomic(str("#(") ~ Ignored.* ~ Datum.* ~ Ignored.* ~ ch(')')) ~>
-      ((pos, data) => Ast.Vector(data.toVector, pos))
+      ((pos, data) => Value.Vector(data.toVector, pos))
   }
 }
 
@@ -104,7 +112,7 @@ trait Ignored extends PositionTracking { this: Parser =>
 trait Strings extends StringBuilding with PositionTracking { this: Parser with Tokens with Ignored =>
 
   def CharacterLiteral = rule {
-    Ignored.* ~ trackPos ~ atomic(quiet(str("#\\")) ~ SingleCharacter) ~> ((location, c) => Ast.Char(c, location))
+    Ignored.* ~ trackPos ~ atomic(quiet(str("#\\")) ~ SingleCharacter) ~> ((location, c) => Value.Char(c, location))
   }
 
   def SingleCharacter = rule {
@@ -116,7 +124,7 @@ trait Strings extends StringBuilding with PositionTracking { this: Parser with T
 
   def StringLiteral = rule {
     Ignored.* ~ trackPos ~ '"' ~ clearSB() ~ Characters ~ '"' ~ push(sb.toString) ~ Ignored.* ~>
-      ((location, s) => Ast.String(s, location))
+      ((location, s) => Value.String(s, location))
   }
 
   def Characters      = rule { (NormalCharacter | '\\' ~ EscapedChar).* }
@@ -144,8 +152,8 @@ trait Numbers { this: Parser with Ignored =>
     atomic(trackPos ~ IntegerValuePart ~ FloatValuePart.? ~ Ignored.*) ~>
       ((location, intPart, floatPart) => {
         floatPart.map { f =>
-          Ast.Flonum(BigDecimal(intPart + f), location)
-        }.getOrElse(Ast.Fixnum(BigInt(intPart), location))
+          Value.Flonum(BigDecimal(intPart + f), location)
+        }.getOrElse(Value.Fixnum(BigInt(intPart), location))
       })
   }
 
@@ -185,7 +193,7 @@ case class SyntaxError(parser: Parser, input: ParserInput, originalError: ParseE
 // 1. Improve parser errors by using atomic and named rules
 // 2. Think about removing location from Ast.Datum, which allows us to turn most Datums into value classes. Instead
 //    have the parser create a location map during parsing that correlates parsed data with location (and also source-mapper)
-class ScemeParser private (val input: ParserInput, val sourceId: String)
+class DataParser(val input: ParserInput, val sourceId: String)
     extends Parser
     with Ignored
     with Numbers
@@ -194,22 +202,4 @@ class ScemeParser private (val input: ParserInput, val sourceId: String)
     with Datum
     with Program {
   override def parseLocations: Boolean = true
-
-}
-
-object ScemeParser {
-  case class Result(data: Seq[Ast.Datum], sourceMapper: SourceMapper)
-
-  def parse(input: String): Try[Result] = {
-    val parserInput  = ParserInput(input)
-    val id           = UUID.randomUUID().toString
-    val sourceMapper = new DefaultSourceMapper(id, input)
-    val parser       = new ScemeParser(input, id)
-
-    parser.Program.run() match {
-      case Success(exprs)          => Success(Result(exprs, sourceMapper))
-      case Failure(ex: ParseError) => Failure(SyntaxError(parser, parserInput, ex))
-      case Failure(ex)             => Failure(ex)
-    }
-  }
 }

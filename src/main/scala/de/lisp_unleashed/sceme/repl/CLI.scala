@@ -1,10 +1,8 @@
 package de.lisp_unleashed.sceme.repl
-import zio.{ console, ExitCode, ZEnv, ZIO }
-import zio._
+import zio.{ ExitCode, ZEnv, ZIO, console, _ }
 
 object CLI extends App {
-  val printer    = new ReplPrinter(PrinterConfig.default)
-  val simpleRepl = new SimpleRepl(printer)
+  val simpleRepl = new SimpleRepl
 
   override def run(_args: List[String]): ZIO[ZEnv, Nothing, ExitCode] =
     (simpleRepl

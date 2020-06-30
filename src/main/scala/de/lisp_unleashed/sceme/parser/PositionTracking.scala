@@ -1,7 +1,7 @@
 package de.lisp_unleashed.sceme.parser
 import org.parboiled2._
 import scala.annotation.tailrec
-
+// Shamelessly stolen from Sangria: https://github.com/sangria-graphql/sangria/blob/master/modules/core/src/main/scala/sangria/parser/PositionTracking.scala
 trait PositionTracking { this: Parser =>
   private var lineIdx = Array(0)
   def parseLocations: Boolean
