@@ -20,6 +20,12 @@ object Value {
 
   sealed trait Compound extends Value
 
+  sealed trait Callable[F[_]] extends Value {
+    def call(args: Seq[Value]): F[Value]
+  }
+
+  trait ForeignFunction[F[_]] extends Callable[F]
+
   case class Symbol(value: ScalaString, location: Option[Location]) extends Simple {
     override def canEqual(that: Any): ScalaBoolean = that match {
       case _: Symbol => true
@@ -52,7 +58,9 @@ object Value {
 
   case class Vector(value: ScalaVector[Value], location: Option[Location]) extends Compound
 
-  case class Procedure[F[_]](f: Seq[Value] => F[Value], location: Option[Location]) extends Value
+  case class Procedure[F[_]](f: Seq[Value] => F[Value], location: Option[Location]) extends Callable[F] {
+    override def call(args: Seq[Value]): F[Value] = f(args)
+  }
 
   case class MultipleValues(values: Seq[Value], location: Option[Location]) extends Value
 
