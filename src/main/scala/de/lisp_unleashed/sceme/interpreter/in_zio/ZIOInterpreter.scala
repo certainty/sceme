@@ -41,13 +41,14 @@ class ZIOInterpreter extends Interpreter[Program] {
   private def applyProcedure(callable: Value.Callable, args: List[Value]): Instruction[Value] = callable match {
     case f: Value.ForeignLambda[Instruction] @unchecked => f.call(args)
     case f: Value.Procedure[Instruction] @unchecked if f.formals.size == args.size => {
-      // TODO: this currently does not allow arguments to reference preceeding arguments
       val bindings: Environment.Bindings = f.formals.zip(args).toMap
       ZIO.access[ScemeRuntime](_.extendEnvironment(bindings)).bracket(rt => ZIO.succeed(rt.shrinkEnvironment())) { rt =>
         f.action.provide(rt)
       }
     }
-    case _ => ZIO.fail(new RuntimeError("Incompatible amount of arguments", None))
+    case f: Value.Procedure[Instruction] @unchecked =>
+      ZIO.fail(new RuntimeError(s"Expected ${f.formals.size} arguments but got ${args.size}", f.location))
+
   }
 
   private def evalOperator(operator: Expression): Instruction[Callable] =
@@ -57,20 +58,10 @@ class ZIOInterpreter extends Interpreter[Program] {
     }
 
   private def evalLambda(
-    formals: Seq[Expression],
+    formals: Seq[Variable],
     body: Seq[Expression],
     location: Option[Location]
   ): Instruction[Callable] =
-    for {
-      variables <- evalFormals(formals)
-    } yield {
-      Procedure(variables, eval(body).map(_.last), location)
-    }
-
-  private def evalFormals(formals: Seq[Expression]): Instruction[Seq[Value.Symbol]] =
-    ZIO.collectAll(formals.map {
-      case Variable(v) => ZIO.succeed(v)
-      case v           => ZIO.fail(new RuntimeError("Lambda formals must be symbols", v.location))
-    })
+    value(Procedure(formals.map(_.name), eval(body).map(_.last), location))
 
 }

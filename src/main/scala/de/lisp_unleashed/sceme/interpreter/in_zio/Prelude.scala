@@ -1,9 +1,9 @@
 package de.lisp_unleashed.sceme.interpreter.in_zio
-import de.lisp_unleashed.sceme.syntax.Value.ForeignLambda
-import de.lisp_unleashed.sceme.interpreter.RuntimeError
-import de.lisp_unleashed.sceme.interpreter.in_zio.Prelude.Types.TypeOf
-import de.lisp_unleashed.sceme.parser.Location
 import de.lisp_unleashed.sceme.DefaultEnvironment
+import de.lisp_unleashed.sceme.interpreter.RuntimeError
+import de.lisp_unleashed.sceme.interpreter.in_zio.Prelude.Types.{ FxPlus, TypeOf }
+import de.lisp_unleashed.sceme.parser.Location
+import de.lisp_unleashed.sceme.syntax.Value.{ Fixnum, ForeignLambda }
 import de.lisp_unleashed.sceme.syntax.{ RuntimeValue, Value }
 import zio.ZIO
 
@@ -35,11 +35,26 @@ object Prelude {
         case _                    => ZIO.succeed(Value.Symbol("Unknown", None))
       }
     }
+
+    object FxPlus extends ForeignLambda[Instruction] {
+      override def call(args: Seq[Value]): Instruction[Value] = {
+        var result = BigInt(0)
+
+        args.foreach {
+          case Fixnum(v, _) => result += v
+          case _            => throw new RuntimeError("Oh Oh", None)
+        }
+
+        ZIO.succeed(Value.apply(result))
+      }
+
+    }
   }
 
   def env = DefaultEnvironment(
     Map(
-      Value.Symbol("typeOf", None) -> TypeOf
+      Value.Symbol("typeOf", None) -> TypeOf,
+      Value.Symbol("fx+", None)    -> FxPlus
     ),
     None
   )

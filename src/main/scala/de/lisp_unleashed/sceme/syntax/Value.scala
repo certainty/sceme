@@ -79,4 +79,7 @@ object Value {
       with RuntimeValue
 
   case class MultipleValues(values: Seq[Value], location: Option[Location]) extends Value
+
+  def apply(n: BigInt): Fixnum     = Fixnum(n, None)
+  def apply(n: BigDecimal): Flonum = Flonum(n, None)
 }
