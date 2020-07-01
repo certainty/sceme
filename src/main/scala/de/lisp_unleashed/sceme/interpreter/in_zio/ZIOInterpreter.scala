@@ -1,46 +1,76 @@
 package de.lisp_unleashed.sceme.interpreter.in_zio
-import de.lisp_unleashed.sceme.Value.Callable
 import de.lisp_unleashed.sceme.interpreter.RuntimeError
-import de.lisp_unleashed.sceme.{ Environment, Interpreter, Value }
+import de.lisp_unleashed.sceme.parser.Location
+import de.lisp_unleashed.sceme.syntax.Value.{ Callable, Procedure }
+import de.lisp_unleashed.sceme.syntax._
+import de.lisp_unleashed.sceme.{ Environment, Interpreter, ScemeRuntime }
 import zio.ZIO
 
 class ZIOInterpreter extends Interpreter[Program] {
-  override def interpret(data: Seq[Value]): Program = eval(data).map(_.last)
-
-  private def eval(data: Seq[Value]): ZIO[Environment, Throwable, List[Value]] = ZIO.collectAll(data.map(eval))
-
-  def eval(datum: Value): Instruction[Value] =
-    datum match {
-      case Value.Quote(v, _)                         => value(v)
-      case nil @ Value.ProperList(Nil, _)            => value(nil)
-      case Value.ProperList(operator :: operands, _) => applyProcedure(operator, operands)
-      case v: Value.Symbol                           => referenceVariable(v)
-      case v: Value.Boolean                          => value(v)
-      case v: Value.Number[_]                        => value(v)
-      case v: Value.Char                             => value(v)
-      case v: Value.String                           => value(v)
-      case v                                         => ZIO.fail(new RuntimeError("Can't eval value", v.location))
-    }
-
   @inline private def value[T](t: T) = ZIO.succeed(t)
 
-  private def referenceVariable(sym: Value.Symbol): Instruction[Value] =
-    ZIO.access[Environment](e => e.get(sym)).flatMap {
-      case Some(v) => ZIO.succeed(v)
-      case None    => ZIO.fail(new RuntimeError(s"Unbound variable: ${sym.value}", sym.location))
+  override def interpret(data: Seq[Expression]): Program = eval(data).map(_.last)
+
+  private def eval(data: Seq[Expression]): Instruction[List[Value]] = ZIO.collectAll(data.map(eval))
+
+  def eval(datum: Expression): Instruction[Value] =
+    datum match {
+      case Literal(v)                        => value(v)
+      case Variable(v)                       => evalVariable(v)
+      case ProcedureCall(operator, operands) => evalApplication(operator, operands)
+      case Lambda(formals, body, loc)        => evalLambda(formals, body, loc)
+      case Quote(v)                          => value(v)
+      case e                                 => ZIO.fail(new RuntimeError(s"Expression ${e} not yet supported", e.location))
     }
 
-  private def applyProcedure(operator: Value, operands: List[Value]): Instruction[Value] =
+  private def evalVariable(sym: Value.Symbol): Instruction[Value] =
+    ZIO.accessM[ScemeRuntime] { runtime =>
+      runtime.currentEnvironment.get(sym) match {
+        case Some(v) => ZIO.succeed(v)
+        case None    => ZIO.fail(new RuntimeError(s"Unbound variable: ${sym.value}", sym.location))
+      }
+    }
+
+  private def evalApplication(operator: Expression, operands: List[Expression]): Instruction[Value] =
     for {
       proc   <- evalOperator(operator)
       args   <- eval(operands)
-      result <- proc.call(args)
+      result <- applyProcedure(proc, args)
     } yield result
 
-  private def evalOperator(operator: Value): Instruction[Callable[Instruction]] =
-    eval(operator).flatMap {
-      case v: Value.Callable[Instruction] @unchecked => ZIO.succeed(v)
-      case v                                         => ZIO.fail(new RuntimeError(s"Can't apply non procedure. ${v}", v.location))
+  private def applyProcedure(callable: Value.Callable, args: List[Value]): Instruction[Value] = callable match {
+    case f: Value.ForeignLambda[Instruction] @unchecked => f.call(args)
+    case f: Value.Procedure[Instruction] @unchecked if f.formals.size == args.size => {
+      // TODO: this currently does not allow arguments to reference preceeding arguments
+      val bindings: Environment.Bindings = f.formals.zip(args).toMap
+      ZIO.access[ScemeRuntime](_.extendEnvironment(bindings)).bracket(rt => ZIO.succeed(rt.shrinkEnvironment())) { rt =>
+        f.action.provide(rt)
+      }
     }
+    case _ => ZIO.fail(new RuntimeError("Incompatible amount of arguments", None))
+  }
+
+  private def evalOperator(operator: Expression): Instruction[Callable] =
+    eval(operator).flatMap {
+      case v: Callable => ZIO.succeed(v)
+      case v           => ZIO.fail(new RuntimeError(s"Can't apply non procedure. ${v}", v.location))
+    }
+
+  private def evalLambda(
+    formals: Seq[Expression],
+    body: Seq[Expression],
+    location: Option[Location]
+  ): Instruction[Callable] =
+    for {
+      variables <- evalFormals(formals)
+    } yield {
+      Procedure(variables, eval(body).map(_.last), location)
+    }
+
+  private def evalFormals(formals: Seq[Expression]): Instruction[Seq[Value.Symbol]] =
+    ZIO.collectAll(formals.map {
+      case Variable(v) => ZIO.succeed(v)
+      case v           => ZIO.fail(new RuntimeError("Lambda formals must be symbols", v.location))
+    })
 
 }

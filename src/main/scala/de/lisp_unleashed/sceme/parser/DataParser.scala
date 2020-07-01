@@ -1,10 +1,8 @@
-package de.lisp_unleashed.sceme.reader
-import de.lisp_unleashed.sceme.Value
-import de.lisp_unleashed.sceme.parser.PositionTracking
+package de.lisp_unleashed.sceme.parser
+
+import de.lisp_unleashed.sceme.syntax.Value
 import org.parboiled2.CharPredicate.{ Digit, Digit19, HexDigit }
 import org.parboiled2._
-
-// https://people.csail.mit.edu/jaffer/r5rs_9.html
 
 /*
 At a very fundamental level we only need to be able to parse <Datum>.
@@ -64,19 +62,39 @@ trait Datum extends PositionTracking { this: Parser with Ignored with Tokens wit
   }
 
   def Quote = rule {
-    trackPos ~ atomic(ch('\'') ~ Datum) ~> ((pos, datum) => Value.Quote(datum, pos))
+    trackPos ~ atomic(ch('\'') ~ Datum) ~> (
+      (
+        pos,
+        datum
+      ) => Value.ProperList(List[Value](Value.Symbol("quote", pos), datum), pos)
+    )
   }
 
   def QuasiQuote = rule {
-    trackPos ~ atomic(ch('`') ~ Datum) ~> ((pos, datum) => Value.QuasiQuote(datum, pos))
+    trackPos ~ atomic(ch('`') ~ Datum) ~> (
+      (
+        pos,
+        datum
+      ) => Value.ProperList(List[Value](Value.Symbol("quasiquote", pos), datum), pos)
+    )
   }
 
   def Unquote = rule {
-    trackPos ~ atomic(ch(',') ~ Datum) ~> ((pos, datum) => Value.Unquote(datum, pos))
+    trackPos ~ atomic(ch(',') ~ Datum) ~> (
+      (
+        pos,
+        datum
+      ) => Value.ProperList(List[Value](Value.Symbol("unquote", pos), datum), pos)
+    )
   }
 
   def UnquoteSplicing = rule {
-    trackPos ~ atomic(str(",@") ~ Datum) ~> ((pos, datum) => Value.UnquoteSplicing(datum, pos))
+    trackPos ~ atomic(str(",@") ~ Datum) ~> (
+      (
+        pos,
+        datum
+      ) => Value.ProperList(List[Value](Value.Symbol("unquote-splicing", pos), datum), pos)
+    )
   }
 
   def VectorLiteral = rule {

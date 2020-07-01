@@ -1,6 +1,6 @@
 package de.lisp_unleashed.sceme.reader
 
-import de.lisp_unleashed.sceme.Value
+import de.lisp_unleashed.sceme.syntax.Value
 import org.specs2.mutable.Specification
 
 import scala.util.{ Success, Try }
@@ -65,7 +65,7 @@ class DefaultReaderSpec extends Specification {
 
     "symbol" >> {
       read(""" 'foo """) must beLike {
-        case Success(Value.Quote(Value.Symbol(v, _), _)) => v mustEqual "foo"
+        case Success(Value.ProperList(List(Value.Symbol("quote", _), Value.Symbol(v, _)), _)) => v mustEqual "foo"
       }
     }
 

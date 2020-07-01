@@ -1,5 +1,5 @@
-package de.lisp_unleashed.sceme
-import de.lisp_unleashed.sceme.Value.{ Procedure, Symbol }
+package de.lisp_unleashed.sceme.syntax
+
 import de.lisp_unleashed.sceme.parser.Location
 
 import scala.Predef.{ String => ScalaString }
@@ -22,17 +22,16 @@ object Value {
 
   sealed trait Compound extends Value
 
-  sealed trait Callable[F[_]] extends Value {
+  sealed trait Callable extends Value
+
+  trait ForeignLambda[F[_]] extends Callable with RuntimeValue {
+    override def location: Option[Location] = None
     def call(args: Seq[Value]): F[Value]
   }
 
-  trait ForeignFunction[F[_]] extends Callable[F] with RuntimeValue {
-    override def location: Option[Location] = None
-  }
-
-  object ForeignFunction {
-    def apply[F[_]](f: Seq[Value] => F[Value]): ForeignFunction[F] =
-      new ForeignFunction[F] {
+  object ForeignLambda {
+    def apply[F[_]](f: Seq[Value] => F[Value]): ForeignLambda[F] =
+      new ForeignLambda[F] {
         override def call(args: Seq[Value]): F[Value] = f(args)
       }
   }
@@ -75,27 +74,9 @@ object Value {
 
   case class Vector(value: ScalaVector[Value], location: Option[Location]) extends Compound with RuntimeValue
 
-  case class Procedure[F[_]](f: Seq[Value] => F[Value], location: Option[Location])
-      extends Callable[F]
-      with RuntimeValue {
-    override def call(args: Seq[Value]): F[Value] = f(args)
-  }
+  case class Procedure[F[_]](formals: Seq[Value.Symbol], action: F[Value], location: Option[Location])
+      extends Callable
+      with RuntimeValue
 
   case class MultipleValues(values: Seq[Value], location: Option[Location]) extends Value
-
-  case class Quote(value: Value, location: Option[Location]) extends Compound
-
-  case class QuasiQuote(value: Value, location: Option[Location]) extends Compound
-
-  case class Unquote(value: Value, location: Option[Location]) extends Compound
-
-  case class UnquoteSplicing(value: Value, location: Option[Location]) extends Compound
-}
-
-object ValueOps {
-  def symbol(str: ScalaString): Symbol =
-    Value.Symbol(str, None)
-
-  def lambda[F[_]](impl: Seq[Value] => F[Value]): Procedure[F] =
-    Procedure(impl, None)
 }

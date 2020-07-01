@@ -1,8 +1,11 @@
 package de.lisp_unleashed.sceme.reader
 import java.util.UUID
-import de.lisp_unleashed.sceme.parser.{ DefaultSourceMapper, SourceMapper }
-import de.lisp_unleashed.sceme.{ ReadError, Reader, Value }
+
+import de.lisp_unleashed.sceme.parser.{ DataParser, DefaultSourceMapper, SourceMapper, SyntaxError }
+import de.lisp_unleashed.sceme.syntax.Value
+import de.lisp_unleashed.sceme.{ ReadError, Reader }
 import org.parboiled2.{ ParseError, ParserInput }
+
 import scala.util.{ Failure, Success }
 
 class DefaultReader extends Reader {

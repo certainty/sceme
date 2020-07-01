@@ -1,14 +1,20 @@
 package de.lisp_unleashed.sceme
+import de.lisp_unleashed.sceme.Environment.Bindings
+import de.lisp_unleashed.sceme.syntax.Value
 
 trait Environment {
   def outer: Option[Environment]
   def set(symbol: Value.Symbol, datum: Value): Environment
   def find(symbol: Value.Symbol): Option[Environment]
   def get(symbol: Value.Symbol): Option[Value]
+  def extend(bindings: Bindings): Environment
 }
 
-case class DefaultEnvironment private (bindings: Map[Value.Symbol, Value], outer: Option[Environment])
-    extends Environment {
+object Environment {
+  type Bindings = Map[Value.Symbol, Value]
+}
+
+case class DefaultEnvironment private (bindings: Bindings, outer: Option[Environment]) extends Environment {
 
   override def set(symbol: Value.Symbol, datum: Value): Environment =
     copy(bindings = (bindings + (symbol -> datum)))
@@ -22,6 +28,9 @@ case class DefaultEnvironment private (bindings: Map[Value.Symbol, Value], outer
 
   override def get(symbol: Value.Symbol): Option[Value] =
     bindings.get(symbol).orElse(outer.flatMap(_.get(symbol)))
+
+  override def extend(bindings: Bindings): Environment =
+    new DefaultEnvironment(bindings, Some(this))
 }
 
 object DefaultEnvironment {
