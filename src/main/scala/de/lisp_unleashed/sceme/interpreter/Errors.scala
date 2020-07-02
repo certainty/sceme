@@ -20,9 +20,11 @@ class UnboundVariableError(sym: Value.Symbol)
     extends RuntimeError("UnboundVariable", s"${sym.value} is unbound", sym.location)
 
 class ArityError(expected: Int, actual: Int, location: Option[Location])
-    extends RuntimeError("ArityError",
-                         s"Invalid number of arguments. Expected ${expected} but got ${actual}.",
-                         location)
+    extends RuntimeError(
+      "ArityError",
+      s"Invalid number of arguments. Expected ${expected} but got ${actual}.",
+      location
+    )
 
 class ArgumentError(message: String, location: Option[Location])
     extends RuntimeError("ArgumentError", message, location)
