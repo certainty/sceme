@@ -1,6 +1,6 @@
 package de.lisp_unleashed.sceme.parser
 
-import de.lisp_unleashed.sceme.syntax.Value
+import de.lisp_unleashed.sceme.sexp.Value
 import org.parboiled2.CharPredicate.{ Digit, Digit19, HexDigit }
 import org.parboiled2._
 

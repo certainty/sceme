@@ -1,6 +1,6 @@
 package de.lisp_unleashed.sceme.printer
 import de.lisp_unleashed.sceme.Printer
-import de.lisp_unleashed.sceme.syntax.Value
+import de.lisp_unleashed.sceme.sexp.Value
 
 class DefaultPrinter(config: Configuration) extends Printer {
   override def print(datum: Value): String = {

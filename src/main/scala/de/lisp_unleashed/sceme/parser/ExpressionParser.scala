@@ -1,13 +1,13 @@
 package de.lisp_unleashed.sceme.parser
 import cats.implicits._
-import de.lisp_unleashed.sceme.syntax._
+import de.lisp_unleashed.sceme.sexp.Expression._
+import de.lisp_unleashed.sceme.sexp._
 import scala.util.Try
 
 class ParseError(message: String, val location: Option[Location]) extends Exception(message) {
   def fullMessage(sourceMapper: SourceMapper): String = {
     val loc = location.map(sourceMapper.renderLocation(_))
-    //val source = location.map(sourceMapper.renderLinePosition(_))
-    s"RuntimeError: $message ${loc.getOrElse("")}"
+    s"ParseError: $message ${loc.getOrElse("")}"
   }
 }
 
@@ -20,16 +20,18 @@ class ExpressionParser {
 
   private def unsafeParse(datum: Value): Expression =
     datum match {
-      case Value.ProperList(List(Value.Symbol("quote", _), quoted), _)       => Quote(quoted)
-      case Value.ProperList(List(Value.Symbol("quasiquote", _), quoted), _)  => unsafeParseQuasiQuote(quoted)
-      case Value.ProperList(Value.Symbol("lambda", _) :: formals :: body, _) => unsafeParseLambda(formals, body)
-      case v: Value.Symbol                                                   => Variable(v)
-      case v: Value.Boolean                                                  => Literal(v)
-      case v: Value.Number[_]                                                => Literal(v)
-      case v: Value.Char                                                     => Literal(v)
-      case v: Value.String                                                   => Literal(v)
-      case Value.ProperList(operator :: operands, _)                         => ProcedureCall(unsafeParse(operator), operands.map(unsafeParse))
-      case v                                                                 => throw new ParseError("Invalid expression", v.location)
+      case Value.ProperList(List(Value.Symbol("quote", _), quoted), _)      => Quote(quoted)
+      case Value.ProperList(List(Value.Symbol("quasiquote", _), quoted), _) => unsafeParseQuasiQuote(quoted)
+      case Value.ProperList(Value.Symbol("lambda", _) :: formals :: body, _) =>
+        unsafeParseLambda(formals, body.toVector)
+      case v: Value.Symbol    => Variable(v)
+      case v: Value.Boolean   => Literal(v)
+      case v: Value.Number[_] => Literal(v)
+      case v: Value.Char      => Literal(v)
+      case v: Value.String    => Literal(v)
+      case Value.ProperList(operator :: operands, _) =>
+        ProcedureCall(unsafeParse(operator), operands.map(unsafeParse).toVector)
+      case v => throw new ParseError("Invalid expression", v.location)
     }
 
   private def unsafeParseQuasiQuote(datum: Value): Expression =
@@ -42,13 +44,14 @@ class ExpressionParser {
         throw new ParseError("Invalid expression in quasiquote", v.location)
     }
 
-  private def unsafeParseLambda(formals: Value, body: List[Value]): Expression =
+  private def unsafeParseLambda(formals: Value, body: Vector[Value]): Expression =
     formals match {
-      case Value.ProperList(variables, pos) => Lambda(unsafeParseVariables(variables), body.map(unsafeParse), pos)
-      case v                                => throw new ParseError("Other forms of lambda expressions not yet supported", v.location)
+      case Value.ProperList(variables, pos) =>
+        Lambda(unsafeParseVariables(variables.toVector), body.map(unsafeParse), pos)
+      case v => throw new ParseError("Other forms of lambda expressions not yet supported", v.location)
     }
 
-  private def unsafeParseVariables(variables: List[Value]): List[Variable] =
+  private def unsafeParseVariables(variables: Vector[Value]): Vector[Variable] =
     variables.map { variable =>
       unsafeParse(variable) match {
         case v: Variable => v

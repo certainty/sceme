@@ -1,7 +1,7 @@
 package de.lisp_unleashed.sceme
 import de.lisp_unleashed.sceme.Reader.Result
 import de.lisp_unleashed.sceme.parser.SourceMapper
-import de.lisp_unleashed.sceme.syntax.Value
+import de.lisp_unleashed.sceme.sexp.Value
 
 import scala.util.Try
 

@@ -1,6 +1,7 @@
-package de.lisp_unleashed.sceme
-import de.lisp_unleashed.sceme.Environment.Bindings
-import de.lisp_unleashed.sceme.syntax.Value
+package de.lisp_unleashed.sceme.interpreter
+
+import de.lisp_unleashed.sceme.interpreter.Environment.Bindings
+import de.lisp_unleashed.sceme.sexp.Value
 
 trait Environment {
   def outer: Option[Environment]

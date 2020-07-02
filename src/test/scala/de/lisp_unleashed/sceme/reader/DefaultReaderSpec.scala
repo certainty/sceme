@@ -1,6 +1,6 @@
 package de.lisp_unleashed.sceme.reader
 
-import de.lisp_unleashed.sceme.syntax.Value
+import de.lisp_unleashed.sceme.sexp.Value
 import org.specs2.mutable.Specification
 
 import scala.util.{ Success, Try }

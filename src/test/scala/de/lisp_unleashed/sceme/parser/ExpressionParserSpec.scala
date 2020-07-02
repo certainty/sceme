@@ -1,7 +1,7 @@
 package de.lisp_unleashed.sceme.parser
-
 import de.lisp_unleashed.sceme.reader.DefaultReader
-import de.lisp_unleashed.sceme.syntax.{ Expression, Literal, Quote, Value }
+import de.lisp_unleashed.sceme.sexp.Expression._
+import de.lisp_unleashed.sceme.sexp.{ Expression, Value }
 import org.specs2.mutable.Specification
 
 import scala.util.{ Success, Try }
