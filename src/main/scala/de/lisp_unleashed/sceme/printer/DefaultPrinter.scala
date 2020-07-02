@@ -1,5 +1,6 @@
 package de.lisp_unleashed.sceme.printer
-import de.lisp_unleashed.sceme.{ Printer, Value }
+import de.lisp_unleashed.sceme.Printer
+import de.lisp_unleashed.sceme.sexp.Value
 
 class DefaultPrinter(config: Configuration) extends Printer {
   override def print(datum: Value): String = {
@@ -53,26 +54,11 @@ class DefaultPrinter(config: Configuration) extends Printer {
       ellipsis(v, config.maxCollectionElements, builder)
       builder.append(")")
 
-    case Value.Quote(value, _) =>
-      print(value, builder)
-
-    case Value.QuasiQuote(value, _) =>
-      builder.append('`')
-      print(value, builder)
-
-    case Value.Unquote(value, _) =>
-      builder.append(',')
-      print(value, builder)
-
-    case Value.UnquoteSplicing(value, _) =>
-      builder.append(",@")
-      print(value, builder)
-
     case Value.Void(_) => builder.appendAll("#<void>")
 
-    case Value.Procedure(_, _) => builder.appendAll("#<procedure>")
+    case Value.Procedure(_, _, _) => builder.appendAll("#<procedure>")
 
-    case _: Value.ForeignFunction[_] => builder.appendAll("#<procedure>")
+    case _: Value.ForeignLambda[_] => builder.appendAll("#<procedure>")
 
     case Value.MultipleValues(values, _) => {
       values.foreach { v =>

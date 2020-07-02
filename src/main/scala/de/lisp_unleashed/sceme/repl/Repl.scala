@@ -1,5 +1,5 @@
 package de.lisp_unleashed.sceme.repl
-import de.lisp_unleashed.sceme.interpreter.in_zio.Prelude
+import de.lisp_unleashed.sceme.interpreter.zio_interpreter.Prelude
 
 trait Repl[T] {
   def run(): T
