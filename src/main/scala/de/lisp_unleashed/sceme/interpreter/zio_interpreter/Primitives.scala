@@ -1,11 +1,11 @@
 package de.lisp_unleashed.sceme.interpreter.zio_interpreter
 import de.lisp_unleashed.sceme.interpreter.{ ArgumentError, DefaultEnvironment }
-import de.lisp_unleashed.sceme.interpreter.zio_interpreter.Prelude.Types.{ FxPlus, TypeOf }
+import de.lisp_unleashed.sceme.interpreter.zio_interpreter.Primitives.Types.{ FxPlus, TypeOf }
 import de.lisp_unleashed.sceme.sexp.Value
 import de.lisp_unleashed.sceme.sexp.Value.{ Fixnum, ForeignLambda }
 import zio.ZIO
 
-object Prelude {
+object Primitives {
 
   object Types {
     def typeOf(v: Value): String = v match {
@@ -36,7 +36,7 @@ object Prelude {
 
         args.foreach {
           case Fixnum(v, _) => result += v
-          case _            => throw new ArgumentError("Expected #<fixnum> but got #{v}", None)
+          case _            => throw new ArgumentError("Expected #<fixnum> but got #{v}", None, None)
         }
 
         ZIO.succeed(Value.apply(result))

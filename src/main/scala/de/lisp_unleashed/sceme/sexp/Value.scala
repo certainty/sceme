@@ -58,6 +58,7 @@ object Value {
 
   case class Vector(value: scala.Vector[Value], location: Option[Location]) extends Compound
 
+  // TODO: this should really be a closure
   case class Procedure[F[_]](formals: Seq[Value.Symbol], action: F[Value], location: Option[Location]) extends Callable
 
   case class MultipleValues(values: Seq[Value], location: Option[Location]) extends Value

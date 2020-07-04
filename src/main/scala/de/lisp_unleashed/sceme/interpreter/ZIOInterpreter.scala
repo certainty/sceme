@@ -1,42 +1,53 @@
 package de.lisp_unleashed.sceme.interpreter
-
-import de.lisp_unleashed.sceme.interpreter.zio_interpreter.{ Op, Program }
-import de.lisp_unleashed.sceme.parser.Location
+import de.lisp_unleashed.sceme.interpreter.zio_interpreter.Op
+import de.lisp_unleashed.sceme.parser.{ Location, SourceMapper }
+import de.lisp_unleashed.sceme.printer.{ Configuration, DefaultPrinter }
 import de.lisp_unleashed.sceme.sexp.Expression._
 import de.lisp_unleashed.sceme.sexp.Value.{ Callable, Procedure }
 import de.lisp_unleashed.sceme.sexp._
-import de.lisp_unleashed.sceme.{ Interpreter, Printer }
+import de.lisp_unleashed.sceme.{ Parser, Printer }
 import zio.ZIO
 
-class ZIOInterpreter(printer: Printer) extends Interpreter[Program] {
-  override def interpret(data: Seq[Expression]): Program = eval(data).map(_.last)
-
-  private def eval(data: Seq[Expression]): Op[Seq[Value]] = ZIO.collectAll(data.map(eval))
-
+/**
+ * This is the most simple of the execution schemes, the direct interpretation.
+ * The interpreter executes the expression tree as it's read. Technically
+ * it transforms it into ZIO actions but hat that's really a detail.
+ * We could also have just directly translated to imperative scala.
+ */
+class ZIOInterpreter(printer: Printer, sourceMapper: Option[SourceMapper]) {
   private def eval(datum: Expression): Op[Value] =
     datum match {
       case Literal(v)                        => opValue(v)
       case Variable(v)                       => opReference(v)
       case ProcedureCall(operator, operands) => opApply(operator, operands)
       case Lambda(formals, body, loc)        => obLambda(formals, body, loc)
-      case Quote(v)                          => opValue(v)
-      case e                                 => ZIO.fail(new RuntimeError("Unsupported Expression", s"Expression ${e} not yet supported", e.location))
+      case Quote(v, _)                       => opValue(v)
+      case Begin(exprs, _)                   => opSequence(exprs)
+
+      case e => opError("UnsupportedExpr", s"The expression ${e} is not yet supported", e.location)
     }
 
   @inline private def opValue[T](t: T): Op[T] = ZIO.succeed(t)
 
+  @inline private def opError[T](kind: String, message: String, location: Option[Location]): Op[T] =
+    ZIO.fail(new RuntimeError(kind, message, location, sourceMapper))
+
+  @inline private def opError[T](runtimeError: RuntimeError): Op[T] = ZIO.fail(runtimeError)
+
+  @inline private def opSequence(exprs: Seq[Expression]): Op[Value] = ZIO.collectAll(exprs.map(eval)).map(_.last)
+
   private def opReference(sym: Value.Symbol): Op[Value] =
     ZIO.accessM[Context] { runtime =>
       runtime.currentEnvironment.get(sym) match {
-        case Some(v) => ZIO.succeed(v)
-        case None    => ZIO.fail(new UnboundVariableError(sym))
+        case Some(v) => opValue(v)
+        case None    => opError(new UnboundVariableError(sym, sourceMapper))
       }
     }
 
   private def opApply(operator: Expression, operands: Vector[Expression]): Op[Value] =
     for {
       proc   <- evalOperator(operator)
-      args   <- eval(operands)
+      args   <- evalArguments(operands)
       result <- applyCallable(proc, args)
     } yield result
 
@@ -44,10 +55,16 @@ class ZIOInterpreter(printer: Printer) extends Interpreter[Program] {
     eval(operator).flatMap {
       case v: Callable => opValue(v)
       case v =>
-        ZIO.fail(
-          new ArgumentError(s"Expected #<procedure> in operator position but got ${printer.print(v)}", v.location)
+        opError(
+          new ArgumentError(
+            s"Expected #<procedure> in operator position but got ${printer.print(v)}",
+            v.location,
+            sourceMapper
+          )
         )
     }
+
+  private def evalArguments(data: Seq[Expression]): Op[Seq[Value]] = ZIO.collectAll(data.map(eval))
 
   private def applyCallable(callable: Value.Callable, args: Seq[Value]): Op[Value] = callable match {
     case f: Value.ForeignLambda[Op] @unchecked => f.call(args)
@@ -57,7 +74,8 @@ class ZIOInterpreter(printer: Printer) extends Interpreter[Program] {
         f.action.provide(ctx)
       }
     case f: Value.Procedure[Op] @unchecked =>
-      ZIO.fail(new ArityError(f.formals.size, args.size, f.location))
+      opError(new ArityError(f.formals.size, args.size, f.location, sourceMapper))
+
   }
 
   private def obLambda(
@@ -65,6 +83,17 @@ class ZIOInterpreter(printer: Printer) extends Interpreter[Program] {
     body: Seq[Expression],
     location: Option[Location]
   ): Op[Callable] =
-    opValue(Procedure(formals.map(_.name), eval(body).map(_.last), location))
+    opValue(Procedure(formals.map(_.name), eval(Begin(body, None)), location))
 
+}
+
+object ZIOInterpreter {
+  private val parser  = Parser.default
+  private val printer = new DefaultPrinter(Configuration.default)
+
+  def interpret[T](source: String, sourceId: String, context: Context): ZIO[T, Throwable, Value] =
+    for {
+      (exprs, sm) <- ZIO.fromTry(parser.parse(source, sourceId))
+      result      <- new ZIOInterpreter(printer, Some(sm)).eval(exprs).provide(context)
+    } yield result
 }

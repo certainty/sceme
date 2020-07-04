@@ -20,13 +20,9 @@ The AST for that will be walked and turned into values in a later phase.
 <vector> --> #(<datum>*)
  */
 
-trait Program { this: Parser with Datum with Ignored =>
-  def Program = rule {
-    Ignored.* ~ trackPos ~ Datum.+ ~ Ignored.* ~ EOI ~> ((_, p) => p.toVector)
-  }
-}
-
 trait Datum extends PositionTracking { this: Parser with Ignored with Tokens with Numbers with Strings =>
+  def Program = rule { Ignored.* ~ trackPos ~ Datum.+ ~ Ignored.* ~ EOI ~> ((_, p) => p.toVector) }
+
   def Datum: Rule1[Value] = rule { Ignored.* ~ SimpleDatum | CompoundDatum }
 
   def SimpleDatum = rule { BoolLiteral | NumberLiteral | CharacterLiteral | StringLiteral | SymbolLiteral }
@@ -217,7 +213,6 @@ class DataParser(val input: ParserInput, val sourceId: String)
     with Numbers
     with Strings
     with Tokens
-    with Datum
-    with Program {
+    with Datum {
   override def parseLocations: Boolean = true
 }

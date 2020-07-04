@@ -1,11 +1,9 @@
 package de.lisp_unleashed.sceme.interpreter
-import de.lisp_unleashed.sceme.Parser
-import de.lisp_unleashed.sceme.interpreter.zio_interpreter.Prelude
+import de.lisp_unleashed.sceme.interpreter.zio_interpreter.Primitives
 import de.lisp_unleashed.sceme.printer.{ Configuration, DefaultPrinter }
-import de.lisp_unleashed.sceme.reader.DefaultReader
 import org.specs2.mutable.Specification
-import zio.ZIO
 import zio._
+
 import scala.util.Try
 
 class ZIOIntepreterSpec extends Specification {
@@ -28,16 +26,13 @@ class ZIOIntepreterSpec extends Specification {
   }
 
   private def interpret(p: String) = {
-    val output = for {
-      (ast, _) <- ZIO.fromTry(parser.parse(p, "test"))
-      result   <- interpreter.interpret(Seq(ast))
+    val program = for {
+      result <- ZIOInterpreter.interpret(p, "test", new Context(Primitives.env))
     } yield printer.print(result)
 
-    Try(runtime.unsafeRun(output.provide(new Context(Prelude.env))))
+    Try(runtime.unsafeRun(program))
   }
 
-  private val printer     = new DefaultPrinter(Configuration.default)
-  private val interpreter = new ZIOInterpreter(printer)
-  private val parser      = new Parser(new DefaultReader)
-  private val runtime     = Runtime.default
+  private val printer = new DefaultPrinter(Configuration.default)
+  private val runtime = Runtime.default
 }

@@ -93,6 +93,5 @@ class DefaultReaderSpec extends Specification {
     }
   }
 
-  private def read(input: String): Try[Value] =
-    reader.tryRead(input, "tests").map(_._1)
+  private def read(input: String): Try[Value] = reader.read(input, "tests").map(_._1)
 }
