@@ -26,7 +26,10 @@ class SimpleRepl extends Repl[ZIO[Console, Throwable, Unit]] {
     } yield value
 
   private val loop: ZIO[Console, Throwable, Unit] =
-    (read >>= eval >>= print).catchAll(handleErrors)
+    for {
+      exprs  <- read
+      result <- (eval(exprs) >>= print).catchAll(handleErrors)
+    } yield result
 
   private def print(datum: Value): ZIO[Console, Throwable, Unit] =
     console.putStrLn(printer.print(datum))

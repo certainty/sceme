@@ -44,8 +44,10 @@ class DefaultPrinterSpec extends Specification {
 
       "improper" >> {
         val ls = Value.ImproperList(
-          (List(Value.Boolean(true, None), Value.Boolean(false, None), Value.String("the string comes here", None)),
-           Value.Boolean(true, None)),
+          (
+            List(Value.Boolean(true, None), Value.Boolean(false, None), Value.String("the string comes here", None)),
+            Value.Boolean(true, None)
+          ),
           None
         )
 

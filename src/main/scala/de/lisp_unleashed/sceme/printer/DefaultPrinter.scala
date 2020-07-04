@@ -58,7 +58,7 @@ class DefaultPrinter(config: Configuration) extends Printer {
 
     case Value.Procedure(_, _, _) => builder.appendAll("#<procedure>")
 
-    case _: Value.ForeignLambda[_] => builder.appendAll("#<procedure>")
+    case _: Value.ForeignLambda => builder.appendAll("#<procedure>")
 
     case Value.MultipleValues(values, _) => {
       values.foreach { v =>

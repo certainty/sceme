@@ -21,10 +21,6 @@ object Expression {
 
   case class Quote(value: Value, location: Option[Location]) extends Expression
 
-  case class UnquoteSplicing(value: Expression) extends Expression {
-    val location: Option[Location] = value.location
-  }
-
   case class ProcedureCall(operator: Expression, operands: Vector[Expression]) extends Expression {
     val location: Option[Location] = operator.location
   }
@@ -39,7 +35,7 @@ object Expression {
   case class CallCC(body: Expression, location: Option[Location]) extends Expression
 
   /**
-   * Extensions
+   * Syntactic extensions
    */
   case class QuasiQuote(value: Value) extends Expression {
     val location: Option[Location] = value.location
@@ -48,5 +44,9 @@ object Expression {
   case class Unquote(value: Expression, location: Option[Location]) extends Expression
 
   case class Begin(seq: Seq[Expression], location: Option[Location]) extends Expression
+
+  case class UnquoteSplicing(value: Expression) extends Expression {
+    val location: Option[Location] = value.location
+  }
 
 }
