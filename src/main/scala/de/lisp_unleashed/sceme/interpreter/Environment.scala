@@ -3,6 +3,8 @@ package de.lisp_unleashed.sceme.interpreter
 import de.lisp_unleashed.sceme.interpreter.Environment.Bindings
 import de.lisp_unleashed.sceme.sexp.Value
 
+import scala.collection.mutable
+
 trait Environment {
   def outer: Option[Environment]
   def set(symbol: Value.Symbol, datum: Value): Environment
@@ -15,29 +17,42 @@ object Environment {
   type Bindings = Map[Value.Symbol, Value]
 }
 
-case class DefaultEnvironment private (bindings: Bindings, outer: Option[Environment]) extends Environment {
+case class DefaultEnvironment private (outer: Option[Environment]) extends Environment {
+  private val env: mutable.Map[Value.Symbol, Value] = mutable.Map.empty
 
-  override def set(symbol: Value.Symbol, datum: Value): Environment =
-    copy(bindings = (bindings + (symbol -> datum)))
+  override def set(symbol: Value.Symbol, datum: Value): Environment = {
+    env.update(symbol, datum)
+    this
+  }
 
   override def find(symbol: Value.Symbol): Option[Environment] =
-    if (bindings.contains(symbol)) {
+    if (env.contains(symbol)) {
       Some(this)
     } else {
       outer.flatMap(_.find(symbol))
     }
 
   override def get(symbol: Value.Symbol): Option[Value] =
-    bindings.get(symbol).orElse(outer.flatMap(_.get(symbol)))
+    env.get(symbol).orElse(outer.flatMap(_.get(symbol)))
 
   override def extend(bindings: Bindings): Environment =
-    new DefaultEnvironment(bindings, Some(this))
+    DefaultEnvironment(bindings, this)
 }
 
 object DefaultEnvironment {
-  def apply(bindings: Map[Value.Symbol, Value]): DefaultEnvironment =
-    DefaultEnvironment(bindings, None)
+  def apply(bindings: Map[Value.Symbol, Value]): DefaultEnvironment = {
+    val env = new DefaultEnvironment(None)
+    bindings.foreach {
+      case (x, y) => env.set(x, y)
+    }
+    env
+  }
 
-  def apply(bindings: Map[Value.Symbol, Value], outer: Environment): DefaultEnvironment =
-    DefaultEnvironment(bindings, Some(outer))
+  def apply(bindings: Map[Value.Symbol, Value], outer: Environment): DefaultEnvironment = {
+    val env = new DefaultEnvironment(Some(outer))
+    bindings.foreach {
+      case (x, y) => env.set(x, y)
+    }
+    env
+  }
 }

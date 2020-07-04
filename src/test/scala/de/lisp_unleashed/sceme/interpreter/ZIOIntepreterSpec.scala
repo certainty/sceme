@@ -25,6 +25,11 @@ class ZIOIntepreterSpec extends Specification {
     interpret(program) must beSuccessfulTry("Procedure")
   }
 
+  "conditionals" >> {
+    interpret("(if #t 1 2)") must beSuccessfulTry("1")
+    interpret("(if #f 1 2)") must beSuccessfulTry("2")
+  }
+
   private def interpret(p: String) = {
     val program = for {
       result <- ZIOInterpreter.interpret(p, "test", new Context(Primitives.env))

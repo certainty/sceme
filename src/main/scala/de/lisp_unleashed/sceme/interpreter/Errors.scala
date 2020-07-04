@@ -10,7 +10,7 @@ class RuntimeError(errorType: String, message: String, location: Option[Location
 
     s"""${errorType}: $message at ${locInfo.getOrElse("")}
        |
-       |${source}
+       |${source.getOrElse("")}
        |""".stripMargin
   }
 }

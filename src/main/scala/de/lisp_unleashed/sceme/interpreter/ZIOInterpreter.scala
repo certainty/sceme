@@ -17,14 +17,15 @@ import zio.ZIO
 class ZIOInterpreter(printer: Printer, sourceMapper: Option[SourceMapper]) {
   private def eval(datum: Expression): Op[Value] =
     datum match {
-      case Literal(v)                        => opValue(v)
-      case Variable(v)                       => opReference(v)
-      case ProcedureCall(operator, operands) => opApply(operator, operands)
-      case Lambda(formals, body, loc)        => obLambda(formals, body, loc)
-      case Quote(v, _)                       => opValue(v)
-      case Begin(exprs, _)                   => opSequence(exprs)
-
-      case e => opError("UnsupportedExpr", s"The expression ${e} is not yet supported", e.location)
+      case Literal(v)                           => opValue(v)
+      case Variable(v)                          => opReference(v)
+      case ProcedureCall(operator, operands)    => opApply(operator, operands)
+      case Lambda(formals, body, loc)           => obLambda(formals, body, loc)
+      case Quote(v, _)                          => opValue(v)
+      case Begin(exprs, _)                      => opSequence(exprs)
+      case If(test, consequent, alternative, _) => opIf(test, consequent, alternative)
+      case Set(Variable(sym), value, _)         => opSet(sym, value)
+      case e                                    => opError("UnsupportedExpr", s"The expression ${e} is not yet supported", e.location)
     }
 
   @inline private def opValue[T](t: T): Op[T] = ZIO.succeed(t)
@@ -42,6 +43,24 @@ class ZIOInterpreter(printer: Printer, sourceMapper: Option[SourceMapper]) {
         case Some(v) => opValue(v)
         case None    => opError(new UnboundVariableError(sym, sourceMapper))
       }
+    }
+
+  private def opSet(variable: Value.Symbol, expr: Expression): Op[Value] =
+    ZIO.accessM[Context] { ctx =>
+      val env = ctx.currentEnvironment.find(variable).getOrElse(ctx.currentEnvironment)
+
+      for {
+        value <- eval(expr)
+      } yield {
+        env.set(variable, value)
+        value
+      }
+    }
+
+  private def opIf(test: Expression, consequent: Expression, alternative: Expression): Op[Value] =
+    eval(test).flatMap {
+      case Value.Boolean(false, _) => eval(alternative)
+      case _                       => eval(consequent)
     }
 
   private def opApply(operator: Expression, operands: Vector[Expression]): Op[Value] =
