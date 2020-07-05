@@ -230,7 +230,7 @@ object Value {
 
     override def equals(o: Any): scala.Boolean = false
 
-    override val hashCode: Int = Objects.hash(formals, action)
+    override val hashCode: Int = Objects.hash(formals, location)
   }
 
   object Procedure {

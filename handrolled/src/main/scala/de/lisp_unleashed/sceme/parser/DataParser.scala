@@ -192,7 +192,8 @@ trait Numbers { this: Parser with Ignored =>
   def Digit = rule { ch('0') | NonZeroDigit }
 }
 
-case class SyntaxError(parser: Parser, input: ParserInput, originalError: ParseError) extends Exception(originalError) {
+case class SyntaxError(parser: Parser, input: ParserInput, originalError: org.parboiled2.ParseError)
+    extends Exception(originalError) {
   lazy val formattedError: String = formattedError()
 
   def formattedError(showPosition: Boolean = true): String =

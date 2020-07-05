@@ -1,38 +1,35 @@
-lazy val settings = commonSettings ++ scalafmtSettings ++ commandAliases
-
-lazy val commonSettings =
-  Seq(
-    name := "Sceme",
-    scalaVersion := "2.13.2",
-    organization := "de.lisp-unleashed"
-  )
-
-lazy val scalafmtSettings = Seq(
-    scalafmtOnCompile := true
- )
-
-lazy val commandAliases =
-  addCommandAlias("fmt", "all scalafmtSbt scalafmt test:scalafmt") ++
-    addCommandAlias("check", "all scalafmtSbtCheck scalafmtCheck test:scalafmtCheck")
 
 lazy val root =
   project
-    .in(file("."))
-    .settings(settings)
+  .in(file("."))
+  .settings(commonSettings)
+  .aggregate(handRolled, graal)
+
+lazy val graal =
+  project
+    .in(file("graal"))
     .settings(
-      libraryDependencies ++= Seq(
-        library.zio,
-        library.parboiled,
-        library.clipp,
-        library.zioTest    % Test,
-        library.zioTestSbt % Test,
-        library.specs2  % Test
+     name := "sceme_graal"
+    ).enablePlugins(GraalVMNativeImagePlugin, DockerPlugin)
+
+lazy val handRolled =
+  project
+    .in(file("handrolled"))
+    .settings(
+      name := "sceme_handrolled",
+      libraryDependencies ++= commonDependencies ++ Seq(
+        Dependencies.zio,
+        Dependencies.parboiled,
+        Dependencies.clipp,
+        Dependencies.zioTest    % Test,
+        Dependencies.zioTestSbt % Test,
+        Dependencies.specs2  % Test
       ),
       publishArtifact := false,
       testFrameworks += new TestFramework("zio.test.sbt.ZTestFramework")
-    )
+    ).enablePlugins(DockerPlugin)
 
-lazy val library =
+lazy val Dependencies =
   new {
     object Version {
       val zio = "1.0.0-RC20"
@@ -49,4 +46,18 @@ lazy val library =
     val specs2     = "org.specs2" %% "specs2-core" % Version.specs2
   }
 
+lazy val commonDependencies = Seq(Dependencies.specs2 % "test")
 
+lazy val scalafmtSettings = Seq(
+  scalafmtOnCompile := true
+)
+
+lazy val commonSettings = scalafmtSettings ++ commandAliases ++
+  Seq(
+    scalaVersion := "2.13.2",
+    organization := "de.lisp-unleashed"
+  )
+
+lazy val commandAliases =
+  addCommandAlias("fmt", "all scalafmtSbt scalafmt test:scalafmt") ++
+    addCommandAlias("check", "all scalafmtSbtCheck scalafmtCheck test:scalafmtCheck")

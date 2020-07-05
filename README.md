@@ -6,7 +6,7 @@ Just another toy project of mine. Nothing to see here.
 If you want to try it anyways, well then just run the following to get into the REPL:
 
 ```
-sbt run
+sbt 'handRolled/run'
 ```
 
 ## Running tests
