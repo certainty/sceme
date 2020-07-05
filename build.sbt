@@ -1,15 +1,21 @@
+import sbt.Keys.libraryDependencies
 
 lazy val root =
   project
   .in(file("."))
   .settings(commonSettings)
-  .aggregate(handRolled, graal)
+  .aggregate(handRolled, graalSceme)
 
-lazy val graal =
+lazy val graalSceme =
   project
     .in(file("graal"))
     .settings(
-     name := "sceme_graal"
+     name := "sceme_graal",
+     libraryDependencies ++= commonDependencies ++ Seq(
+       Dependencies.truffleApi,
+       Dependencies.truffleDSL,
+       Dependencies.graalSDK
+     )
     ).enablePlugins(GraalVMNativeImagePlugin, DockerPlugin)
 
 lazy val handRolled =
@@ -36,6 +42,7 @@ lazy val Dependencies =
       val specs2 = "4.10.0"
       val parboiled =  "2.1.8"
       val clipp = "0.3.1"
+      val graalVm = "1.0.0-rc7"
     }
 
     val zio        = "dev.zio" %% "zio"          % Version.zio
@@ -44,6 +51,12 @@ lazy val Dependencies =
     val parboiled  = "org.parboiled" %% "parboiled" % Version.parboiled
     val clipp      = "io.github.vigoo" %% "clipp-zio" % Version.clipp
     val specs2     = "org.specs2" %% "specs2-core" % Version.specs2
+
+    // truffle
+    val truffleApi = "com.oracle.truffle" % "truffle-api" % Version.graalVm
+    val truffleDSL = "com.oracle.truffle" % "truffle-dsl-processor" % Version.graalVm
+    val truffleTCK = "com.oracle.truffle" % "truffle-tck" % Version.graalVm
+    val graalSDK  = "org.graalvm" % "graal-sdk" % Version.graalVm
   }
 
 lazy val commonDependencies = Seq(Dependencies.specs2 % "test")
