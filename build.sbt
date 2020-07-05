@@ -14,7 +14,8 @@ lazy val graalSceme =
      libraryDependencies ++= commonDependencies ++ Seq(
        Dependencies.truffleApi,
        Dependencies.truffleDSL,
-       Dependencies.graalSDK
+       Dependencies.graalSDK,
+       Dependencies.antlr4
      )
     ).enablePlugins(GraalVMNativeImagePlugin, DockerPlugin)
 
@@ -43,6 +44,7 @@ lazy val Dependencies =
       val parboiled =  "2.1.8"
       val clipp = "0.3.1"
       val graalVm = "1.0.0-rc7"
+      val antrl4 = "4.8"
     }
 
     val zio        = "dev.zio" %% "zio"          % Version.zio
@@ -57,6 +59,9 @@ lazy val Dependencies =
     val truffleDSL = "com.oracle.truffle" % "truffle-dsl-processor" % Version.graalVm
     val truffleTCK = "com.oracle.truffle" % "truffle-tck" % Version.graalVm
     val graalSDK  = "org.graalvm" % "graal-sdk" % Version.graalVm
+
+    // antlr4
+    val antlr4 = "org.antlr" % "antlr4-runtime" % Version.antrl4
   }
 
 lazy val commonDependencies = Seq(Dependencies.specs2 % "test")
