@@ -1,4 +1,4 @@
-// Generated from main/antlr/Sceme.g4 by ANTLR 4.8
+// Generated from src/main/antlr/Sceme.g4 by ANTLR 4.8
 package de.lisp_unleashed.parser;
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;

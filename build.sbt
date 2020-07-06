@@ -4,26 +4,24 @@ lazy val root =
   project
   .in(file("."))
   .settings(commonSettings)
-  .aggregate(handRolled, graalSceme)
+  .aggregate(handrolled, graal)
 
-lazy val graalSceme =
+lazy val graal =
   project
-    .in(file("graal"))
     .settings(
-     name := "sceme_graal",
      libraryDependencies ++= commonDependencies ++ Seq(
        Dependencies.truffleApi,
-       Dependencies.truffleDSL,
+       //Dependencies.truffleDSL,
+       Dependencies.truffleTCK,
        Dependencies.graalSDK,
+
        Dependencies.antlr4
      )
-    ).enablePlugins(GraalVMNativeImagePlugin, DockerPlugin)
+    ).enablePlugins(DockerPlugin)
 
-lazy val handRolled =
+lazy val handrolled =
   project
-    .in(file("handrolled"))
     .settings(
-      name := "sceme_handrolled",
       libraryDependencies ++= commonDependencies ++ Seq(
         Dependencies.zio,
         Dependencies.parboiled,
