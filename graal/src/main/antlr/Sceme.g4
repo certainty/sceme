@@ -11,7 +11,7 @@ simple_datum
     : BOOLEAN
     | NUMBER
     | CHARACTER
-//    | string
+    | STRING
 //    | symbol
 //    | bytevctor
     ;
@@ -34,6 +34,17 @@ fragment CHARACTER_NAME
     : 'alarm' | 'backspace' | 'delete' | 'escape' | 'newline' | 'null' | 'return' | 'space' | 'tab';
 
 fragment ANY_CHARACTER_VALUE: [\u0000-\uFFFE];
+
+STRING: '"' STRING_ELEMENT* '"';
+
+fragment STRING_ELEMENT
+    : ~[\\"]
+    | MNEMONIC_ESCAPE
+    | '\\"'
+    | '\\\\'
+    | '\\' INTRALINE_WS* LINE_ENDING INTRALINE_WS*
+    | INLINE_HEX_ESCAPE
+    ;
 
 // Numbers
 NUMBER
