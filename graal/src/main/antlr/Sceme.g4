@@ -4,7 +4,9 @@ grammar Sceme;
 
 datum
     : simple_datum
-    //| compound_datum
+    | compound_datum
+    | label '=' datum
+    | label '#'
     ;
 
 simple_datum
@@ -12,10 +14,31 @@ simple_datum
     | NUMBER
     | CHARACTER
     | STRING
-//    | symbol
-//    | bytevctor
+    | SYMBOL
+    | BYTEVECTOR
     ;
 
+compound_datum
+    : list
+    | vector
+    | abbreviation;
+
+list
+    : '(' datum* ')'
+    | '(' datum+ '.' datum ')'
+    ;
+
+vector
+    : '#(' datum* ')'
+    ;
+
+abbreviation
+    : abbrev_prefix datum
+    ;
+
+abbrev_prefix: '\'' | '`' | ',' | ',@';
+
+label: '#' UINTEGER_10;
 
 // Lexer
 
@@ -45,6 +68,11 @@ fragment STRING_ELEMENT
     | '\\' INTRALINE_WS* LINE_ENDING INTRALINE_WS*
     | INLINE_HEX_ESCAPE
     ;
+
+BYTEVECTOR: '#u8' '(' BYTE ')';
+fragment BYTE: [0-2]? [0-5]? [0-5];
+
+SYMBOL: IDENTIFIER;
 
 // Numbers
 NUMBER
@@ -258,7 +286,9 @@ fragment SIGN_SUBSEQUENT
     | '@'
     ;
 
-fragment LINE_COMMENT: ';' ~[rn]*;
+LINE_COMMENT: (';' ~[\r\n]*) -> skip;
+WS: WHITESPACE -> channel(HIDDEN);
+
 fragment DIRECTIVE
     : '#!fold-case'
     | '#!no-fold-case';
@@ -279,3 +309,4 @@ fragment HEX_SCALAR_VALUE: HEXDIGIT+;
 fragment INLINE_HEX_ESCAPE: '\\x' HEX_SCALAR_VALUE;
 fragment MNEMONIC_ESCAPE: '\\' ('a' | 'b' | 't' | 'n' | 'r');
 fragment VERTICAL_LINE: '|';
+
