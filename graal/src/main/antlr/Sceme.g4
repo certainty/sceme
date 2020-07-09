@@ -2,9 +2,52 @@
 
 grammar Sceme;
 
+expression
+    : identifier
+    | literal
+    | conditional
+    | procedure_call
+    | lambda_expression
+    | assignment
+//    | derived_expression
+//    | macro_use
+//    | macro_block
+//    | includer
+    ;
+
+identifier: symbol;
+
+literal: quotation | self_evaluating;
+self_evaluating: BOOLEAN | NUMBER | vector | CHARACTER | STRING | BYTEVECTOR;
+quotation: '\'' datum | L_PAREN 'quote' datum R_PAREN;
+
+procedure_call: L_PAREN operator operand* R_PAREN;
+operator: expression;
+operand: expression;
+
+lambda_expression : L_PAREN 'lambda' formals body R_PAREN;
+formals
+    : L_PAREN identifier* R_PAREN
+    | L_PAREN identifier+ '.' identifier  R_PAREN
+    | IDENTIFIER
+    ;
+// TODO: make full body definition once we have the program rule
+//body: definition* sequence;
+body: sequence;
+sequence: command* expression;
+command: expression;
+
+conditional: L_PAREN 'if' test consequent alternate R_PAREN;
+test: expression;
+consequent: expression;
+alternate: expression;
+
+assignment: L_PAREN 'set!' identifier expression R_PAREN;
+
+// Datum
 datum
-    : simple_datum
-    | compound_datum
+    : compound_datum
+    | simple_datum
     | label '=' datum
     | label '#'
     ;
@@ -40,7 +83,14 @@ abbrev_prefix: '\'' | '`' | ',' | ',@';
 
 label: '#' UINTEGER_10;
 
+symbol: IDENTIFIER;
+
 // Lexer
+
+SYMBOL: IDENTIFIER;
+
+L_PAREN: '(';
+R_PAREN: ')';
 
 BOOLEAN: BOOL_TRUE | BOOL_FALSE;
 fragment BOOL_TRUE: '#t' | '#true';
@@ -72,7 +122,6 @@ fragment STRING_ELEMENT
 BYTEVECTOR: '#u8' '(' BYTE ')';
 fragment BYTE: [0-2]? [0-5]? [0-5];
 
-SYMBOL: IDENTIFIER;
 
 // Numbers
 NUMBER
@@ -194,7 +243,7 @@ fragment UREAL_10
     | DECIMAL_10
     ;
 
-fragment UINTEGER_10: DIGIT_10+;
+UINTEGER_10: DIGIT_10+;
 
 fragment DECIMAL_10
     : UINTEGER_10 SUFFIX
@@ -259,7 +308,11 @@ fragment DIGIT_16: DIGIT_10 [a-f];
 
 // End Numbers
 
-IDENTIFIER: INITIAL SUBSEQUENT* | VERTICAL_LINE SYMBOL_ELEMENT* VERTICAL_LINE | PECULIAR_IDENTIFIER;
+IDENTIFIER
+    : INITIAL SUBSEQUENT*
+    | VERTICAL_LINE SYMBOL_ELEMENT* VERTICAL_LINE
+    | PECULIAR_IDENTIFIER
+    ;
 
 fragment SYMBOL_ELEMENT: INLINE_HEX_ESCAPE | MNEMONIC_ESCAPE | ~[|\\];
 fragment INITIAL: LETTER | SPECIAL_INITIAL;
