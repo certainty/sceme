@@ -64,9 +64,8 @@ formals
     | L_PAREN identifier+ '.' identifier  R_PAREN
     | IDENTIFIER
     ;
-// TODO: make full body definition once we have the program rule
-//body: definition* sequence;
-body: sequence;
+
+body: definition* sequence;
 sequence: command* expression;
 
 conditional: L_PAREN 'if' test consequent alternate R_PAREN;
@@ -118,7 +117,6 @@ label: '#' UINTEGER_10;
 symbol: IDENTIFIER;
 
 // Lexer
-
 
 L_PAREN: '(';
 R_PAREN: ')';
@@ -394,4 +392,3 @@ fragment HEX_SCALAR_VALUE: HEXDIGIT+;
 fragment INLINE_HEX_ESCAPE: '\\x' HEX_SCALAR_VALUE;
 fragment MNEMONIC_ESCAPE: '\\' ('a' | 'b' | 't' | 'n' | 'r');
 fragment VERTICAL_LINE: '|';
-
