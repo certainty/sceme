@@ -89,7 +89,7 @@ simple_datum
     | NUMBER
     | CHARACTER
     | STRING
-    | SYMBOL
+    | IDENTIFIER
     | BYTEVECTOR
     ;
 
