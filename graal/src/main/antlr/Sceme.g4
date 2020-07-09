@@ -1,6 +1,39 @@
 // TODO: add entry points: https://github.com/graalvm/simplelanguage/blob/e3e82664dd4b2d91a8d80dc462fa72bf0399aa14/language/src/main/java/com/oracle/truffle/sl/parser/SimpleLanguage.g4
-
 grammar Sceme;
+
+program: command_or_definition+;
+
+command_or_definition
+    : L_PAREN 'begin' command_or_definition+ R_PAREN
+    | definition
+    | command
+    ;
+
+command: expression;
+
+definition
+    : L_PAREN 'define' identifier expression R_PAREN
+    | L_PAREN 'define' L_PAREN identifier def_formals R_PAREN body R_PAREN
+    //| syntax_definition
+    | L_PAREN 'defined-values' formals body R_PAREN
+    | L_PAREN 'defined-record-type' identifier constructor identifier field_spec* R_PAREN
+    | L_PAREN 'begin' definition* R_PAREN
+    ;
+
+def_formals
+    : identifier* '.' identifier
+    | identifier*
+    ;
+
+constructor: L_PAREN identifier field_name* R_PAREN;
+field_spec
+    : L_PAREN field_name accessor R_PAREN
+    | L_PAREN field_name accessor mutator R_PAREN
+    ;
+
+field_name: identifier;
+accessor: identifier;
+mutator: identifier;
 
 expression
     : identifier
@@ -35,7 +68,6 @@ formals
 //body: definition* sequence;
 body: sequence;
 sequence: command* expression;
-command: expression;
 
 conditional: L_PAREN 'if' test consequent alternate R_PAREN;
 test: expression;
@@ -87,7 +119,6 @@ symbol: IDENTIFIER;
 
 // Lexer
 
-SYMBOL: IDENTIFIER;
 
 L_PAREN: '(';
 R_PAREN: ')';
@@ -307,6 +338,7 @@ fragment DIGIT_10: DIGIT;
 fragment DIGIT_16: DIGIT_10 [a-f];
 
 // End Numbers
+
 
 IDENTIFIER
     : INITIAL SUBSEQUENT*
