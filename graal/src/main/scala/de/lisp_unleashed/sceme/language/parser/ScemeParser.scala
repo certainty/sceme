@@ -1,26 +1,26 @@
 package de.lisp_unleashed.sceme.language.parser
-import org.antlr.v4.runtime.{ CharStreams, CommonTokenStream }
+import com.oracle.truffle.api.source.Source
+import org.antlr.v4.runtime.{ CharStreams, CodePointCharStream, CommonTokenStream }
 
 object ScemeParser {
-  def main(args: Array[String]): Unit = {
-    println(parseProgram("(define x 1)"))
-    println("Done")
+  def parseProgram(source: Source): gen.ScemeParser.ProgramContext = {
+    val stream: CodePointCharStream = CharStreams.fromReader(source.getReader)
+    doParse(stream, _.program())
   }
 
   def parseProgram(source: String): gen.ScemeParser.ProgramContext = {
-    val stream      = CharStreams.fromString(source)
-    val tokenStream = new CommonTokenStream(new gen.ScemeLexer(stream))
-    val scemeParser = new gen.ScemeParser(tokenStream)
-
-    scemeParser.program()
+    val stream = CharStreams.fromString(source)
+    doParse(stream, _.program())
   }
 
   def parseDatum(source: String): gen.ScemeParser.DatumContext = {
-    val stream      = CharStreams.fromString(source)
-    val tokenStream = new CommonTokenStream(new gen.ScemeLexer(stream))
-    val scemeParser = new gen.ScemeParser(tokenStream)
+    val stream = CharStreams.fromString(source)
+    doParse(stream, _.datum())
+  }
 
-    scemeParser.datum()
-    // use visitor to create runtime values
+  private def doParse[T](sourceStream: CodePointCharStream, parse: gen.ScemeParser => T): T = {
+    val tokenStream = new CommonTokenStream(new gen.ScemeLexer(sourceStream))
+    val scemeParser = new gen.ScemeParser(tokenStream)
+    parse(scemeParser)
   }
 }

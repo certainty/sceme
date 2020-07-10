@@ -1,6 +1,9 @@
 .PHONY: parser clean
 
-all: parser
+repl:
+	cd .. && sbt 'graal/runMain de.lisp_unleashed.sceme.language.ScemeMain'
+
+compile: parser
 	cd .. && sbt 'graal/compile'
 
 parser:
