@@ -11,7 +11,7 @@ lazy val graal =
     .settings(
      libraryDependencies ++= commonDependencies ++ Seq(
        Dependencies.truffleApi,
-       //Dependencies.truffleDSL,
+       Dependencies.truffleDSL,
        Dependencies.truffleTCK,
        Dependencies.graalSDK,
 
@@ -42,6 +42,7 @@ lazy val Dependencies =
       val parboiled =  "2.1.8"
       val clipp = "0.3.1"
       val graalVm = "1.0.0-rc7"
+      val truffle = "20.1.0"
       val antrl4 = "4.8"
     }
 
@@ -53,9 +54,9 @@ lazy val Dependencies =
     val specs2     = "org.specs2" %% "specs2-core" % Version.specs2
 
     // truffle
-    val truffleApi = "com.oracle.truffle" % "truffle-api" % Version.graalVm
-    val truffleDSLProcessor = "com.oracle.truffle" % "truffle-dsl-processor" % Version.graalVm
-    val truffleTCK = "com.oracle.truffle" % "truffle-tck" % Version.graalVm
+    val truffleApi = "com.oracle.truffle" % "truffle-api" % Version.truffle
+    val truffleDSL = "com.oracle.truffle" % "truffle-dsl-processor" % Version.truffle
+    val truffleTCK = "com.oracle.truffle" % "truffle-tck" % Version.truffle
     val graalSDK  = "org.graalvm" % "graal-sdk" % Version.graalVm
 
     // antlr4
