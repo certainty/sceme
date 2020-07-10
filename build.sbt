@@ -54,9 +54,9 @@ lazy val Dependencies =
     val specs2     = "org.specs2" %% "specs2-core" % Version.specs2
 
     // truffle
-    val truffleApi = "com.oracle.truffle" % "truffle-api" % Version.truffle
-    val truffleDSL = "com.oracle.truffle" % "truffle-dsl-processor" % Version.truffle
-    val truffleTCK = "com.oracle.truffle" % "truffle-tck" % Version.truffle
+    val truffleApi = "org.graalvm.truffle" % "truffle-api" % Version.truffle
+    val truffleDSL = "org.graalvm.truffle" % "truffle-dsl-processor" % Version.truffle
+    val truffleTCK = "org.graalvm.truffle" % "truffle-tck" % Version.truffle
     val graalSDK  = "org.graalvm" % "graal-sdk" % Version.graalVm
 
     // antlr4
