@@ -3,6 +3,7 @@ grammar Sceme;
 
 // the following is not actually used by the parser currently
 // and will be removed soon
+/*
 program: command_or_definition+;
 
 command_or_definition
@@ -76,6 +77,7 @@ consequent: expression;
 alternate: expression;
 
 assignment: L_PAREN 'set!' identifier expression R_PAREN;
+*/
 
 // HERE is where the actually used grammar starts
 // Datum
