@@ -118,7 +118,7 @@ string: STRING;
 
 bool: BOOLEAN;
 
-number: NUMBER;
+number: NUM_2 | NUM_8 | NUM_10 | NUM_16;
 
 character
     : NAMED_CHAR_LITERAL
@@ -126,10 +126,6 @@ character
     | UNICODE_CHAR_LITERAL
     | CHAR_LITERAL
     ;
-
-//character: CHARACTER;
-
-// Character
 
 bytevector: BYTEVECTOR;
 
@@ -178,14 +174,7 @@ fragment BYTE: [0-2]? [0-5]? [0-5];
 
 
 // Numbers
-NUMBER
-    : NUM_2
-    | NUM_8
-    | NUM_10
-    | NUM_16
-    ;
-
-fragment NUM_2: PREFIX_2 COMPLEX_2;
+NUM_2: PREFIX_2 COMPLEX_2;
 fragment PREFIX_2
     : RADIX_2 EXACTNESS
     | EXACTNESS RADIX_2
@@ -225,7 +214,7 @@ fragment DECIMAL_2
     | DIGIT_2+ '.' DIGIT_2* SUFFIX
     ;
 
-fragment NUM_8: PREFIX_8 COMPLEX_8;
+NUM_8: PREFIX_8 COMPLEX_8;
 fragment PREFIX_8
     : RADIX_8 EXACTNESS
     | EXACTNESS RADIX_8
@@ -265,7 +254,7 @@ fragment DECIMAL_8
     | DIGIT_8+ '.' DIGIT_8* SUFFIX
     ;
 
-fragment NUM_10: PREFIX_10 COMPLEX_10;
+NUM_10: PREFIX_10 COMPLEX_10;
 fragment PREFIX_10
     : RADIX_10 EXACTNESS
     | EXACTNESS RADIX_10
@@ -305,7 +294,7 @@ fragment DECIMAL_10
     | DIGIT_10+ '.' DIGIT_10* SUFFIX
     ;
 
-fragment NUM_16: PREFIX_16 COMPLEX_16;
+NUM_16: PREFIX_16 COMPLEX_16;
 fragment PREFIX_16
     : RADIX_16 EXACTNESS
     | EXACTNESS RADIX_16
@@ -352,7 +341,7 @@ fragment INFNAN: '+inf.0' | '-inf.0' | '+nan.0' | '-nan.0';
 fragment EXACTNESS: '#i'? | '#e'?;
 
 fragment RADIX_2: '#b';
-fragment RADIX_8: '#0';
+fragment RADIX_8: '#o';
 fragment RADIX_10: '#d'?;
 fragment RADIX_16: '#x';
 fragment DIGIT_2: [0-1];
@@ -361,8 +350,6 @@ fragment DIGIT_10: DIGIT;
 fragment DIGIT_16: DIGIT_10 [a-f];
 
 // End Numbers
-
-
 IDENTIFIER
     : INITIAL SUBSEQUENT*
     | VERTICAL_LINE SYMBOL_ELEMENT* VERTICAL_LINE

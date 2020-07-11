@@ -23,6 +23,21 @@ class ScemeReader(sourceStream: CodePointCharStream) extends ScemeBaseVisitor[Sy
                       ctx.start.getCharPositionInLine + 1,
                       ctx.stop.getStopIndex - ctx.start.getStartIndex)
 
+  override def visitNumber(ctx: ScemeParser.NumberContext): Syntax[_] =
+    if (ctx.NUM_2() != null) {
+      FixnumSyntax(Integer.parseInt(ctx.NUM_2().getText.drop(2), 2).toLong, createSourceInformation(ctx))
+    } else if (ctx.NUM_8() != null) {
+      FixnumSyntax(Integer.parseInt(ctx.NUM_8().getText.drop(2), 8).toLong, createSourceInformation(ctx))
+    } else if (ctx.NUM_10() != null) {
+      if (ctx.NUM_10().getText.startsWith("#")) {
+        FixnumSyntax(Integer.parseInt(ctx.NUM_10().getText.drop(2), 10).toLong, createSourceInformation(ctx))
+      } else {
+        FixnumSyntax(Integer.parseInt(ctx.NUM_10().getText, 10).toLong, createSourceInformation(ctx))
+      }
+    } else {
+      FixnumSyntax(Integer.parseInt(ctx.NUM_16().getText.drop(2), 16).toLong, createSourceInformation(ctx))
+    }
+
   override def visitBool(ctx: ScemeParser.BoolContext): Syntax[_] = ctx.getText match {
     case "#t" | "#true"  => BooleanSyntax(true, createSourceInformation(ctx))
     case "#f" | "#false" => BooleanSyntax(false, createSourceInformation(ctx))

@@ -20,8 +20,8 @@ public class ScemeParser extends Parser {
 		T__0=1, T__1=2, T__2=3, T__3=4, T__4=5, T__5=6, T__6=7, T__7=8, LINE_COMMENT=9, 
 		WS=10, L_PAREN=11, R_PAREN=12, BOOLEAN=13, NAMED_CHAR_LITERAL=14, HEX_CHAR_LITERAL=15, 
 		UNICODE_CHAR_LITERAL=16, CHAR_LITERAL=17, CHARACTER_NAME=18, ANY_CHARACTER_VALUE=19, 
-		STRING=20, BYTEVECTOR=21, NUMBER=22, UINTEGER_10=23, IDENTIFIER=24, UNICODE_VALUE=25, 
-		HEX_SCALAR_VALUE=26, HEXDIGIT=27;
+		STRING=20, BYTEVECTOR=21, NUM_2=22, NUM_8=23, NUM_10=24, UINTEGER_10=25, 
+		NUM_16=26, IDENTIFIER=27, UNICODE_VALUE=28, HEX_SCALAR_VALUE=29, HEXDIGIT=30;
 	public static final int
 		RULE_datum = 0, RULE_simple_datum = 1, RULE_compound_datum = 2, RULE_proper_list = 3, 
 		RULE_improper_list = 4, RULE_vector = 5, RULE_symbol = 6, RULE_string = 7, 
@@ -48,8 +48,8 @@ public class ScemeParser extends Parser {
 			null, null, null, null, null, null, null, null, null, "LINE_COMMENT", 
 			"WS", "L_PAREN", "R_PAREN", "BOOLEAN", "NAMED_CHAR_LITERAL", "HEX_CHAR_LITERAL", 
 			"UNICODE_CHAR_LITERAL", "CHAR_LITERAL", "CHARACTER_NAME", "ANY_CHARACTER_VALUE", 
-			"STRING", "BYTEVECTOR", "NUMBER", "UINTEGER_10", "IDENTIFIER", "UNICODE_VALUE", 
-			"HEX_SCALAR_VALUE", "HEXDIGIT"
+			"STRING", "BYTEVECTOR", "NUM_2", "NUM_8", "NUM_10", "UINTEGER_10", "NUM_16", 
+			"IDENTIFIER", "UNICODE_VALUE", "HEX_SCALAR_VALUE", "HEXDIGIT"
 		};
 	}
 	private static final String[] _SYMBOLIC_NAMES = makeSymbolicNames();
@@ -241,7 +241,10 @@ public class ScemeParser extends Parser {
 				bool();
 				}
 				break;
-			case NUMBER:
+			case NUM_2:
+			case NUM_8:
+			case NUM_10:
+			case NUM_16:
 				enterOuterAlt(_localctx, 2);
 				{
 				setState(42);
@@ -414,7 +417,7 @@ public class ScemeParser extends Parser {
 			setState(59);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__1) | (1L << T__3) | (1L << T__4) | (1L << T__5) | (1L << T__6) | (1L << T__7) | (1L << L_PAREN) | (1L << BOOLEAN) | (1L << NAMED_CHAR_LITERAL) | (1L << HEX_CHAR_LITERAL) | (1L << UNICODE_CHAR_LITERAL) | (1L << CHAR_LITERAL) | (1L << STRING) | (1L << BYTEVECTOR) | (1L << NUMBER) | (1L << IDENTIFIER))) != 0)) {
+			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__1) | (1L << T__3) | (1L << T__4) | (1L << T__5) | (1L << T__6) | (1L << T__7) | (1L << L_PAREN) | (1L << BOOLEAN) | (1L << NAMED_CHAR_LITERAL) | (1L << HEX_CHAR_LITERAL) | (1L << UNICODE_CHAR_LITERAL) | (1L << CHAR_LITERAL) | (1L << STRING) | (1L << BYTEVECTOR) | (1L << NUM_2) | (1L << NUM_8) | (1L << NUM_10) | (1L << NUM_16) | (1L << IDENTIFIER))) != 0)) {
 				{
 				{
 				setState(56);
@@ -490,7 +493,7 @@ public class ScemeParser extends Parser {
 				setState(68); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
-			} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__1) | (1L << T__3) | (1L << T__4) | (1L << T__5) | (1L << T__6) | (1L << T__7) | (1L << L_PAREN) | (1L << BOOLEAN) | (1L << NAMED_CHAR_LITERAL) | (1L << HEX_CHAR_LITERAL) | (1L << UNICODE_CHAR_LITERAL) | (1L << CHAR_LITERAL) | (1L << STRING) | (1L << BYTEVECTOR) | (1L << NUMBER) | (1L << IDENTIFIER))) != 0) );
+			} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__1) | (1L << T__3) | (1L << T__4) | (1L << T__5) | (1L << T__6) | (1L << T__7) | (1L << L_PAREN) | (1L << BOOLEAN) | (1L << NAMED_CHAR_LITERAL) | (1L << HEX_CHAR_LITERAL) | (1L << UNICODE_CHAR_LITERAL) | (1L << CHAR_LITERAL) | (1L << STRING) | (1L << BYTEVECTOR) | (1L << NUM_2) | (1L << NUM_8) | (1L << NUM_10) | (1L << NUM_16) | (1L << IDENTIFIER))) != 0) );
 			setState(70);
 			match(T__2);
 			setState(71);
@@ -549,7 +552,7 @@ public class ScemeParser extends Parser {
 			setState(78);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__1) | (1L << T__3) | (1L << T__4) | (1L << T__5) | (1L << T__6) | (1L << T__7) | (1L << L_PAREN) | (1L << BOOLEAN) | (1L << NAMED_CHAR_LITERAL) | (1L << HEX_CHAR_LITERAL) | (1L << UNICODE_CHAR_LITERAL) | (1L << CHAR_LITERAL) | (1L << STRING) | (1L << BYTEVECTOR) | (1L << NUMBER) | (1L << IDENTIFIER))) != 0)) {
+			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__1) | (1L << T__3) | (1L << T__4) | (1L << T__5) | (1L << T__6) | (1L << T__7) | (1L << L_PAREN) | (1L << BOOLEAN) | (1L << NAMED_CHAR_LITERAL) | (1L << HEX_CHAR_LITERAL) | (1L << UNICODE_CHAR_LITERAL) | (1L << CHAR_LITERAL) | (1L << STRING) | (1L << BYTEVECTOR) | (1L << NUM_2) | (1L << NUM_8) | (1L << NUM_10) | (1L << NUM_16) | (1L << IDENTIFIER))) != 0)) {
 				{
 				{
 				setState(75);
@@ -702,7 +705,10 @@ public class ScemeParser extends Parser {
 	}
 
 	public static class NumberContext extends ParserRuleContext {
-		public TerminalNode NUMBER() { return getToken(ScemeParser.NUMBER, 0); }
+		public TerminalNode NUM_2() { return getToken(ScemeParser.NUM_2, 0); }
+		public TerminalNode NUM_8() { return getToken(ScemeParser.NUM_8, 0); }
+		public TerminalNode NUM_10() { return getToken(ScemeParser.NUM_10, 0); }
+		public TerminalNode NUM_16() { return getToken(ScemeParser.NUM_16, 0); }
 		public NumberContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -725,11 +731,20 @@ public class ScemeParser extends Parser {
 	public final NumberContext number() throws RecognitionException {
 		NumberContext _localctx = new NumberContext(_ctx, getState());
 		enterRule(_localctx, 18, RULE_number);
+		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(89);
-			match(NUMBER);
+			_la = _input.LA(1);
+			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << NUM_2) | (1L << NUM_8) | (1L << NUM_10) | (1L << NUM_16))) != 0)) ) {
+			_errHandler.recoverInline(this);
+			}
+			else {
+				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+				_errHandler.reportMatch(this);
+				consume();
+			}
 			}
 		}
 		catch (RecognitionException re) {
@@ -983,32 +998,32 @@ public class ScemeParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\35j\4\2\t\2\4\3\t"+
-		"\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\4\n\t\n\4\13\t\13\4"+
-		"\f\t\f\4\r\t\r\4\16\t\16\4\17\t\17\4\20\t\20\3\2\3\2\3\2\3\2\3\2\3\2\3"+
-		"\2\3\2\3\2\5\2*\n\2\3\3\3\3\3\3\3\3\3\3\3\3\5\3\62\n\3\3\4\3\4\3\4\3\4"+
-		"\5\48\n\4\3\5\3\5\7\5<\n\5\f\5\16\5?\13\5\3\5\3\5\3\6\3\6\6\6E\n\6\r\6"+
-		"\16\6F\3\6\3\6\3\6\3\6\3\7\3\7\7\7O\n\7\f\7\16\7R\13\7\3\7\3\7\3\b\3\b"+
-		"\3\t\3\t\3\n\3\n\3\13\3\13\3\f\3\f\3\r\3\r\3\16\3\16\3\16\3\17\3\17\3"+
-		"\20\3\20\3\20\3\20\2\2\21\2\4\6\b\n\f\16\20\22\24\26\30\32\34\36\2\4\3"+
-		"\2\20\23\3\2\7\n\2h\2)\3\2\2\2\4\61\3\2\2\2\6\67\3\2\2\2\b9\3\2\2\2\n"+
-		"B\3\2\2\2\fL\3\2\2\2\16U\3\2\2\2\20W\3\2\2\2\22Y\3\2\2\2\24[\3\2\2\2\26"+
-		"]\3\2\2\2\30_\3\2\2\2\32a\3\2\2\2\34d\3\2\2\2\36f\3\2\2\2 *\5\6\4\2!*"+
-		"\5\4\3\2\"#\5\36\20\2#$\7\3\2\2$%\5\2\2\2%*\3\2\2\2&\'\5\36\20\2\'(\7"+
-		"\4\2\2(*\3\2\2\2) \3\2\2\2)!\3\2\2\2)\"\3\2\2\2)&\3\2\2\2*\3\3\2\2\2+"+
-		"\62\5\22\n\2,\62\5\24\13\2-\62\5\26\f\2.\62\5\20\t\2/\62\5\16\b\2\60\62"+
-		"\5\30\r\2\61+\3\2\2\2\61,\3\2\2\2\61-\3\2\2\2\61.\3\2\2\2\61/\3\2\2\2"+
-		"\61\60\3\2\2\2\62\5\3\2\2\2\638\5\b\5\2\648\5\n\6\2\658\5\f\7\2\668\5"+
-		"\32\16\2\67\63\3\2\2\2\67\64\3\2\2\2\67\65\3\2\2\2\67\66\3\2\2\28\7\3"+
-		"\2\2\29=\7\r\2\2:<\5\2\2\2;:\3\2\2\2<?\3\2\2\2=;\3\2\2\2=>\3\2\2\2>@\3"+
-		"\2\2\2?=\3\2\2\2@A\7\16\2\2A\t\3\2\2\2BD\7\r\2\2CE\5\2\2\2DC\3\2\2\2E"+
-		"F\3\2\2\2FD\3\2\2\2FG\3\2\2\2GH\3\2\2\2HI\7\5\2\2IJ\5\2\2\2JK\7\16\2\2"+
-		"K\13\3\2\2\2LP\7\6\2\2MO\5\2\2\2NM\3\2\2\2OR\3\2\2\2PN\3\2\2\2PQ\3\2\2"+
-		"\2QS\3\2\2\2RP\3\2\2\2ST\7\16\2\2T\r\3\2\2\2UV\7\32\2\2V\17\3\2\2\2WX"+
-		"\7\26\2\2X\21\3\2\2\2YZ\7\17\2\2Z\23\3\2\2\2[\\\7\30\2\2\\\25\3\2\2\2"+
-		"]^\t\2\2\2^\27\3\2\2\2_`\7\27\2\2`\31\3\2\2\2ab\5\34\17\2bc\5\2\2\2c\33"+
-		"\3\2\2\2de\t\3\2\2e\35\3\2\2\2fg\7\4\2\2gh\7\31\2\2h\37\3\2\2\2\b)\61"+
-		"\67=FP";
+		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3 j\4\2\t\2\4\3\t\3"+
+		"\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\4\n\t\n\4\13\t\13\4\f"+
+		"\t\f\4\r\t\r\4\16\t\16\4\17\t\17\4\20\t\20\3\2\3\2\3\2\3\2\3\2\3\2\3\2"+
+		"\3\2\3\2\5\2*\n\2\3\3\3\3\3\3\3\3\3\3\3\3\5\3\62\n\3\3\4\3\4\3\4\3\4\5"+
+		"\48\n\4\3\5\3\5\7\5<\n\5\f\5\16\5?\13\5\3\5\3\5\3\6\3\6\6\6E\n\6\r\6\16"+
+		"\6F\3\6\3\6\3\6\3\6\3\7\3\7\7\7O\n\7\f\7\16\7R\13\7\3\7\3\7\3\b\3\b\3"+
+		"\t\3\t\3\n\3\n\3\13\3\13\3\f\3\f\3\r\3\r\3\16\3\16\3\16\3\17\3\17\3\20"+
+		"\3\20\3\20\3\20\2\2\21\2\4\6\b\n\f\16\20\22\24\26\30\32\34\36\2\5\4\2"+
+		"\30\32\34\34\3\2\20\23\3\2\7\n\2h\2)\3\2\2\2\4\61\3\2\2\2\6\67\3\2\2\2"+
+		"\b9\3\2\2\2\nB\3\2\2\2\fL\3\2\2\2\16U\3\2\2\2\20W\3\2\2\2\22Y\3\2\2\2"+
+		"\24[\3\2\2\2\26]\3\2\2\2\30_\3\2\2\2\32a\3\2\2\2\34d\3\2\2\2\36f\3\2\2"+
+		"\2 *\5\6\4\2!*\5\4\3\2\"#\5\36\20\2#$\7\3\2\2$%\5\2\2\2%*\3\2\2\2&\'\5"+
+		"\36\20\2\'(\7\4\2\2(*\3\2\2\2) \3\2\2\2)!\3\2\2\2)\"\3\2\2\2)&\3\2\2\2"+
+		"*\3\3\2\2\2+\62\5\22\n\2,\62\5\24\13\2-\62\5\26\f\2.\62\5\20\t\2/\62\5"+
+		"\16\b\2\60\62\5\30\r\2\61+\3\2\2\2\61,\3\2\2\2\61-\3\2\2\2\61.\3\2\2\2"+
+		"\61/\3\2\2\2\61\60\3\2\2\2\62\5\3\2\2\2\638\5\b\5\2\648\5\n\6\2\658\5"+
+		"\f\7\2\668\5\32\16\2\67\63\3\2\2\2\67\64\3\2\2\2\67\65\3\2\2\2\67\66\3"+
+		"\2\2\28\7\3\2\2\29=\7\r\2\2:<\5\2\2\2;:\3\2\2\2<?\3\2\2\2=;\3\2\2\2=>"+
+		"\3\2\2\2>@\3\2\2\2?=\3\2\2\2@A\7\16\2\2A\t\3\2\2\2BD\7\r\2\2CE\5\2\2\2"+
+		"DC\3\2\2\2EF\3\2\2\2FD\3\2\2\2FG\3\2\2\2GH\3\2\2\2HI\7\5\2\2IJ\5\2\2\2"+
+		"JK\7\16\2\2K\13\3\2\2\2LP\7\6\2\2MO\5\2\2\2NM\3\2\2\2OR\3\2\2\2PN\3\2"+
+		"\2\2PQ\3\2\2\2QS\3\2\2\2RP\3\2\2\2ST\7\16\2\2T\r\3\2\2\2UV\7\35\2\2V\17"+
+		"\3\2\2\2WX\7\26\2\2X\21\3\2\2\2YZ\7\17\2\2Z\23\3\2\2\2[\\\t\2\2\2\\\25"+
+		"\3\2\2\2]^\t\3\2\2^\27\3\2\2\2_`\7\27\2\2`\31\3\2\2\2ab\5\34\17\2bc\5"+
+		"\2\2\2c\33\3\2\2\2de\t\4\2\2e\35\3\2\2\2fg\7\4\2\2gh\7\33\2\2h\37\3\2"+
+		"\2\2\b)\61\67=FP";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {
