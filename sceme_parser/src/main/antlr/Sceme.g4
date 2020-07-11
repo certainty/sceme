@@ -89,27 +89,49 @@ datum
     ;
 
 simple_datum
-    : BOOLEAN
-    | NUMBER
-    | CHARACTER
-    | STRING
-    | IDENTIFIER
-    | BYTEVECTOR
+    : bool
+    | number
+    | character
+    | string
+    | symbol
+    | bytevector
     ;
 
 compound_datum
-    : list
+    : proper_list
+    | improper_list
     | vector
     | abbreviation;
 
-list
-    : '(' datum* ')'
-    | '(' datum+ '.' datum ')'
-    ;
+
+proper_list: L_PAREN datum* R_PAREN;
+
+improper_list: L_PAREN datum+ '.' datum R_PAREN;
 
 vector
     : '#(' datum* ')'
     ;
+
+symbol: IDENTIFIER;
+
+string: STRING;
+
+bool: BOOLEAN;
+
+number: NUMBER;
+
+character
+    : NAMED_CHAR_LITERAL
+    | HEX_CHAR_LITERAL
+    | UNICODE_CHAR_LITERAL
+    | CHAR_LITERAL
+    ;
+
+//character: CHARACTER;
+
+// Character
+
+bytevector: BYTEVECTOR;
 
 abbreviation
     : abbrev_prefix datum
@@ -119,9 +141,9 @@ abbrev_prefix: '\'' | '`' | ',' | ',@';
 
 label: '#' UINTEGER_10;
 
-symbol: IDENTIFIER;
-
 // Lexer
+LINE_COMMENT: (';' ~[\r\n]*) -> skip;
+WS: WHITESPACE -> channel(HIDDEN);
 
 L_PAREN: '(';
 R_PAREN: ')';
@@ -130,17 +152,15 @@ BOOLEAN: BOOL_TRUE | BOOL_FALSE;
 fragment BOOL_TRUE: '#t' | '#true';
 fragment BOOL_FALSE: '#f' | '#false';
 
-// Character
-CHARACTER
-    : '#\\' CHARACTER_NAME
-    | '#x\\' HEX_SCALAR_VALUE
-    | '#\\' ANY_CHARACTER_VALUE
-    ;
+NAMED_CHAR_LITERAL: '#\\' CHARACTER_NAME;
+HEX_CHAR_LITERAL: '#\\x' HEX_SCALAR_VALUE;
+UNICODE_CHAR_LITERAL: '#\\u' HEXDIGIT? HEXDIGIT? HEXDIGIT? HEXDIGIT;
+CHAR_LITERAL: '#\\' ANY_CHARACTER_VALUE;
 
-fragment CHARACTER_NAME
+CHARACTER_NAME
     : 'alarm' | 'backspace' | 'delete' | 'escape' | 'newline' | 'null' | 'return' | 'space' | 'tab';
 
-fragment ANY_CHARACTER_VALUE: [\u0000-\uFFFE];
+ANY_CHARACTER_VALUE: [\u0000-\uFFFE];
 
 STRING: '"' STRING_ELEMENT* '"';
 
@@ -374,8 +394,6 @@ fragment SIGN_SUBSEQUENT
     | '@'
     ;
 
-LINE_COMMENT: (';' ~[\r\n]*) -> skip;
-WS: WHITESPACE -> channel(HIDDEN);
 
 fragment DIRECTIVE
     : '#!fold-case'
@@ -392,8 +410,11 @@ fragment ATMOSPHERE
 fragment LINE_ENDING: '\r' '\n' | '\n' | '\r';
 fragment LETTER: [a-z] | [A-Z];
 fragment DIGIT: [0-9];
-fragment HEXDIGIT: DIGIT | [a-f];
-fragment HEX_SCALAR_VALUE: HEXDIGIT+;
+
+UNICODE_VALUE: HEXDIGIT? HEXDIGIT? HEXDIGIT? HEXDIGIT;
+HEX_SCALAR_VALUE: HEXDIGIT+;
+
+HEXDIGIT: DIGIT | [a-f];
 fragment INLINE_HEX_ESCAPE: '\\x' HEX_SCALAR_VALUE;
 fragment MNEMONIC_ESCAPE: '\\' ('a' | 'b' | 't' | 'n' | 'r');
 fragment VERTICAL_LINE: '|';

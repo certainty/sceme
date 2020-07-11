@@ -17,33 +17,39 @@ public class ScemeParser extends Parser {
 	protected static final PredictionContextCache _sharedContextCache =
 		new PredictionContextCache();
 	public static final int
-		T__0=1, T__1=2, T__2=3, T__3=4, T__4=5, T__5=6, T__6=7, T__7=8, L_PAREN=9, 
-		R_PAREN=10, BOOLEAN=11, CHARACTER=12, STRING=13, BYTEVECTOR=14, NUMBER=15, 
-		UINTEGER_10=16, IDENTIFIER=17, LINE_COMMENT=18, WS=19;
+		T__0=1, T__1=2, T__2=3, T__3=4, T__4=5, T__5=6, T__6=7, T__7=8, LINE_COMMENT=9, 
+		WS=10, L_PAREN=11, R_PAREN=12, BOOLEAN=13, NAMED_CHAR_LITERAL=14, HEX_CHAR_LITERAL=15, 
+		UNICODE_CHAR_LITERAL=16, CHAR_LITERAL=17, CHARACTER_NAME=18, ANY_CHARACTER_VALUE=19, 
+		STRING=20, BYTEVECTOR=21, NUMBER=22, UINTEGER_10=23, IDENTIFIER=24, UNICODE_VALUE=25, 
+		HEX_SCALAR_VALUE=26, HEXDIGIT=27;
 	public static final int
-		RULE_datum = 0, RULE_simple_datum = 1, RULE_compound_datum = 2, RULE_list = 3, 
-		RULE_vector = 4, RULE_abbreviation = 5, RULE_abbrev_prefix = 6, RULE_label = 7, 
-		RULE_symbol = 8;
+		RULE_datum = 0, RULE_simple_datum = 1, RULE_compound_datum = 2, RULE_proper_list = 3, 
+		RULE_improper_list = 4, RULE_vector = 5, RULE_symbol = 6, RULE_string = 7, 
+		RULE_bool = 8, RULE_number = 9, RULE_character = 10, RULE_bytevector = 11, 
+		RULE_abbreviation = 12, RULE_abbrev_prefix = 13, RULE_label = 14;
 	private static String[] makeRuleNames() {
 		return new String[] {
-			"datum", "simple_datum", "compound_datum", "list", "vector", "abbreviation", 
-			"abbrev_prefix", "label", "symbol"
+			"datum", "simple_datum", "compound_datum", "proper_list", "improper_list", 
+			"vector", "symbol", "string", "bool", "number", "character", "bytevector", 
+			"abbreviation", "abbrev_prefix", "label"
 		};
 	}
 	public static final String[] ruleNames = makeRuleNames();
 
 	private static String[] makeLiteralNames() {
 		return new String[] {
-			null, "'='", "'#'", "'.'", "'#('", "'''", "'`'", "','", "',@'", "'('", 
-			"')'"
+			null, "'='", "'#'", "'.'", "'#('", "'''", "'`'", "','", "',@'", null, 
+			null, "'('", "')'"
 		};
 	}
 	private static final String[] _LITERAL_NAMES = makeLiteralNames();
 	private static String[] makeSymbolicNames() {
 		return new String[] {
-			null, null, null, null, null, null, null, null, null, "L_PAREN", "R_PAREN", 
-			"BOOLEAN", "CHARACTER", "STRING", "BYTEVECTOR", "NUMBER", "UINTEGER_10", 
-			"IDENTIFIER", "LINE_COMMENT", "WS"
+			null, null, null, null, null, null, null, null, null, "LINE_COMMENT", 
+			"WS", "L_PAREN", "R_PAREN", "BOOLEAN", "NAMED_CHAR_LITERAL", "HEX_CHAR_LITERAL", 
+			"UNICODE_CHAR_LITERAL", "CHAR_LITERAL", "CHARACTER_NAME", "ANY_CHARACTER_VALUE", 
+			"STRING", "BYTEVECTOR", "NUMBER", "UINTEGER_10", "IDENTIFIER", "UNICODE_VALUE", 
+			"HEX_SCALAR_VALUE", "HEXDIGIT"
 		};
 	}
 	private static final String[] _SYMBOLIC_NAMES = makeSymbolicNames();
@@ -133,40 +139,40 @@ public class ScemeParser extends Parser {
 		DatumContext _localctx = new DatumContext(_ctx, getState());
 		enterRule(_localctx, 0, RULE_datum);
 		try {
-			setState(27);
+			setState(39);
 			_errHandler.sync(this);
 			switch ( getInterpreter().adaptivePredict(_input,0,_ctx) ) {
 			case 1:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(18);
+				setState(30);
 				compound_datum();
 				}
 				break;
 			case 2:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(19);
+				setState(31);
 				simple_datum();
 				}
 				break;
 			case 3:
 				enterOuterAlt(_localctx, 3);
 				{
-				setState(20);
+				setState(32);
 				label();
-				setState(21);
+				setState(33);
 				match(T__0);
-				setState(22);
+				setState(34);
 				datum();
 				}
 				break;
 			case 4:
 				enterOuterAlt(_localctx, 4);
 				{
-				setState(24);
+				setState(36);
 				label();
-				setState(25);
+				setState(37);
 				match(T__1);
 				}
 				break;
@@ -184,12 +190,24 @@ public class ScemeParser extends Parser {
 	}
 
 	public static class Simple_datumContext extends ParserRuleContext {
-		public TerminalNode BOOLEAN() { return getToken(ScemeParser.BOOLEAN, 0); }
-		public TerminalNode NUMBER() { return getToken(ScemeParser.NUMBER, 0); }
-		public TerminalNode CHARACTER() { return getToken(ScemeParser.CHARACTER, 0); }
-		public TerminalNode STRING() { return getToken(ScemeParser.STRING, 0); }
-		public TerminalNode IDENTIFIER() { return getToken(ScemeParser.IDENTIFIER, 0); }
-		public TerminalNode BYTEVECTOR() { return getToken(ScemeParser.BYTEVECTOR, 0); }
+		public BoolContext bool() {
+			return getRuleContext(BoolContext.class,0);
+		}
+		public NumberContext number() {
+			return getRuleContext(NumberContext.class,0);
+		}
+		public CharacterContext character() {
+			return getRuleContext(CharacterContext.class,0);
+		}
+		public StringContext string() {
+			return getRuleContext(StringContext.class,0);
+		}
+		public SymbolContext symbol() {
+			return getRuleContext(SymbolContext.class,0);
+		}
+		public BytevectorContext bytevector() {
+			return getRuleContext(BytevectorContext.class,0);
+		}
 		public Simple_datumContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -212,20 +230,57 @@ public class ScemeParser extends Parser {
 	public final Simple_datumContext simple_datum() throws RecognitionException {
 		Simple_datumContext _localctx = new Simple_datumContext(_ctx, getState());
 		enterRule(_localctx, 2, RULE_simple_datum);
-		int _la;
 		try {
-			enterOuterAlt(_localctx, 1);
-			{
-			setState(29);
-			_la = _input.LA(1);
-			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << BOOLEAN) | (1L << CHARACTER) | (1L << STRING) | (1L << BYTEVECTOR) | (1L << NUMBER) | (1L << IDENTIFIER))) != 0)) ) {
-			_errHandler.recoverInline(this);
-			}
-			else {
-				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
-				_errHandler.reportMatch(this);
-				consume();
-			}
+			setState(47);
+			_errHandler.sync(this);
+			switch (_input.LA(1)) {
+			case BOOLEAN:
+				enterOuterAlt(_localctx, 1);
+				{
+				setState(41);
+				bool();
+				}
+				break;
+			case NUMBER:
+				enterOuterAlt(_localctx, 2);
+				{
+				setState(42);
+				number();
+				}
+				break;
+			case NAMED_CHAR_LITERAL:
+			case HEX_CHAR_LITERAL:
+			case UNICODE_CHAR_LITERAL:
+			case CHAR_LITERAL:
+				enterOuterAlt(_localctx, 3);
+				{
+				setState(43);
+				character();
+				}
+				break;
+			case STRING:
+				enterOuterAlt(_localctx, 4);
+				{
+				setState(44);
+				string();
+				}
+				break;
+			case IDENTIFIER:
+				enterOuterAlt(_localctx, 5);
+				{
+				setState(45);
+				symbol();
+				}
+				break;
+			case BYTEVECTOR:
+				enterOuterAlt(_localctx, 6);
+				{
+				setState(46);
+				bytevector();
+				}
+				break;
+			default:
+				throw new NoViableAltException(this);
 			}
 		}
 		catch (RecognitionException re) {
@@ -240,8 +295,11 @@ public class ScemeParser extends Parser {
 	}
 
 	public static class Compound_datumContext extends ParserRuleContext {
-		public ListContext list() {
-			return getRuleContext(ListContext.class,0);
+		public Proper_listContext proper_list() {
+			return getRuleContext(Proper_listContext.class,0);
+		}
+		public Improper_listContext improper_list() {
+			return getRuleContext(Improper_listContext.class,0);
 		}
 		public VectorContext vector() {
 			return getRuleContext(VectorContext.class,0);
@@ -272,35 +330,37 @@ public class ScemeParser extends Parser {
 		Compound_datumContext _localctx = new Compound_datumContext(_ctx, getState());
 		enterRule(_localctx, 4, RULE_compound_datum);
 		try {
-			setState(34);
+			setState(53);
 			_errHandler.sync(this);
-			switch (_input.LA(1)) {
-			case L_PAREN:
+			switch ( getInterpreter().adaptivePredict(_input,2,_ctx) ) {
+			case 1:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(31);
-				list();
+				setState(49);
+				proper_list();
 				}
 				break;
-			case T__3:
+			case 2:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(32);
+				setState(50);
+				improper_list();
+				}
+				break;
+			case 3:
+				enterOuterAlt(_localctx, 3);
+				{
+				setState(51);
 				vector();
 				}
 				break;
-			case T__4:
-			case T__5:
-			case T__6:
-			case T__7:
-				enterOuterAlt(_localctx, 3);
+			case 4:
+				enterOuterAlt(_localctx, 4);
 				{
-				setState(33);
+				setState(52);
 				abbreviation();
 				}
 				break;
-			default:
-				throw new NoViableAltException(this);
 			}
 		}
 		catch (RecognitionException re) {
@@ -314,7 +374,7 @@ public class ScemeParser extends Parser {
 		return _localctx;
 	}
 
-	public static class ListContext extends ParserRuleContext {
+	public static class Proper_listContext extends ParserRuleContext {
 		public TerminalNode L_PAREN() { return getToken(ScemeParser.L_PAREN, 0); }
 		public TerminalNode R_PAREN() { return getToken(ScemeParser.R_PAREN, 0); }
 		public List<DatumContext> datum() {
@@ -323,83 +383,120 @@ public class ScemeParser extends Parser {
 		public DatumContext datum(int i) {
 			return getRuleContext(DatumContext.class,i);
 		}
-		public ListContext(ParserRuleContext parent, int invokingState) {
+		public Proper_listContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_list; }
+		@Override public int getRuleIndex() { return RULE_proper_list; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof ScemeListener ) ((ScemeListener)listener).enterList(this);
+			if ( listener instanceof ScemeListener ) ((ScemeListener)listener).enterProper_list(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof ScemeListener ) ((ScemeListener)listener).exitList(this);
+			if ( listener instanceof ScemeListener ) ((ScemeListener)listener).exitProper_list(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof ScemeVisitor ) return ((ScemeVisitor<? extends T>)visitor).visitList(this);
+			if ( visitor instanceof ScemeVisitor ) return ((ScemeVisitor<? extends T>)visitor).visitProper_list(this);
 			else return visitor.visitChildren(this);
 		}
 	}
 
-	public final ListContext list() throws RecognitionException {
-		ListContext _localctx = new ListContext(_ctx, getState());
-		enterRule(_localctx, 6, RULE_list);
+	public final Proper_listContext proper_list() throws RecognitionException {
+		Proper_listContext _localctx = new Proper_listContext(_ctx, getState());
+		enterRule(_localctx, 6, RULE_proper_list);
 		int _la;
 		try {
-			setState(54);
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(55);
+			match(L_PAREN);
+			setState(59);
 			_errHandler.sync(this);
-			switch ( getInterpreter().adaptivePredict(_input,4,_ctx) ) {
-			case 1:
-				enterOuterAlt(_localctx, 1);
+			_la = _input.LA(1);
+			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__1) | (1L << T__3) | (1L << T__4) | (1L << T__5) | (1L << T__6) | (1L << T__7) | (1L << L_PAREN) | (1L << BOOLEAN) | (1L << NAMED_CHAR_LITERAL) | (1L << HEX_CHAR_LITERAL) | (1L << UNICODE_CHAR_LITERAL) | (1L << CHAR_LITERAL) | (1L << STRING) | (1L << BYTEVECTOR) | (1L << NUMBER) | (1L << IDENTIFIER))) != 0)) {
 				{
-				setState(36);
-				match(L_PAREN);
-				setState(40);
-				_errHandler.sync(this);
-				_la = _input.LA(1);
-				while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__1) | (1L << T__3) | (1L << T__4) | (1L << T__5) | (1L << T__6) | (1L << T__7) | (1L << L_PAREN) | (1L << BOOLEAN) | (1L << CHARACTER) | (1L << STRING) | (1L << BYTEVECTOR) | (1L << NUMBER) | (1L << IDENTIFIER))) != 0)) {
-					{
-					{
-					setState(37);
-					datum();
-					}
-					}
-					setState(42);
-					_errHandler.sync(this);
-					_la = _input.LA(1);
-				}
-				setState(43);
-				match(R_PAREN);
-				}
-				break;
-			case 2:
-				enterOuterAlt(_localctx, 2);
 				{
-				setState(44);
-				match(L_PAREN);
-				setState(46); 
-				_errHandler.sync(this);
-				_la = _input.LA(1);
-				do {
-					{
-					{
-					setState(45);
-					datum();
-					}
-					}
-					setState(48); 
-					_errHandler.sync(this);
-					_la = _input.LA(1);
-				} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__1) | (1L << T__3) | (1L << T__4) | (1L << T__5) | (1L << T__6) | (1L << T__7) | (1L << L_PAREN) | (1L << BOOLEAN) | (1L << CHARACTER) | (1L << STRING) | (1L << BYTEVECTOR) | (1L << NUMBER) | (1L << IDENTIFIER))) != 0) );
-				setState(50);
-				match(T__2);
-				setState(51);
+				setState(56);
 				datum();
-				setState(52);
-				match(R_PAREN);
 				}
-				break;
+				}
+				setState(61);
+				_errHandler.sync(this);
+				_la = _input.LA(1);
+			}
+			setState(62);
+			match(R_PAREN);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class Improper_listContext extends ParserRuleContext {
+		public TerminalNode L_PAREN() { return getToken(ScemeParser.L_PAREN, 0); }
+		public List<DatumContext> datum() {
+			return getRuleContexts(DatumContext.class);
+		}
+		public DatumContext datum(int i) {
+			return getRuleContext(DatumContext.class,i);
+		}
+		public TerminalNode R_PAREN() { return getToken(ScemeParser.R_PAREN, 0); }
+		public Improper_listContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_improper_list; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof ScemeListener ) ((ScemeListener)listener).enterImproper_list(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof ScemeListener ) ((ScemeListener)listener).exitImproper_list(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof ScemeVisitor ) return ((ScemeVisitor<? extends T>)visitor).visitImproper_list(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final Improper_listContext improper_list() throws RecognitionException {
+		Improper_listContext _localctx = new Improper_listContext(_ctx, getState());
+		enterRule(_localctx, 8, RULE_improper_list);
+		int _la;
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(64);
+			match(L_PAREN);
+			setState(66); 
+			_errHandler.sync(this);
+			_la = _input.LA(1);
+			do {
+				{
+				{
+				setState(65);
+				datum();
+				}
+				}
+				setState(68); 
+				_errHandler.sync(this);
+				_la = _input.LA(1);
+			} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__1) | (1L << T__3) | (1L << T__4) | (1L << T__5) | (1L << T__6) | (1L << T__7) | (1L << L_PAREN) | (1L << BOOLEAN) | (1L << NAMED_CHAR_LITERAL) | (1L << HEX_CHAR_LITERAL) | (1L << UNICODE_CHAR_LITERAL) | (1L << CHAR_LITERAL) | (1L << STRING) | (1L << BYTEVECTOR) | (1L << NUMBER) | (1L << IDENTIFIER))) != 0) );
+			setState(70);
+			match(T__2);
+			setState(71);
+			datum();
+			setState(72);
+			match(R_PAREN);
 			}
 		}
 		catch (RecognitionException re) {
@@ -442,29 +539,293 @@ public class ScemeParser extends Parser {
 
 	public final VectorContext vector() throws RecognitionException {
 		VectorContext _localctx = new VectorContext(_ctx, getState());
-		enterRule(_localctx, 8, RULE_vector);
+		enterRule(_localctx, 10, RULE_vector);
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(56);
+			setState(74);
 			match(T__3);
-			setState(60);
+			setState(78);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__1) | (1L << T__3) | (1L << T__4) | (1L << T__5) | (1L << T__6) | (1L << T__7) | (1L << L_PAREN) | (1L << BOOLEAN) | (1L << CHARACTER) | (1L << STRING) | (1L << BYTEVECTOR) | (1L << NUMBER) | (1L << IDENTIFIER))) != 0)) {
+			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__1) | (1L << T__3) | (1L << T__4) | (1L << T__5) | (1L << T__6) | (1L << T__7) | (1L << L_PAREN) | (1L << BOOLEAN) | (1L << NAMED_CHAR_LITERAL) | (1L << HEX_CHAR_LITERAL) | (1L << UNICODE_CHAR_LITERAL) | (1L << CHAR_LITERAL) | (1L << STRING) | (1L << BYTEVECTOR) | (1L << NUMBER) | (1L << IDENTIFIER))) != 0)) {
 				{
 				{
-				setState(57);
+				setState(75);
 				datum();
 				}
 				}
-				setState(62);
+				setState(80);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
-			setState(63);
+			setState(81);
 			match(R_PAREN);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class SymbolContext extends ParserRuleContext {
+		public TerminalNode IDENTIFIER() { return getToken(ScemeParser.IDENTIFIER, 0); }
+		public SymbolContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_symbol; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof ScemeListener ) ((ScemeListener)listener).enterSymbol(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof ScemeListener ) ((ScemeListener)listener).exitSymbol(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof ScemeVisitor ) return ((ScemeVisitor<? extends T>)visitor).visitSymbol(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final SymbolContext symbol() throws RecognitionException {
+		SymbolContext _localctx = new SymbolContext(_ctx, getState());
+		enterRule(_localctx, 12, RULE_symbol);
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(83);
+			match(IDENTIFIER);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class StringContext extends ParserRuleContext {
+		public TerminalNode STRING() { return getToken(ScemeParser.STRING, 0); }
+		public StringContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_string; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof ScemeListener ) ((ScemeListener)listener).enterString(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof ScemeListener ) ((ScemeListener)listener).exitString(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof ScemeVisitor ) return ((ScemeVisitor<? extends T>)visitor).visitString(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final StringContext string() throws RecognitionException {
+		StringContext _localctx = new StringContext(_ctx, getState());
+		enterRule(_localctx, 14, RULE_string);
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(85);
+			match(STRING);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class BoolContext extends ParserRuleContext {
+		public TerminalNode BOOLEAN() { return getToken(ScemeParser.BOOLEAN, 0); }
+		public BoolContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_bool; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof ScemeListener ) ((ScemeListener)listener).enterBool(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof ScemeListener ) ((ScemeListener)listener).exitBool(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof ScemeVisitor ) return ((ScemeVisitor<? extends T>)visitor).visitBool(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final BoolContext bool() throws RecognitionException {
+		BoolContext _localctx = new BoolContext(_ctx, getState());
+		enterRule(_localctx, 16, RULE_bool);
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(87);
+			match(BOOLEAN);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class NumberContext extends ParserRuleContext {
+		public TerminalNode NUMBER() { return getToken(ScemeParser.NUMBER, 0); }
+		public NumberContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_number; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof ScemeListener ) ((ScemeListener)listener).enterNumber(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof ScemeListener ) ((ScemeListener)listener).exitNumber(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof ScemeVisitor ) return ((ScemeVisitor<? extends T>)visitor).visitNumber(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final NumberContext number() throws RecognitionException {
+		NumberContext _localctx = new NumberContext(_ctx, getState());
+		enterRule(_localctx, 18, RULE_number);
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(89);
+			match(NUMBER);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class CharacterContext extends ParserRuleContext {
+		public TerminalNode NAMED_CHAR_LITERAL() { return getToken(ScemeParser.NAMED_CHAR_LITERAL, 0); }
+		public TerminalNode HEX_CHAR_LITERAL() { return getToken(ScemeParser.HEX_CHAR_LITERAL, 0); }
+		public TerminalNode UNICODE_CHAR_LITERAL() { return getToken(ScemeParser.UNICODE_CHAR_LITERAL, 0); }
+		public TerminalNode CHAR_LITERAL() { return getToken(ScemeParser.CHAR_LITERAL, 0); }
+		public CharacterContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_character; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof ScemeListener ) ((ScemeListener)listener).enterCharacter(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof ScemeListener ) ((ScemeListener)listener).exitCharacter(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof ScemeVisitor ) return ((ScemeVisitor<? extends T>)visitor).visitCharacter(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final CharacterContext character() throws RecognitionException {
+		CharacterContext _localctx = new CharacterContext(_ctx, getState());
+		enterRule(_localctx, 20, RULE_character);
+		int _la;
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(91);
+			_la = _input.LA(1);
+			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << NAMED_CHAR_LITERAL) | (1L << HEX_CHAR_LITERAL) | (1L << UNICODE_CHAR_LITERAL) | (1L << CHAR_LITERAL))) != 0)) ) {
+			_errHandler.recoverInline(this);
+			}
+			else {
+				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+				_errHandler.reportMatch(this);
+				consume();
+			}
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class BytevectorContext extends ParserRuleContext {
+		public TerminalNode BYTEVECTOR() { return getToken(ScemeParser.BYTEVECTOR, 0); }
+		public BytevectorContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_bytevector; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof ScemeListener ) ((ScemeListener)listener).enterBytevector(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof ScemeListener ) ((ScemeListener)listener).exitBytevector(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof ScemeVisitor ) return ((ScemeVisitor<? extends T>)visitor).visitBytevector(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final BytevectorContext bytevector() throws RecognitionException {
+		BytevectorContext _localctx = new BytevectorContext(_ctx, getState());
+		enterRule(_localctx, 22, RULE_bytevector);
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(93);
+			match(BYTEVECTOR);
 			}
 		}
 		catch (RecognitionException re) {
@@ -506,13 +867,13 @@ public class ScemeParser extends Parser {
 
 	public final AbbreviationContext abbreviation() throws RecognitionException {
 		AbbreviationContext _localctx = new AbbreviationContext(_ctx, getState());
-		enterRule(_localctx, 10, RULE_abbreviation);
+		enterRule(_localctx, 24, RULE_abbreviation);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(65);
+			setState(95);
 			abbrev_prefix();
-			setState(66);
+			setState(96);
 			datum();
 			}
 		}
@@ -549,12 +910,12 @@ public class ScemeParser extends Parser {
 
 	public final Abbrev_prefixContext abbrev_prefix() throws RecognitionException {
 		Abbrev_prefixContext _localctx = new Abbrev_prefixContext(_ctx, getState());
-		enterRule(_localctx, 12, RULE_abbrev_prefix);
+		enterRule(_localctx, 26, RULE_abbrev_prefix);
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(68);
+			setState(98);
 			_la = _input.LA(1);
 			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__4) | (1L << T__5) | (1L << T__6) | (1L << T__7))) != 0)) ) {
 			_errHandler.recoverInline(this);
@@ -600,13 +961,13 @@ public class ScemeParser extends Parser {
 
 	public final LabelContext label() throws RecognitionException {
 		LabelContext _localctx = new LabelContext(_ctx, getState());
-		enterRule(_localctx, 14, RULE_label);
+		enterRule(_localctx, 28, RULE_label);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(70);
+			setState(100);
 			match(T__1);
-			setState(71);
+			setState(101);
 			match(UINTEGER_10);
 			}
 		}
@@ -621,69 +982,33 @@ public class ScemeParser extends Parser {
 		return _localctx;
 	}
 
-	public static class SymbolContext extends ParserRuleContext {
-		public TerminalNode IDENTIFIER() { return getToken(ScemeParser.IDENTIFIER, 0); }
-		public SymbolContext(ParserRuleContext parent, int invokingState) {
-			super(parent, invokingState);
-		}
-		@Override public int getRuleIndex() { return RULE_symbol; }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof ScemeListener ) ((ScemeListener)listener).enterSymbol(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof ScemeListener ) ((ScemeListener)listener).exitSymbol(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof ScemeVisitor ) return ((ScemeVisitor<? extends T>)visitor).visitSymbol(this);
-			else return visitor.visitChildren(this);
-		}
-	}
-
-	public final SymbolContext symbol() throws RecognitionException {
-		SymbolContext _localctx = new SymbolContext(_ctx, getState());
-		enterRule(_localctx, 16, RULE_symbol);
-		try {
-			enterOuterAlt(_localctx, 1);
-			{
-			setState(73);
-			match(IDENTIFIER);
-			}
-		}
-		catch (RecognitionException re) {
-			_localctx.exception = re;
-			_errHandler.reportError(this, re);
-			_errHandler.recover(this, re);
-		}
-		finally {
-			exitRule();
-		}
-		return _localctx;
-	}
-
 	public static final String _serializedATN =
-		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\25N\4\2\t\2\4\3\t"+
-		"\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\4\n\t\n\3\2\3\2\3\2"+
-		"\3\2\3\2\3\2\3\2\3\2\3\2\5\2\36\n\2\3\3\3\3\3\4\3\4\3\4\5\4%\n\4\3\5\3"+
-		"\5\7\5)\n\5\f\5\16\5,\13\5\3\5\3\5\3\5\6\5\61\n\5\r\5\16\5\62\3\5\3\5"+
-		"\3\5\3\5\5\59\n\5\3\6\3\6\7\6=\n\6\f\6\16\6@\13\6\3\6\3\6\3\7\3\7\3\7"+
-		"\3\b\3\b\3\t\3\t\3\t\3\n\3\n\3\n\2\2\13\2\4\6\b\n\f\16\20\22\2\4\4\2\r"+
-		"\21\23\23\3\2\7\n\2M\2\35\3\2\2\2\4\37\3\2\2\2\6$\3\2\2\2\b8\3\2\2\2\n"+
-		":\3\2\2\2\fC\3\2\2\2\16F\3\2\2\2\20H\3\2\2\2\22K\3\2\2\2\24\36\5\6\4\2"+
-		"\25\36\5\4\3\2\26\27\5\20\t\2\27\30\7\3\2\2\30\31\5\2\2\2\31\36\3\2\2"+
-		"\2\32\33\5\20\t\2\33\34\7\4\2\2\34\36\3\2\2\2\35\24\3\2\2\2\35\25\3\2"+
-		"\2\2\35\26\3\2\2\2\35\32\3\2\2\2\36\3\3\2\2\2\37 \t\2\2\2 \5\3\2\2\2!"+
-		"%\5\b\5\2\"%\5\n\6\2#%\5\f\7\2$!\3\2\2\2$\"\3\2\2\2$#\3\2\2\2%\7\3\2\2"+
-		"\2&*\7\13\2\2\')\5\2\2\2(\'\3\2\2\2),\3\2\2\2*(\3\2\2\2*+\3\2\2\2+-\3"+
-		"\2\2\2,*\3\2\2\2-9\7\f\2\2.\60\7\13\2\2/\61\5\2\2\2\60/\3\2\2\2\61\62"+
-		"\3\2\2\2\62\60\3\2\2\2\62\63\3\2\2\2\63\64\3\2\2\2\64\65\7\5\2\2\65\66"+
-		"\5\2\2\2\66\67\7\f\2\2\679\3\2\2\28&\3\2\2\28.\3\2\2\29\t\3\2\2\2:>\7"+
-		"\6\2\2;=\5\2\2\2<;\3\2\2\2=@\3\2\2\2><\3\2\2\2>?\3\2\2\2?A\3\2\2\2@>\3"+
-		"\2\2\2AB\7\f\2\2B\13\3\2\2\2CD\5\16\b\2DE\5\2\2\2E\r\3\2\2\2FG\t\3\2\2"+
-		"G\17\3\2\2\2HI\7\4\2\2IJ\7\22\2\2J\21\3\2\2\2KL\7\23\2\2L\23\3\2\2\2\b"+
-		"\35$*\628>";
+		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\35j\4\2\t\2\4\3\t"+
+		"\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\4\n\t\n\4\13\t\13\4"+
+		"\f\t\f\4\r\t\r\4\16\t\16\4\17\t\17\4\20\t\20\3\2\3\2\3\2\3\2\3\2\3\2\3"+
+		"\2\3\2\3\2\5\2*\n\2\3\3\3\3\3\3\3\3\3\3\3\3\5\3\62\n\3\3\4\3\4\3\4\3\4"+
+		"\5\48\n\4\3\5\3\5\7\5<\n\5\f\5\16\5?\13\5\3\5\3\5\3\6\3\6\6\6E\n\6\r\6"+
+		"\16\6F\3\6\3\6\3\6\3\6\3\7\3\7\7\7O\n\7\f\7\16\7R\13\7\3\7\3\7\3\b\3\b"+
+		"\3\t\3\t\3\n\3\n\3\13\3\13\3\f\3\f\3\r\3\r\3\16\3\16\3\16\3\17\3\17\3"+
+		"\20\3\20\3\20\3\20\2\2\21\2\4\6\b\n\f\16\20\22\24\26\30\32\34\36\2\4\3"+
+		"\2\20\23\3\2\7\n\2h\2)\3\2\2\2\4\61\3\2\2\2\6\67\3\2\2\2\b9\3\2\2\2\n"+
+		"B\3\2\2\2\fL\3\2\2\2\16U\3\2\2\2\20W\3\2\2\2\22Y\3\2\2\2\24[\3\2\2\2\26"+
+		"]\3\2\2\2\30_\3\2\2\2\32a\3\2\2\2\34d\3\2\2\2\36f\3\2\2\2 *\5\6\4\2!*"+
+		"\5\4\3\2\"#\5\36\20\2#$\7\3\2\2$%\5\2\2\2%*\3\2\2\2&\'\5\36\20\2\'(\7"+
+		"\4\2\2(*\3\2\2\2) \3\2\2\2)!\3\2\2\2)\"\3\2\2\2)&\3\2\2\2*\3\3\2\2\2+"+
+		"\62\5\22\n\2,\62\5\24\13\2-\62\5\26\f\2.\62\5\20\t\2/\62\5\16\b\2\60\62"+
+		"\5\30\r\2\61+\3\2\2\2\61,\3\2\2\2\61-\3\2\2\2\61.\3\2\2\2\61/\3\2\2\2"+
+		"\61\60\3\2\2\2\62\5\3\2\2\2\638\5\b\5\2\648\5\n\6\2\658\5\f\7\2\668\5"+
+		"\32\16\2\67\63\3\2\2\2\67\64\3\2\2\2\67\65\3\2\2\2\67\66\3\2\2\28\7\3"+
+		"\2\2\29=\7\r\2\2:<\5\2\2\2;:\3\2\2\2<?\3\2\2\2=;\3\2\2\2=>\3\2\2\2>@\3"+
+		"\2\2\2?=\3\2\2\2@A\7\16\2\2A\t\3\2\2\2BD\7\r\2\2CE\5\2\2\2DC\3\2\2\2E"+
+		"F\3\2\2\2FD\3\2\2\2FG\3\2\2\2GH\3\2\2\2HI\7\5\2\2IJ\5\2\2\2JK\7\16\2\2"+
+		"K\13\3\2\2\2LP\7\6\2\2MO\5\2\2\2NM\3\2\2\2OR\3\2\2\2PN\3\2\2\2PQ\3\2\2"+
+		"\2QS\3\2\2\2RP\3\2\2\2ST\7\16\2\2T\r\3\2\2\2UV\7\32\2\2V\17\3\2\2\2WX"+
+		"\7\26\2\2X\21\3\2\2\2YZ\7\17\2\2Z\23\3\2\2\2[\\\7\30\2\2\\\25\3\2\2\2"+
+		"]^\t\2\2\2^\27\3\2\2\2_`\7\27\2\2`\31\3\2\2\2ab\5\34\17\2bc\5\2\2\2c\33"+
+		"\3\2\2\2de\t\3\2\2e\35\3\2\2\2fg\7\4\2\2gh\7\31\2\2h\37\3\2\2\2\b)\61"+
+		"\67=FP";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {

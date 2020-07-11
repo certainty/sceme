@@ -38,15 +38,25 @@ public interface ScemeListener extends ParseTreeListener {
 	 */
 	void exitCompound_datum(ScemeParser.Compound_datumContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link ScemeParser#list}.
+	 * Enter a parse tree produced by {@link ScemeParser#proper_list}.
 	 * @param ctx the parse tree
 	 */
-	void enterList(ScemeParser.ListContext ctx);
+	void enterProper_list(ScemeParser.Proper_listContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link ScemeParser#list}.
+	 * Exit a parse tree produced by {@link ScemeParser#proper_list}.
 	 * @param ctx the parse tree
 	 */
-	void exitList(ScemeParser.ListContext ctx);
+	void exitProper_list(ScemeParser.Proper_listContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link ScemeParser#improper_list}.
+	 * @param ctx the parse tree
+	 */
+	void enterImproper_list(ScemeParser.Improper_listContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ScemeParser#improper_list}.
+	 * @param ctx the parse tree
+	 */
+	void exitImproper_list(ScemeParser.Improper_listContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link ScemeParser#vector}.
 	 * @param ctx the parse tree
@@ -57,6 +67,66 @@ public interface ScemeListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitVector(ScemeParser.VectorContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link ScemeParser#symbol}.
+	 * @param ctx the parse tree
+	 */
+	void enterSymbol(ScemeParser.SymbolContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ScemeParser#symbol}.
+	 * @param ctx the parse tree
+	 */
+	void exitSymbol(ScemeParser.SymbolContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link ScemeParser#string}.
+	 * @param ctx the parse tree
+	 */
+	void enterString(ScemeParser.StringContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ScemeParser#string}.
+	 * @param ctx the parse tree
+	 */
+	void exitString(ScemeParser.StringContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link ScemeParser#bool}.
+	 * @param ctx the parse tree
+	 */
+	void enterBool(ScemeParser.BoolContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ScemeParser#bool}.
+	 * @param ctx the parse tree
+	 */
+	void exitBool(ScemeParser.BoolContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link ScemeParser#number}.
+	 * @param ctx the parse tree
+	 */
+	void enterNumber(ScemeParser.NumberContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ScemeParser#number}.
+	 * @param ctx the parse tree
+	 */
+	void exitNumber(ScemeParser.NumberContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link ScemeParser#character}.
+	 * @param ctx the parse tree
+	 */
+	void enterCharacter(ScemeParser.CharacterContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ScemeParser#character}.
+	 * @param ctx the parse tree
+	 */
+	void exitCharacter(ScemeParser.CharacterContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link ScemeParser#bytevector}.
+	 * @param ctx the parse tree
+	 */
+	void enterBytevector(ScemeParser.BytevectorContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ScemeParser#bytevector}.
+	 * @param ctx the parse tree
+	 */
+	void exitBytevector(ScemeParser.BytevectorContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link ScemeParser#abbreviation}.
 	 * @param ctx the parse tree
@@ -87,14 +157,4 @@ public interface ScemeListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitLabel(ScemeParser.LabelContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link ScemeParser#symbol}.
-	 * @param ctx the parse tree
-	 */
-	void enterSymbol(ScemeParser.SymbolContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ScemeParser#symbol}.
-	 * @param ctx the parse tree
-	 */
-	void exitSymbol(ScemeParser.SymbolContext ctx);
 }
