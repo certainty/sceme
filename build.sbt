@@ -4,23 +4,33 @@ lazy val root =
   project
   .in(file("."))
   .settings(commonSettings)
-  .aggregate(handRolled, graalSceme)
+  .aggregate(scemeHandrolled, scemeTruffle)
 
-lazy val graalSceme =
+lazy val scemeParser =
   project
-    .in(file("graal"))
+  .in(file("sceme_parser"))
+  .settings(
+    name := "sceme_parser",
+    libraryDependencies ++= commonDependencies ++ Seq(
+      Dependencies.antlr4
+    )
+  )
+
+lazy val scemeTruffle =
+  project
+    .in(file("sceme_truffle"))
     .settings(
-     name := "sceme_graal",
+     name := "sceme_truffle",
      libraryDependencies ++= commonDependencies ++ Seq(
        Dependencies.truffleApi,
        Dependencies.truffleDSL,
        Dependencies.graalSDK
-     )
-    ).enablePlugins(GraalVMNativeImagePlugin, DockerPlugin)
+     )).dependsOn(scemeParser)
+    .enablePlugins(GraalVMNativeImagePlugin, DockerPlugin)
 
-lazy val handRolled =
+lazy val scemeHandrolled =
   project
-    .in(file("handrolled"))
+    .in(file("sceme_handrolled"))
     .settings(
       name := "sceme_handrolled",
       libraryDependencies ++= commonDependencies ++ Seq(
@@ -33,7 +43,8 @@ lazy val handRolled =
       ),
       publishArtifact := false,
       testFrameworks += new TestFramework("zio.test.sbt.ZTestFramework")
-    ).enablePlugins(DockerPlugin)
+    ).dependsOn(scemeParser)
+    .enablePlugins(DockerPlugin)
 
 lazy val Dependencies =
   new {
@@ -43,6 +54,8 @@ lazy val Dependencies =
       val parboiled =  "2.1.8"
       val clipp = "0.3.1"
       val graalVm = "1.0.0-rc7"
+      val truffle = "20.1.0"
+      val antrl4 = "4.8"
     }
 
     val zio        = "dev.zio" %% "zio"          % Version.zio
@@ -53,10 +66,13 @@ lazy val Dependencies =
     val specs2     = "org.specs2" %% "specs2-core" % Version.specs2
 
     // truffle
-    val truffleApi = "com.oracle.truffle" % "truffle-api" % Version.graalVm
-    val truffleDSL = "com.oracle.truffle" % "truffle-dsl-processor" % Version.graalVm
-    val truffleTCK = "com.oracle.truffle" % "truffle-tck" % Version.graalVm
+    val truffleApi = "org.graalvm.truffle" % "truffle-api" % Version.truffle
+    val truffleDSL = "org.graalvm.truffle" % "truffle-dsl-processor" % Version.truffle
+    val truffleTCK = "org.graalvm.truffle" % "truffle-tck" % Version.truffle
     val graalSDK  = "org.graalvm" % "graal-sdk" % Version.graalVm
+
+    // antlr4
+    val antlr4 = "org.antlr" % "antlr4-runtime" % Version.antrl4
   }
 
 lazy val commonDependencies = Seq(Dependencies.specs2 % "test")
