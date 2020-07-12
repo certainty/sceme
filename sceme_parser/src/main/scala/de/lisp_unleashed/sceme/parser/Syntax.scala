@@ -40,3 +40,4 @@ final case class ByteVectorSyntax(value: Vector[Byte], sourceSection: SourceInfo
 
 // expressions
 sealed trait Expression
+final case class Literal(value: Syntax[_]) extends Expression
