@@ -17,9 +17,14 @@ final case class SymbolSyntax(value: String, delimited: Boolean, sourceSection: 
 
 final case class BooleanSyntax(value: Boolean, sourceSection: SourceInformation) extends Syntax[Boolean]
 
-final case class FixnumSyntax(value: Long, sourceSection: SourceInformation) extends Syntax[Long]
+sealed trait Number
+sealed trait ExactNumber   extends Number
+sealed trait InexactNumber extends Number
 
-final case class FlonumSyntax(value: Double, sourceSection: SourceInformation) extends Syntax[Double]
+final case class FixnumSyntax(value: Long, sourceSection: SourceInformation)   extends Syntax[Long] with ExactNumber
+final case class FlonumSyntax(value: Double, sourceSection: SourceInformation) extends Syntax[Double] with InexactNumber
+
+// TODO: add rational & complex numbers
 
 // TODO: add rational and complex
 

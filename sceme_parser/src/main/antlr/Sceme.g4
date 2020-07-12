@@ -1,8 +1,8 @@
 // https://small.r7rs.org/attachment/r7rs.pdf
 grammar Sceme;
-import Common;
+import Common, Numbers;
 
-datum: bool | character | string | symbol;
+datum: bool | character | string | number | symbol;
 
 symbol
     : IDENTIFIER            # symbolNormal
@@ -23,6 +23,25 @@ character
     ;
 
 string: STRING;
+
+number
+    : fixnum
+    | flonum
+    ;
+
+fixnum
+    : FIXNUM_2  # fixnumBin
+    | FIXNUM_8  # fixnumOct
+    | FIXNUM_10 # fixnumDec
+    | FIXNUM_16 # fixnumHex
+    ;
+
+flonum
+    : FLONUM_2  # flonumBin
+    | FLONUM_8  # flonumOct
+    | FLONUM_10 # flonumDec
+    | FLONUM_16 # flonumHex
+    ;
 
 /*
 program: command_or_definition+;

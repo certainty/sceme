@@ -85,4 +85,66 @@ public interface ScemeVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitString(ScemeParser.StringContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link ScemeParser#number}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitNumber(ScemeParser.NumberContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code fixnumBin}
+	 * labeled alternative in {@link ScemeParser#fixnum}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFixnumBin(ScemeParser.FixnumBinContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code fixnumOct}
+	 * labeled alternative in {@link ScemeParser#fixnum}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFixnumOct(ScemeParser.FixnumOctContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code fixnumDec}
+	 * labeled alternative in {@link ScemeParser#fixnum}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFixnumDec(ScemeParser.FixnumDecContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code fixnumHex}
+	 * labeled alternative in {@link ScemeParser#fixnum}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFixnumHex(ScemeParser.FixnumHexContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code flonumBin}
+	 * labeled alternative in {@link ScemeParser#flonum}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFlonumBin(ScemeParser.FlonumBinContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code flonumOct}
+	 * labeled alternative in {@link ScemeParser#flonum}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFlonumOct(ScemeParser.FlonumOctContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code flonumDec}
+	 * labeled alternative in {@link ScemeParser#flonum}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFlonumDec(ScemeParser.FlonumDecContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code flonumHex}
+	 * labeled alternative in {@link ScemeParser#flonum}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFlonumHex(ScemeParser.FlonumHexContext ctx);
 }

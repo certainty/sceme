@@ -135,4 +135,110 @@ public interface ScemeListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitString(ScemeParser.StringContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link ScemeParser#number}.
+	 * @param ctx the parse tree
+	 */
+	void enterNumber(ScemeParser.NumberContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ScemeParser#number}.
+	 * @param ctx the parse tree
+	 */
+	void exitNumber(ScemeParser.NumberContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code fixnumBin}
+	 * labeled alternative in {@link ScemeParser#fixnum}.
+	 * @param ctx the parse tree
+	 */
+	void enterFixnumBin(ScemeParser.FixnumBinContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code fixnumBin}
+	 * labeled alternative in {@link ScemeParser#fixnum}.
+	 * @param ctx the parse tree
+	 */
+	void exitFixnumBin(ScemeParser.FixnumBinContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code fixnumOct}
+	 * labeled alternative in {@link ScemeParser#fixnum}.
+	 * @param ctx the parse tree
+	 */
+	void enterFixnumOct(ScemeParser.FixnumOctContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code fixnumOct}
+	 * labeled alternative in {@link ScemeParser#fixnum}.
+	 * @param ctx the parse tree
+	 */
+	void exitFixnumOct(ScemeParser.FixnumOctContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code fixnumDec}
+	 * labeled alternative in {@link ScemeParser#fixnum}.
+	 * @param ctx the parse tree
+	 */
+	void enterFixnumDec(ScemeParser.FixnumDecContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code fixnumDec}
+	 * labeled alternative in {@link ScemeParser#fixnum}.
+	 * @param ctx the parse tree
+	 */
+	void exitFixnumDec(ScemeParser.FixnumDecContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code fixnumHex}
+	 * labeled alternative in {@link ScemeParser#fixnum}.
+	 * @param ctx the parse tree
+	 */
+	void enterFixnumHex(ScemeParser.FixnumHexContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code fixnumHex}
+	 * labeled alternative in {@link ScemeParser#fixnum}.
+	 * @param ctx the parse tree
+	 */
+	void exitFixnumHex(ScemeParser.FixnumHexContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code flonumBin}
+	 * labeled alternative in {@link ScemeParser#flonum}.
+	 * @param ctx the parse tree
+	 */
+	void enterFlonumBin(ScemeParser.FlonumBinContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code flonumBin}
+	 * labeled alternative in {@link ScemeParser#flonum}.
+	 * @param ctx the parse tree
+	 */
+	void exitFlonumBin(ScemeParser.FlonumBinContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code flonumOct}
+	 * labeled alternative in {@link ScemeParser#flonum}.
+	 * @param ctx the parse tree
+	 */
+	void enterFlonumOct(ScemeParser.FlonumOctContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code flonumOct}
+	 * labeled alternative in {@link ScemeParser#flonum}.
+	 * @param ctx the parse tree
+	 */
+	void exitFlonumOct(ScemeParser.FlonumOctContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code flonumDec}
+	 * labeled alternative in {@link ScemeParser#flonum}.
+	 * @param ctx the parse tree
+	 */
+	void enterFlonumDec(ScemeParser.FlonumDecContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code flonumDec}
+	 * labeled alternative in {@link ScemeParser#flonum}.
+	 * @param ctx the parse tree
+	 */
+	void exitFlonumDec(ScemeParser.FlonumDecContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code flonumHex}
+	 * labeled alternative in {@link ScemeParser#flonum}.
+	 * @param ctx the parse tree
+	 */
+	void enterFlonumHex(ScemeParser.FlonumHexContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code flonumHex}
+	 * labeled alternative in {@link ScemeParser#flonum}.
+	 * @param ctx the parse tree
+	 */
+	void exitFlonumHex(ScemeParser.FlonumHexContext ctx);
 }
