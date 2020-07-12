@@ -12,7 +12,8 @@ final case class StringSyntax(value: String, sourceSection: SourceInformation) e
 
 final case class CharacterSyntax(value: Char, sourceSection: SourceInformation) extends Syntax[Char]
 
-final case class SymbolSyntax(value: Symbol, sourceSection: SourceInformation) extends Syntax[Symbol]
+final case class SymbolSyntax(value: String, delimited: Boolean, sourceSection: SourceInformation)
+    extends Syntax[String]
 
 final case class BooleanSyntax(value: Boolean, sourceSection: SourceInformation) extends Syntax[Boolean]
 

@@ -3,15 +3,6 @@ import de.lisp_unleashed.sceme.parser.gen.{ ScemeBaseVisitor, ScemeParser }
 import org.antlr.v4.runtime.{ CharStreams, CodePointCharStream, CommonTokenStream, ParserRuleContext }
 
 class ScemeReader(sourceStream: CodePointCharStream) extends ScemeBaseVisitor[Syntax[_]] {
-  private val namedCharacterMap = Map(
-    "space"     -> ' ',
-    "alarm"     -> '\b',
-    "backspace" -> ' ',
-    "escape"    -> ' ',
-    "return"    -> '\n',
-    "tab"       -> '\t'
-  )
-
   def createAst(): Syntax[_] = {
     val tokenStream = new CommonTokenStream(new gen.ScemeLexer(sourceStream))
     val scemeParser = new gen.ScemeParser(tokenStream)
@@ -23,46 +14,51 @@ class ScemeReader(sourceStream: CodePointCharStream) extends ScemeBaseVisitor[Sy
                       ctx.start.getCharPositionInLine + 1,
                       ctx.stop.getStopIndex - ctx.start.getStartIndex)
 
-  override def visitNumber(ctx: ScemeParser.NumberContext): Syntax[_] =
-    if (ctx.NUM_2() != null) {
-      FixnumSyntax(Integer.parseInt(ctx.NUM_2().getText.drop(2), 2).toLong, createSourceInformation(ctx))
-    } else if (ctx.NUM_8() != null) {
-      FixnumSyntax(Integer.parseInt(ctx.NUM_8().getText.drop(2), 8).toLong, createSourceInformation(ctx))
-    } else if (ctx.NUM_10() != null) {
-      if (ctx.NUM_10().getText.startsWith("#")) {
-        FixnumSyntax(Integer.parseInt(ctx.NUM_10().getText.drop(2), 10).toLong, createSourceInformation(ctx))
-      } else {
-        FixnumSyntax(Integer.parseInt(ctx.NUM_10().getText, 10).toLong, createSourceInformation(ctx))
-      }
-    } else {
-      FixnumSyntax(Integer.parseInt(ctx.NUM_16().getText.drop(2), 16).toLong, createSourceInformation(ctx))
-    }
+  override def visitBoolTrue(ctx: ScemeParser.BoolTrueContext): Syntax[Boolean] =
+    BooleanSyntax(true, createSourceInformation(ctx))
 
-  override def visitBool(ctx: ScemeParser.BoolContext): Syntax[_] = ctx.getText match {
-    case "#t" | "#true"  => BooleanSyntax(true, createSourceInformation(ctx))
-    case "#f" | "#false" => BooleanSyntax(false, createSourceInformation(ctx))
+  override def visitBoolFalse(ctx: ScemeParser.BoolFalseContext): Syntax[Boolean] =
+    BooleanSyntax(false, createSourceInformation(ctx))
+
+  override def visitSymbolDelimited(ctx: ScemeParser.SymbolDelimitedContext): Syntax[String] = {
+    val symbolText = ctx.getText
+    SymbolSyntax(symbolText.substring(1, symbolText.length - 1), true, createSourceInformation(ctx))
   }
 
-  override def visitString(ctx: ScemeParser.StringContext): Syntax[_] = {
-    val stringValue = ctx.getText
-    StringSyntax(stringValue.substring(1, stringValue.length - 1), createSourceInformation(ctx))
+  override def visitSymbolNormal(ctx: ScemeParser.SymbolNormalContext): Syntax[String] =
+    SymbolSyntax(ctx.getText, false, createSourceInformation(ctx))
+
+  override def visitSymbolPeculiar(ctx: ScemeParser.SymbolPeculiarContext): Syntax[String] =
+    SymbolSyntax(ctx.getText, false, createSourceInformation(ctx))
+
+  override def visitCharacterCharLiteral(ctx: ScemeParser.CharacterCharLiteralContext): Syntax[Char] =
+    CharacterSyntax(ctx.getText.charAt(2), createSourceInformation(ctx))
+
+  override def visitCharacterHexLiteral(ctx: ScemeParser.CharacterHexLiteralContext): Syntax[Char] = {
+    val value = Integer.valueOf(ctx.getText.drop(3), 16)
+    CharacterSyntax(value.toChar, createSourceInformation(ctx))
   }
 
-  override def visitCharacter(ctx: ScemeParser.CharacterContext): Syntax[_] =
-    if (ctx.CHAR_LITERAL() != null) {
-      CharacterSyntax(ctx.getText.charAt(2), createSourceInformation(ctx))
-    } else if (ctx.NAMED_CHAR_LITERAL() != null) {
-      CharacterSyntax(namedCharacterMap(ctx.getText.drop(2)), createSourceInformation(ctx))
+  override def visitCharacterUnicodeLiteral(ctx: ScemeParser.CharacterUnicodeLiteralContext): Syntax[Char] = {
+    val value = Integer.valueOf(ctx.getText.drop(3), 16)
+    CharacterSyntax(value.toChar, createSourceInformation(ctx))
+  }
 
-    } else if (ctx.UNICODE_CHAR_LITERAL() != null) {
-      val codePoint = Integer.parseInt(ctx.UNICODE_CHAR_LITERAL().getText.drop(3), 16)
-      CharacterSyntax(codePoint.asInstanceOf[Char], createSourceInformation(ctx))
-    } else if (ctx.HEX_CHAR_LITERAL() != null) {
-      val codePoint = Integer.parseInt(ctx.HEX_CHAR_LITERAL().getText.drop(3), 16)
-      CharacterSyntax(codePoint.asInstanceOf[Char], createSourceInformation(ctx))
-    } else {
-      CharacterSyntax('0', createSourceInformation(ctx))
+  override def visitCharacterNamed(ctx: ScemeParser.CharacterNamedContext): Syntax[_] = {
+    val value = ctx.getText.drop(2) match {
+      case "space"     => ' '
+      case "newline"   => '\n'
+      case "return"    => '\r'
+      case "tab"       => '\t'
+      case "alarm"     => 7.toChar
+      case "null"      => 0.toChar
+      case "backspace" => 8.toChar
+      case "delete"    => 24.toChar
+      case "escape"    => 27.toChar
     }
+    CharacterSyntax(value, createSourceInformation(ctx))
+  }
+
 }
 
 object ScemeReader {

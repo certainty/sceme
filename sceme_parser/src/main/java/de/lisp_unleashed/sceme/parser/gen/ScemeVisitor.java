@@ -17,87 +17,66 @@ public interface ScemeVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitDatum(ScemeParser.DatumContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link ScemeParser#simple_datum}.
+	 * Visit a parse tree produced by the {@code symbolNormal}
+	 * labeled alternative in {@link ScemeParser#symbol}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitSimple_datum(ScemeParser.Simple_datumContext ctx);
+	T visitSymbolNormal(ScemeParser.SymbolNormalContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link ScemeParser#compound_datum}.
+	 * Visit a parse tree produced by the {@code symbolDelimited}
+	 * labeled alternative in {@link ScemeParser#symbol}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitCompound_datum(ScemeParser.Compound_datumContext ctx);
+	T visitSymbolDelimited(ScemeParser.SymbolDelimitedContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link ScemeParser#proper_list}.
+	 * Visit a parse tree produced by the {@code symbolPeculiar}
+	 * labeled alternative in {@link ScemeParser#symbol}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitProper_list(ScemeParser.Proper_listContext ctx);
+	T visitSymbolPeculiar(ScemeParser.SymbolPeculiarContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link ScemeParser#improper_list}.
+	 * Visit a parse tree produced by the {@code boolTrue}
+	 * labeled alternative in {@link ScemeParser#bool}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitImproper_list(ScemeParser.Improper_listContext ctx);
+	T visitBoolTrue(ScemeParser.BoolTrueContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link ScemeParser#vector}.
+	 * Visit a parse tree produced by the {@code boolFalse}
+	 * labeled alternative in {@link ScemeParser#bool}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitVector(ScemeParser.VectorContext ctx);
+	T visitBoolFalse(ScemeParser.BoolFalseContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link ScemeParser#symbol}.
+	 * Visit a parse tree produced by the {@code characterNamed}
+	 * labeled alternative in {@link ScemeParser#character}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitSymbol(ScemeParser.SymbolContext ctx);
+	T visitCharacterNamed(ScemeParser.CharacterNamedContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link ScemeParser#string}.
+	 * Visit a parse tree produced by the {@code characterHexLiteral}
+	 * labeled alternative in {@link ScemeParser#character}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitString(ScemeParser.StringContext ctx);
+	T visitCharacterHexLiteral(ScemeParser.CharacterHexLiteralContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link ScemeParser#bool}.
+	 * Visit a parse tree produced by the {@code characterUnicodeLiteral}
+	 * labeled alternative in {@link ScemeParser#character}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitBool(ScemeParser.BoolContext ctx);
+	T visitCharacterUnicodeLiteral(ScemeParser.CharacterUnicodeLiteralContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link ScemeParser#number}.
+	 * Visit a parse tree produced by the {@code characterCharLiteral}
+	 * labeled alternative in {@link ScemeParser#character}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitNumber(ScemeParser.NumberContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link ScemeParser#character}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitCharacter(ScemeParser.CharacterContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link ScemeParser#bytevector}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitBytevector(ScemeParser.BytevectorContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link ScemeParser#abbreviation}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitAbbreviation(ScemeParser.AbbreviationContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link ScemeParser#abbrev_prefix}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitAbbrev_prefix(ScemeParser.Abbrev_prefixContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link ScemeParser#label}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitLabel(ScemeParser.LabelContext ctx);
+	T visitCharacterCharLiteral(ScemeParser.CharacterCharLiteralContext ctx);
 }

@@ -28,169 +28,109 @@ public class ScemeBaseListener implements ScemeListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterSimple_datum(ScemeParser.Simple_datumContext ctx) { }
+	@Override public void enterSymbolNormal(ScemeParser.SymbolNormalContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitSimple_datum(ScemeParser.Simple_datumContext ctx) { }
+	@Override public void exitSymbolNormal(ScemeParser.SymbolNormalContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterCompound_datum(ScemeParser.Compound_datumContext ctx) { }
+	@Override public void enterSymbolDelimited(ScemeParser.SymbolDelimitedContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitCompound_datum(ScemeParser.Compound_datumContext ctx) { }
+	@Override public void exitSymbolDelimited(ScemeParser.SymbolDelimitedContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterProper_list(ScemeParser.Proper_listContext ctx) { }
+	@Override public void enterSymbolPeculiar(ScemeParser.SymbolPeculiarContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitProper_list(ScemeParser.Proper_listContext ctx) { }
+	@Override public void exitSymbolPeculiar(ScemeParser.SymbolPeculiarContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterImproper_list(ScemeParser.Improper_listContext ctx) { }
+	@Override public void enterBoolTrue(ScemeParser.BoolTrueContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitImproper_list(ScemeParser.Improper_listContext ctx) { }
+	@Override public void exitBoolTrue(ScemeParser.BoolTrueContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterVector(ScemeParser.VectorContext ctx) { }
+	@Override public void enterBoolFalse(ScemeParser.BoolFalseContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitVector(ScemeParser.VectorContext ctx) { }
+	@Override public void exitBoolFalse(ScemeParser.BoolFalseContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterSymbol(ScemeParser.SymbolContext ctx) { }
+	@Override public void enterCharacterNamed(ScemeParser.CharacterNamedContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitSymbol(ScemeParser.SymbolContext ctx) { }
+	@Override public void exitCharacterNamed(ScemeParser.CharacterNamedContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterString(ScemeParser.StringContext ctx) { }
+	@Override public void enterCharacterHexLiteral(ScemeParser.CharacterHexLiteralContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitString(ScemeParser.StringContext ctx) { }
+	@Override public void exitCharacterHexLiteral(ScemeParser.CharacterHexLiteralContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterBool(ScemeParser.BoolContext ctx) { }
+	@Override public void enterCharacterUnicodeLiteral(ScemeParser.CharacterUnicodeLiteralContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitBool(ScemeParser.BoolContext ctx) { }
+	@Override public void exitCharacterUnicodeLiteral(ScemeParser.CharacterUnicodeLiteralContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterNumber(ScemeParser.NumberContext ctx) { }
+	@Override public void enterCharacterCharLiteral(ScemeParser.CharacterCharLiteralContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitNumber(ScemeParser.NumberContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterCharacter(ScemeParser.CharacterContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitCharacter(ScemeParser.CharacterContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterBytevector(ScemeParser.BytevectorContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitBytevector(ScemeParser.BytevectorContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterAbbreviation(ScemeParser.AbbreviationContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitAbbreviation(ScemeParser.AbbreviationContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterAbbrev_prefix(ScemeParser.Abbrev_prefixContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitAbbrev_prefix(ScemeParser.Abbrev_prefixContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterLabel(ScemeParser.LabelContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitLabel(ScemeParser.LabelContext ctx) { }
+	@Override public void exitCharacterCharLiteral(ScemeParser.CharacterCharLiteralContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

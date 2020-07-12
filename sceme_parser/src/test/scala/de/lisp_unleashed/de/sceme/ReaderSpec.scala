@@ -1,5 +1,5 @@
 package de.lisp_unleashed.de.sceme
-import de.lisp_unleashed.sceme.parser.{ BooleanSyntax, CharacterSyntax, FixnumSyntax, ScemeReader, StringSyntax }
+import de.lisp_unleashed.sceme.parser.{ BooleanSyntax, CharacterSyntax, ScemeReader, SymbolSyntax }
 import org.specs2.mutable.Specification
 
 class ReaderSpec extends Specification {
@@ -22,6 +22,7 @@ class ReaderSpec extends Specification {
     }
   }
 
+  /*
   "numbers" >> {
     read("65") must beLike {
       case FixnumSyntax(value, _) => value.toInt mustEqual 65
@@ -35,6 +36,24 @@ class ReaderSpec extends Specification {
 
     read("\"\"") must beLike {
       case StringSyntax(value, _) => value mustEqual ""
+    }
+  }
+
+   */
+
+  "symbols" >> {
+    read("""foo""") must beLike {
+      case SymbolSyntax(value, delimited, _) => {
+        value mustEqual "foo"
+        delimited must beFalse
+      }
+    }
+
+    read("""|complicated symbol foo|""") must beLike {
+      case SymbolSyntax(value, delimited, _) => {
+        value mustEqual "complicated symbol foo"
+        delimited must beTrue
+      }
     }
   }
 

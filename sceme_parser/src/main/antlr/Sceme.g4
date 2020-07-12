@@ -1,8 +1,27 @@
-// TODO: add entry points: https://github.com/graalvm/simplelanguage/blob/e3e82664dd4b2d91a8d80dc462fa72bf0399aa14/language/src/main/java/com/oracle/truffle/sl/parser/SimpleLanguage.g4
+// https://small.r7rs.org/attachment/r7rs.pdf
 grammar Sceme;
+import Common;
 
-// the following is not actually used by the parser currently
-// and will be removed soon
+datum: bool | character | symbol;
+
+symbol
+    : IDENTIFIER            # symbolNormal
+    | DELIMITED_IDENTIFIER  # symbolDelimited
+    | PECULIAR_IDENTIFIER   # symbolPeculiar
+    ;
+
+bool
+    : BOOL_TRUE  # boolTrue
+    | BOOL_FALSE # boolFalse
+    ;
+
+character
+    : NAMED_CHAR_LITERAL   # characterNamed
+    | HEX_CHAR_LITERAL     # characterHexLiteral
+    | UNICODE_CHAR_LITERAL # characterUnicodeLiteral
+    | CHAR_LITERAL         # characterCharLiteral
+    ;
+
 /*
 program: command_or_definition+;
 
@@ -77,7 +96,6 @@ consequent: expression;
 alternate: expression;
 
 assignment: L_PAREN 'set!' identifier expression R_PAREN;
-*/
 
 // HERE is where the actually used grammar starts
 // Datum
@@ -401,7 +419,8 @@ fragment DIGIT: [0-9];
 UNICODE_VALUE: HEXDIGIT? HEXDIGIT? HEXDIGIT? HEXDIGIT;
 HEX_SCALAR_VALUE: HEXDIGIT+;
 
-HEXDIGIT: DIGIT | [a-f];
+HEXDIGIT: DIGIT | [a-f] | [A-F];
 fragment INLINE_HEX_ESCAPE: '\\x' HEX_SCALAR_VALUE;
 fragment MNEMONIC_ESCAPE: '\\' ('a' | 'b' | 't' | 'n' | 'r');
 fragment VERTICAL_LINE: '|';
+*/

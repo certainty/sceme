@@ -18,143 +18,111 @@ public interface ScemeListener extends ParseTreeListener {
 	 */
 	void exitDatum(ScemeParser.DatumContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link ScemeParser#simple_datum}.
+	 * Enter a parse tree produced by the {@code symbolNormal}
+	 * labeled alternative in {@link ScemeParser#symbol}.
 	 * @param ctx the parse tree
 	 */
-	void enterSimple_datum(ScemeParser.Simple_datumContext ctx);
+	void enterSymbolNormal(ScemeParser.SymbolNormalContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link ScemeParser#simple_datum}.
+	 * Exit a parse tree produced by the {@code symbolNormal}
+	 * labeled alternative in {@link ScemeParser#symbol}.
 	 * @param ctx the parse tree
 	 */
-	void exitSimple_datum(ScemeParser.Simple_datumContext ctx);
+	void exitSymbolNormal(ScemeParser.SymbolNormalContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link ScemeParser#compound_datum}.
+	 * Enter a parse tree produced by the {@code symbolDelimited}
+	 * labeled alternative in {@link ScemeParser#symbol}.
 	 * @param ctx the parse tree
 	 */
-	void enterCompound_datum(ScemeParser.Compound_datumContext ctx);
+	void enterSymbolDelimited(ScemeParser.SymbolDelimitedContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link ScemeParser#compound_datum}.
+	 * Exit a parse tree produced by the {@code symbolDelimited}
+	 * labeled alternative in {@link ScemeParser#symbol}.
 	 * @param ctx the parse tree
 	 */
-	void exitCompound_datum(ScemeParser.Compound_datumContext ctx);
+	void exitSymbolDelimited(ScemeParser.SymbolDelimitedContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link ScemeParser#proper_list}.
+	 * Enter a parse tree produced by the {@code symbolPeculiar}
+	 * labeled alternative in {@link ScemeParser#symbol}.
 	 * @param ctx the parse tree
 	 */
-	void enterProper_list(ScemeParser.Proper_listContext ctx);
+	void enterSymbolPeculiar(ScemeParser.SymbolPeculiarContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link ScemeParser#proper_list}.
+	 * Exit a parse tree produced by the {@code symbolPeculiar}
+	 * labeled alternative in {@link ScemeParser#symbol}.
 	 * @param ctx the parse tree
 	 */
-	void exitProper_list(ScemeParser.Proper_listContext ctx);
+	void exitSymbolPeculiar(ScemeParser.SymbolPeculiarContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link ScemeParser#improper_list}.
+	 * Enter a parse tree produced by the {@code boolTrue}
+	 * labeled alternative in {@link ScemeParser#bool}.
 	 * @param ctx the parse tree
 	 */
-	void enterImproper_list(ScemeParser.Improper_listContext ctx);
+	void enterBoolTrue(ScemeParser.BoolTrueContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link ScemeParser#improper_list}.
+	 * Exit a parse tree produced by the {@code boolTrue}
+	 * labeled alternative in {@link ScemeParser#bool}.
 	 * @param ctx the parse tree
 	 */
-	void exitImproper_list(ScemeParser.Improper_listContext ctx);
+	void exitBoolTrue(ScemeParser.BoolTrueContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link ScemeParser#vector}.
+	 * Enter a parse tree produced by the {@code boolFalse}
+	 * labeled alternative in {@link ScemeParser#bool}.
 	 * @param ctx the parse tree
 	 */
-	void enterVector(ScemeParser.VectorContext ctx);
+	void enterBoolFalse(ScemeParser.BoolFalseContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link ScemeParser#vector}.
+	 * Exit a parse tree produced by the {@code boolFalse}
+	 * labeled alternative in {@link ScemeParser#bool}.
 	 * @param ctx the parse tree
 	 */
-	void exitVector(ScemeParser.VectorContext ctx);
+	void exitBoolFalse(ScemeParser.BoolFalseContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link ScemeParser#symbol}.
+	 * Enter a parse tree produced by the {@code characterNamed}
+	 * labeled alternative in {@link ScemeParser#character}.
 	 * @param ctx the parse tree
 	 */
-	void enterSymbol(ScemeParser.SymbolContext ctx);
+	void enterCharacterNamed(ScemeParser.CharacterNamedContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link ScemeParser#symbol}.
+	 * Exit a parse tree produced by the {@code characterNamed}
+	 * labeled alternative in {@link ScemeParser#character}.
 	 * @param ctx the parse tree
 	 */
-	void exitSymbol(ScemeParser.SymbolContext ctx);
+	void exitCharacterNamed(ScemeParser.CharacterNamedContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link ScemeParser#string}.
+	 * Enter a parse tree produced by the {@code characterHexLiteral}
+	 * labeled alternative in {@link ScemeParser#character}.
 	 * @param ctx the parse tree
 	 */
-	void enterString(ScemeParser.StringContext ctx);
+	void enterCharacterHexLiteral(ScemeParser.CharacterHexLiteralContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link ScemeParser#string}.
+	 * Exit a parse tree produced by the {@code characterHexLiteral}
+	 * labeled alternative in {@link ScemeParser#character}.
 	 * @param ctx the parse tree
 	 */
-	void exitString(ScemeParser.StringContext ctx);
+	void exitCharacterHexLiteral(ScemeParser.CharacterHexLiteralContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link ScemeParser#bool}.
+	 * Enter a parse tree produced by the {@code characterUnicodeLiteral}
+	 * labeled alternative in {@link ScemeParser#character}.
 	 * @param ctx the parse tree
 	 */
-	void enterBool(ScemeParser.BoolContext ctx);
+	void enterCharacterUnicodeLiteral(ScemeParser.CharacterUnicodeLiteralContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link ScemeParser#bool}.
+	 * Exit a parse tree produced by the {@code characterUnicodeLiteral}
+	 * labeled alternative in {@link ScemeParser#character}.
 	 * @param ctx the parse tree
 	 */
-	void exitBool(ScemeParser.BoolContext ctx);
+	void exitCharacterUnicodeLiteral(ScemeParser.CharacterUnicodeLiteralContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link ScemeParser#number}.
+	 * Enter a parse tree produced by the {@code characterCharLiteral}
+	 * labeled alternative in {@link ScemeParser#character}.
 	 * @param ctx the parse tree
 	 */
-	void enterNumber(ScemeParser.NumberContext ctx);
+	void enterCharacterCharLiteral(ScemeParser.CharacterCharLiteralContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link ScemeParser#number}.
+	 * Exit a parse tree produced by the {@code characterCharLiteral}
+	 * labeled alternative in {@link ScemeParser#character}.
 	 * @param ctx the parse tree
 	 */
-	void exitNumber(ScemeParser.NumberContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link ScemeParser#character}.
-	 * @param ctx the parse tree
-	 */
-	void enterCharacter(ScemeParser.CharacterContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ScemeParser#character}.
-	 * @param ctx the parse tree
-	 */
-	void exitCharacter(ScemeParser.CharacterContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link ScemeParser#bytevector}.
-	 * @param ctx the parse tree
-	 */
-	void enterBytevector(ScemeParser.BytevectorContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ScemeParser#bytevector}.
-	 * @param ctx the parse tree
-	 */
-	void exitBytevector(ScemeParser.BytevectorContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link ScemeParser#abbreviation}.
-	 * @param ctx the parse tree
-	 */
-	void enterAbbreviation(ScemeParser.AbbreviationContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ScemeParser#abbreviation}.
-	 * @param ctx the parse tree
-	 */
-	void exitAbbreviation(ScemeParser.AbbreviationContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link ScemeParser#abbrev_prefix}.
-	 * @param ctx the parse tree
-	 */
-	void enterAbbrev_prefix(ScemeParser.Abbrev_prefixContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ScemeParser#abbrev_prefix}.
-	 * @param ctx the parse tree
-	 */
-	void exitAbbrev_prefix(ScemeParser.Abbrev_prefixContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link ScemeParser#label}.
-	 * @param ctx the parse tree
-	 */
-	void enterLabel(ScemeParser.LabelContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ScemeParser#label}.
-	 * @param ctx the parse tree
-	 */
-	void exitLabel(ScemeParser.LabelContext ctx);
+	void exitCharacterCharLiteral(ScemeParser.CharacterCharLiteralContext ctx);
 }

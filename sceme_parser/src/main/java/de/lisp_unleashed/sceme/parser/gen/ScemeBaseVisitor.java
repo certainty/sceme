@@ -24,96 +24,61 @@ public class ScemeBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements 
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitSimple_datum(ScemeParser.Simple_datumContext ctx) { return visitChildren(ctx); }
+	@Override public T visitSymbolNormal(ScemeParser.SymbolNormalContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitCompound_datum(ScemeParser.Compound_datumContext ctx) { return visitChildren(ctx); }
+	@Override public T visitSymbolDelimited(ScemeParser.SymbolDelimitedContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitProper_list(ScemeParser.Proper_listContext ctx) { return visitChildren(ctx); }
+	@Override public T visitSymbolPeculiar(ScemeParser.SymbolPeculiarContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitImproper_list(ScemeParser.Improper_listContext ctx) { return visitChildren(ctx); }
+	@Override public T visitBoolTrue(ScemeParser.BoolTrueContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitVector(ScemeParser.VectorContext ctx) { return visitChildren(ctx); }
+	@Override public T visitBoolFalse(ScemeParser.BoolFalseContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitSymbol(ScemeParser.SymbolContext ctx) { return visitChildren(ctx); }
+	@Override public T visitCharacterNamed(ScemeParser.CharacterNamedContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitString(ScemeParser.StringContext ctx) { return visitChildren(ctx); }
+	@Override public T visitCharacterHexLiteral(ScemeParser.CharacterHexLiteralContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitBool(ScemeParser.BoolContext ctx) { return visitChildren(ctx); }
+	@Override public T visitCharacterUnicodeLiteral(ScemeParser.CharacterUnicodeLiteralContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitNumber(ScemeParser.NumberContext ctx) { return visitChildren(ctx); }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation returns the result of calling
-	 * {@link #visitChildren} on {@code ctx}.</p>
-	 */
-	@Override public T visitCharacter(ScemeParser.CharacterContext ctx) { return visitChildren(ctx); }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation returns the result of calling
-	 * {@link #visitChildren} on {@code ctx}.</p>
-	 */
-	@Override public T visitBytevector(ScemeParser.BytevectorContext ctx) { return visitChildren(ctx); }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation returns the result of calling
-	 * {@link #visitChildren} on {@code ctx}.</p>
-	 */
-	@Override public T visitAbbreviation(ScemeParser.AbbreviationContext ctx) { return visitChildren(ctx); }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation returns the result of calling
-	 * {@link #visitChildren} on {@code ctx}.</p>
-	 */
-	@Override public T visitAbbrev_prefix(ScemeParser.Abbrev_prefixContext ctx) { return visitChildren(ctx); }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation returns the result of calling
-	 * {@link #visitChildren} on {@code ctx}.</p>
-	 */
-	@Override public T visitLabel(ScemeParser.LabelContext ctx) { return visitChildren(ctx); }
+	@Override public T visitCharacterCharLiteral(ScemeParser.CharacterCharLiteralContext ctx) { return visitChildren(ctx); }
 }
