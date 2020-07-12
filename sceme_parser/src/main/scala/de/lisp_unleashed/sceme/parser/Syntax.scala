@@ -21,7 +21,8 @@ sealed trait Number
 sealed trait ExactNumber   extends Number
 sealed trait InexactNumber extends Number
 
-final case class FixnumSyntax(value: Long, sourceSection: SourceInformation)   extends Syntax[Long] with ExactNumber
+final case class FixnumSyntax(value: Long, sourceSection: SourceInformation) extends Syntax[Long] with ExactNumber
+
 final case class FlonumSyntax(value: Double, sourceSection: SourceInformation) extends Syntax[Double] with InexactNumber
 
 // TODO: add rational & complex numbers
@@ -36,3 +37,6 @@ final case class PairSyntax(value: (List[Sexp], Sexp), sourceSection: SourceInfo
 final case class VectorSyntax(value: Vector[Sexp], sourceSection: SourceInformation) extends Syntax[Vector[Sexp]]
 
 final case class ByteVectorSyntax(value: Vector[Byte], sourceSection: SourceInformation) extends Syntax[Vector[Byte]]
+
+// expressions
+sealed trait Expression
