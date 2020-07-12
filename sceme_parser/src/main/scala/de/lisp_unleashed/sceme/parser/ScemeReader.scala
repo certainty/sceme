@@ -44,7 +44,7 @@ class ScemeReader(sourceStream: CodePointCharStream) extends ScemeBaseVisitor[Sy
     CharacterSyntax(value.toChar, createSourceInformation(ctx))
   }
 
-  override def visitCharacterNamed(ctx: ScemeParser.CharacterNamedContext): Syntax[_] = {
+  override def visitCharacterNamed(ctx: ScemeParser.CharacterNamedContext): Syntax[Char] = {
     val value = ctx.getText.drop(2) match {
       case "space"     => ' '
       case "newline"   => '\n'
@@ -57,6 +57,12 @@ class ScemeReader(sourceStream: CodePointCharStream) extends ScemeBaseVisitor[Sy
       case "escape"    => 27.toChar
     }
     CharacterSyntax(value, createSourceInformation(ctx))
+  }
+
+  override def visitString(ctx: ScemeParser.StringContext): Syntax[_] = {
+    // TODO: add support for inline hex escapes
+    val value = ctx.getText
+    StringSyntax(value.substring(1, value.length - 1), createSourceInformation(ctx))
   }
 
 }

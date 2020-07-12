@@ -131,6 +131,18 @@ public class ScemeBaseListener implements ScemeListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitCharacterCharLiteral(ScemeParser.CharacterCharLiteralContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterString(ScemeParser.StringContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitString(ScemeParser.StringContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

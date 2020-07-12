@@ -21,12 +21,24 @@ HEX_CHAR_LITERAL: '#\\x' HEX_SCALAR_VALUE;
 UNICODE_CHAR_LITERAL: '#\\u' HEXDIGIT? HEXDIGIT? HEXDIGIT? HEXDIGIT;
 CHAR_LITERAL: '#\\' ANY_CHARACTER_VALUE;
 
-CHARACTER_NAME
-    : 'alarm' | 'backspace' | 'delete' | 'escape' | 'newline' | 'null' | 'return' | 'space' | 'tab';
+fragment CHARACTER_NAME: 'alarm' | 'backspace' | 'delete' | 'escape' | 'newline' | 'null' | 'return' | 'space' | 'tab';
+fragment ANY_CHARACTER_VALUE: [\u0000-\uFFFE];
 
-ANY_CHARACTER_VALUE: [\u0000-\uFFFE];
+// string
+STRING: '"' STRING_ELEMENT* '"';
 
-// Identifier
+fragment STRING_ELEMENT
+    : ~[\\"]
+    | MNEMONIC_ESCAPE
+    | '\\"'
+    | '\\\\'
+    | '\\' INTRALINE_WS* LINE_ENDING INTRALINE_WS*
+    | INLINE_HEX_ESCAPE
+    ;
+fragment INLINE_HEX_ESCAPE: '\\x' HEX_SCALAR_VALUE;
+fragment MNEMONIC_ESCAPE: '\\' ('a' | 'b' | 't' | 'n' | 'r');
+
+// identifier
 IDENTIFIER: INITIAL SUBSEQUENT* ;
 DELIMITED_IDENTIFIER: VERTICAL_LINE SYMBOL_ELEMENT* VERTICAL_LINE;
 SYMBOL_ELEMENT: INLINE_HEX_ESCAPE | MNEMONIC_ESCAPE | ~[|\\];
@@ -55,8 +67,6 @@ fragment SIGN_SUBSEQUENT
     | '@'
     ;
 
-fragment MNEMONIC_ESCAPE: '\\' ('a' | 'b' | 't' | 'n' | 'r');
-fragment INLINE_HEX_ESCAPE: '\\x' HEX_SCALAR_VALUE;
 fragment HEX_SCALAR_VALUE: HEXDIGIT+;
 fragment HEXDIGIT: DIGIT | [a-f] | [A-F];
 fragment DIGIT: [0-9];

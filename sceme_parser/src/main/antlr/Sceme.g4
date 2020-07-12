@@ -2,7 +2,7 @@
 grammar Sceme;
 import Common;
 
-datum: bool | character | symbol;
+datum: bool | character | string | symbol;
 
 symbol
     : IDENTIFIER            # symbolNormal
@@ -21,6 +21,8 @@ character
     | UNICODE_CHAR_LITERAL # characterUnicodeLiteral
     | CHAR_LITERAL         # characterCharLiteral
     ;
+
+string: STRING;
 
 /*
 program: command_or_definition+;

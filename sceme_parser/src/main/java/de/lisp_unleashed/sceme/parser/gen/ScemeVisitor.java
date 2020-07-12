@@ -79,4 +79,10 @@ public interface ScemeVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitCharacterCharLiteral(ScemeParser.CharacterCharLiteralContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link ScemeParser#string}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitString(ScemeParser.StringContext ctx);
 }

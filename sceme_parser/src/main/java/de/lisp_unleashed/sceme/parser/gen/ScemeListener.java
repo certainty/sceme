@@ -125,4 +125,14 @@ public interface ScemeListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitCharacterCharLiteral(ScemeParser.CharacterCharLiteralContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link ScemeParser#string}.
+	 * @param ctx the parse tree
+	 */
+	void enterString(ScemeParser.StringContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ScemeParser#string}.
+	 * @param ctx the parse tree
+	 */
+	void exitString(ScemeParser.StringContext ctx);
 }
