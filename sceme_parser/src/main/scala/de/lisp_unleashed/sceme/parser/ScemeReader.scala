@@ -6,10 +6,16 @@ import scala.collection.JavaConverters._
 class UnsupportedSyntaxException(message: String) extends Exception(message)
 
 class ScemeReader(sourceStream: CodePointCharStream) extends ScemeBaseVisitor[Syntax[_]] {
-  def createAst(): Syntax[_] = {
+  def readDatum(): Syntax[_] = {
     val tokenStream = new CommonTokenStream(new gen.ScemeLexer(sourceStream))
     val scemeParser = new gen.ScemeParser(tokenStream)
     visit(scemeParser.datum())
+  }
+
+  def readProgram(): Seq[Syntax[_]] = {
+    val tokenStream = new CommonTokenStream(new gen.ScemeLexer(sourceStream))
+    val scemeParser = new gen.ScemeParser(tokenStream)
+    scemeParser.program().datum().asScala.map(visit)
   }
 
   private def createSourceInformation(ctx: ParserRuleContext) =
@@ -132,8 +138,15 @@ class ScemeReader(sourceStream: CodePointCharStream) extends ScemeBaseVisitor[Sy
 
 object ScemeReader {
   def read(input: String): Syntax[_] =
-    new ScemeReader(CharStreams.fromString(input)).createAst()
+    new ScemeReader(CharStreams.fromString(input)).readDatum()
 
   def read(reader: java.io.Reader): Syntax[_] =
-    new ScemeReader(CharStreams.fromReader(reader)).createAst()
+    new ScemeReader(CharStreams.fromReader(reader)).readDatum()
+
+  def readProgram(input: String): Seq[Syntax[_]] =
+    new ScemeReader(CharStreams.fromString(input)).readProgram()
+
+  def readProgram(reader: java.io.Reader): Seq[Syntax[_]] =
+    new ScemeReader(CharStreams.fromReader(reader)).readProgram()
+
 }

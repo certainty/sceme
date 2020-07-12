@@ -8,6 +8,16 @@ import org.antlr.v4.runtime.tree.ParseTreeListener;
  */
 public interface ScemeListener extends ParseTreeListener {
 	/**
+	 * Enter a parse tree produced by {@link ScemeParser#program}.
+	 * @param ctx the parse tree
+	 */
+	void enterProgram(ScemeParser.ProgramContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ScemeParser#program}.
+	 * @param ctx the parse tree
+	 */
+	void exitProgram(ScemeParser.ProgramContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link ScemeParser#datum}.
 	 * @param ctx the parse tree
 	 */

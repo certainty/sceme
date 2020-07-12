@@ -85,4 +85,3 @@ fragment LETTER: [a-z] | [A-Z];
 fragment L_PAREN: '(';
 fragment R_PAREN: ')';
 fragment VERTICAL_LINE: '|';
-

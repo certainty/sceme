@@ -24,15 +24,15 @@ public class ScemeParser extends Parser {
 		FLONUM_2=24, FIXNUM_8=25, FLONUM_8=26, FIXNUM_10=27, FLONUM_10=28, FIXNUM_16=29, 
 		FLONUM_16=30;
 	public static final int
-		RULE_datum = 0, RULE_simple_datum = 1, RULE_compound_datum = 2, RULE_symbol = 3, 
-		RULE_bool = 4, RULE_character = 5, RULE_string = 6, RULE_number = 7, RULE_fixnum = 8, 
-		RULE_flonum = 9, RULE_bytevector = 10, RULE_proper_list = 11, RULE_improper_list = 12, 
-		RULE_improper_head = 13, RULE_improper_tail = 14, RULE_vector = 15, RULE_abbreviation = 16, 
-		RULE_abbrev_prefix = 17;
+		RULE_program = 0, RULE_datum = 1, RULE_simple_datum = 2, RULE_compound_datum = 3, 
+		RULE_symbol = 4, RULE_bool = 5, RULE_character = 6, RULE_string = 7, RULE_number = 8, 
+		RULE_fixnum = 9, RULE_flonum = 10, RULE_bytevector = 11, RULE_proper_list = 12, 
+		RULE_improper_list = 13, RULE_improper_head = 14, RULE_improper_tail = 15, 
+		RULE_vector = 16, RULE_abbreviation = 17, RULE_abbrev_prefix = 18;
 	private static String[] makeRuleNames() {
 		return new String[] {
-			"datum", "simple_datum", "compound_datum", "symbol", "bool", "character", 
-			"string", "number", "fixnum", "flonum", "bytevector", "proper_list", 
+			"program", "datum", "simple_datum", "compound_datum", "symbol", "bool", 
+			"character", "string", "number", "fixnum", "flonum", "bytevector", "proper_list", 
 			"improper_list", "improper_head", "improper_tail", "vector", "abbreviation", 
 			"abbrev_prefix"
 		};
@@ -106,6 +106,69 @@ public class ScemeParser extends Parser {
 		_interp = new ParserATNSimulator(this,_ATN,_decisionToDFA,_sharedContextCache);
 	}
 
+	public static class ProgramContext extends ParserRuleContext {
+		public TerminalNode EOF() { return getToken(ScemeParser.EOF, 0); }
+		public List<DatumContext> datum() {
+			return getRuleContexts(DatumContext.class);
+		}
+		public DatumContext datum(int i) {
+			return getRuleContext(DatumContext.class,i);
+		}
+		public ProgramContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_program; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof ScemeListener ) ((ScemeListener)listener).enterProgram(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof ScemeListener ) ((ScemeListener)listener).exitProgram(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof ScemeVisitor ) return ((ScemeVisitor<? extends T>)visitor).visitProgram(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final ProgramContext program() throws RecognitionException {
+		ProgramContext _localctx = new ProgramContext(_ctx, getState());
+		enterRule(_localctx, 0, RULE_program);
+		int _la;
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(41);
+			_errHandler.sync(this);
+			_la = _input.LA(1);
+			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__0) | (1L << T__3) | (1L << T__4) | (1L << T__5) | (1L << T__6) | (1L << T__7) | (1L << BOOL_TRUE) | (1L << BOOL_FALSE) | (1L << NAMED_CHAR_LITERAL) | (1L << HEX_CHAR_LITERAL) | (1L << UNICODE_CHAR_LITERAL) | (1L << CHAR_LITERAL) | (1L << STRING) | (1L << BYTEVECTOR) | (1L << IDENTIFIER) | (1L << DELIMITED_IDENTIFIER) | (1L << PECULIAR_IDENTIFIER) | (1L << FIXNUM_2) | (1L << FLONUM_2) | (1L << FIXNUM_8) | (1L << FLONUM_8) | (1L << FIXNUM_10) | (1L << FLONUM_10) | (1L << FIXNUM_16) | (1L << FLONUM_16))) != 0)) {
+				{
+				{
+				setState(38);
+				datum();
+				}
+				}
+				setState(43);
+				_errHandler.sync(this);
+				_la = _input.LA(1);
+			}
+			setState(44);
+			match(EOF);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
 	public static class DatumContext extends ParserRuleContext {
 		public Simple_datumContext simple_datum() {
 			return getRuleContext(Simple_datumContext.class,0);
@@ -134,9 +197,9 @@ public class ScemeParser extends Parser {
 
 	public final DatumContext datum() throws RecognitionException {
 		DatumContext _localctx = new DatumContext(_ctx, getState());
-		enterRule(_localctx, 0, RULE_datum);
+		enterRule(_localctx, 2, RULE_datum);
 		try {
-			setState(38);
+			setState(48);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case BOOL_TRUE:
@@ -160,7 +223,7 @@ public class ScemeParser extends Parser {
 			case FLONUM_16:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(36);
+				setState(46);
 				simple_datum();
 				}
 				break;
@@ -172,7 +235,7 @@ public class ScemeParser extends Parser {
 			case T__7:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(37);
+				setState(47);
 				compound_datum();
 				}
 				break;
@@ -231,16 +294,16 @@ public class ScemeParser extends Parser {
 
 	public final Simple_datumContext simple_datum() throws RecognitionException {
 		Simple_datumContext _localctx = new Simple_datumContext(_ctx, getState());
-		enterRule(_localctx, 2, RULE_simple_datum);
+		enterRule(_localctx, 4, RULE_simple_datum);
 		try {
-			setState(46);
+			setState(56);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case BOOL_TRUE:
 			case BOOL_FALSE:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(40);
+				setState(50);
 				bool();
 				}
 				break;
@@ -250,14 +313,14 @@ public class ScemeParser extends Parser {
 			case CHAR_LITERAL:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(41);
+				setState(51);
 				character();
 				}
 				break;
 			case STRING:
 				enterOuterAlt(_localctx, 3);
 				{
-				setState(42);
+				setState(52);
 				string();
 				}
 				break;
@@ -271,14 +334,14 @@ public class ScemeParser extends Parser {
 			case FLONUM_16:
 				enterOuterAlt(_localctx, 4);
 				{
-				setState(43);
+				setState(53);
 				number();
 				}
 				break;
 			case BYTEVECTOR:
 				enterOuterAlt(_localctx, 5);
 				{
-				setState(44);
+				setState(54);
 				bytevector();
 				}
 				break;
@@ -287,7 +350,7 @@ public class ScemeParser extends Parser {
 			case PECULIAR_IDENTIFIER:
 				enterOuterAlt(_localctx, 6);
 				{
-				setState(45);
+				setState(55);
 				symbol();
 				}
 				break;
@@ -340,36 +403,36 @@ public class ScemeParser extends Parser {
 
 	public final Compound_datumContext compound_datum() throws RecognitionException {
 		Compound_datumContext _localctx = new Compound_datumContext(_ctx, getState());
-		enterRule(_localctx, 4, RULE_compound_datum);
+		enterRule(_localctx, 6, RULE_compound_datum);
 		try {
-			setState(52);
+			setState(62);
 			_errHandler.sync(this);
-			switch ( getInterpreter().adaptivePredict(_input,2,_ctx) ) {
+			switch ( getInterpreter().adaptivePredict(_input,3,_ctx) ) {
 			case 1:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(48);
+				setState(58);
 				proper_list();
 				}
 				break;
 			case 2:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(49);
+				setState(59);
 				improper_list();
 				}
 				break;
 			case 3:
 				enterOuterAlt(_localctx, 3);
 				{
-				setState(50);
+				setState(60);
 				vector();
 				}
 				break;
 			case 4:
 				enterOuterAlt(_localctx, 4);
 				{
-				setState(51);
+				setState(61);
 				abbreviation();
 				}
 				break;
@@ -451,16 +514,16 @@ public class ScemeParser extends Parser {
 
 	public final SymbolContext symbol() throws RecognitionException {
 		SymbolContext _localctx = new SymbolContext(_ctx, getState());
-		enterRule(_localctx, 6, RULE_symbol);
+		enterRule(_localctx, 8, RULE_symbol);
 		try {
-			setState(57);
+			setState(67);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case IDENTIFIER:
 				_localctx = new SymbolNormalContext(_localctx);
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(54);
+				setState(64);
 				match(IDENTIFIER);
 				}
 				break;
@@ -468,7 +531,7 @@ public class ScemeParser extends Parser {
 				_localctx = new SymbolDelimitedContext(_localctx);
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(55);
+				setState(65);
 				match(DELIMITED_IDENTIFIER);
 				}
 				break;
@@ -476,7 +539,7 @@ public class ScemeParser extends Parser {
 				_localctx = new SymbolPeculiarContext(_localctx);
 				enterOuterAlt(_localctx, 3);
 				{
-				setState(56);
+				setState(66);
 				match(PECULIAR_IDENTIFIER);
 				}
 				break;
@@ -543,16 +606,16 @@ public class ScemeParser extends Parser {
 
 	public final BoolContext bool() throws RecognitionException {
 		BoolContext _localctx = new BoolContext(_ctx, getState());
-		enterRule(_localctx, 8, RULE_bool);
+		enterRule(_localctx, 10, RULE_bool);
 		try {
-			setState(61);
+			setState(71);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case BOOL_TRUE:
 				_localctx = new BoolTrueContext(_localctx);
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(59);
+				setState(69);
 				match(BOOL_TRUE);
 				}
 				break;
@@ -560,7 +623,7 @@ public class ScemeParser extends Parser {
 				_localctx = new BoolFalseContext(_localctx);
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(60);
+				setState(70);
 				match(BOOL_FALSE);
 				}
 				break;
@@ -661,16 +724,16 @@ public class ScemeParser extends Parser {
 
 	public final CharacterContext character() throws RecognitionException {
 		CharacterContext _localctx = new CharacterContext(_ctx, getState());
-		enterRule(_localctx, 10, RULE_character);
+		enterRule(_localctx, 12, RULE_character);
 		try {
-			setState(67);
+			setState(77);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case NAMED_CHAR_LITERAL:
 				_localctx = new CharacterNamedContext(_localctx);
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(63);
+				setState(73);
 				match(NAMED_CHAR_LITERAL);
 				}
 				break;
@@ -678,7 +741,7 @@ public class ScemeParser extends Parser {
 				_localctx = new CharacterHexLiteralContext(_localctx);
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(64);
+				setState(74);
 				match(HEX_CHAR_LITERAL);
 				}
 				break;
@@ -686,7 +749,7 @@ public class ScemeParser extends Parser {
 				_localctx = new CharacterUnicodeLiteralContext(_localctx);
 				enterOuterAlt(_localctx, 3);
 				{
-				setState(65);
+				setState(75);
 				match(UNICODE_CHAR_LITERAL);
 				}
 				break;
@@ -694,7 +757,7 @@ public class ScemeParser extends Parser {
 				_localctx = new CharacterCharLiteralContext(_localctx);
 				enterOuterAlt(_localctx, 4);
 				{
-				setState(66);
+				setState(76);
 				match(CHAR_LITERAL);
 				}
 				break;
@@ -736,11 +799,11 @@ public class ScemeParser extends Parser {
 
 	public final StringContext string() throws RecognitionException {
 		StringContext _localctx = new StringContext(_ctx, getState());
-		enterRule(_localctx, 12, RULE_string);
+		enterRule(_localctx, 14, RULE_string);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(69);
+			setState(79);
 			match(STRING);
 			}
 		}
@@ -783,9 +846,9 @@ public class ScemeParser extends Parser {
 
 	public final NumberContext number() throws RecognitionException {
 		NumberContext _localctx = new NumberContext(_ctx, getState());
-		enterRule(_localctx, 14, RULE_number);
+		enterRule(_localctx, 16, RULE_number);
 		try {
-			setState(73);
+			setState(83);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case FIXNUM_2:
@@ -794,7 +857,7 @@ public class ScemeParser extends Parser {
 			case FIXNUM_16:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(71);
+				setState(81);
 				fixnum();
 				}
 				break;
@@ -804,7 +867,7 @@ public class ScemeParser extends Parser {
 			case FLONUM_16:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(72);
+				setState(82);
 				flonum();
 				}
 				break;
@@ -905,16 +968,16 @@ public class ScemeParser extends Parser {
 
 	public final FixnumContext fixnum() throws RecognitionException {
 		FixnumContext _localctx = new FixnumContext(_ctx, getState());
-		enterRule(_localctx, 16, RULE_fixnum);
+		enterRule(_localctx, 18, RULE_fixnum);
 		try {
-			setState(79);
+			setState(89);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case FIXNUM_2:
 				_localctx = new FixnumBinContext(_localctx);
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(75);
+				setState(85);
 				match(FIXNUM_2);
 				}
 				break;
@@ -922,7 +985,7 @@ public class ScemeParser extends Parser {
 				_localctx = new FixnumOctContext(_localctx);
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(76);
+				setState(86);
 				match(FIXNUM_8);
 				}
 				break;
@@ -930,7 +993,7 @@ public class ScemeParser extends Parser {
 				_localctx = new FixnumDecContext(_localctx);
 				enterOuterAlt(_localctx, 3);
 				{
-				setState(77);
+				setState(87);
 				match(FIXNUM_10);
 				}
 				break;
@@ -938,7 +1001,7 @@ public class ScemeParser extends Parser {
 				_localctx = new FixnumHexContext(_localctx);
 				enterOuterAlt(_localctx, 4);
 				{
-				setState(78);
+				setState(88);
 				match(FIXNUM_16);
 				}
 				break;
@@ -1039,16 +1102,16 @@ public class ScemeParser extends Parser {
 
 	public final FlonumContext flonum() throws RecognitionException {
 		FlonumContext _localctx = new FlonumContext(_ctx, getState());
-		enterRule(_localctx, 18, RULE_flonum);
+		enterRule(_localctx, 20, RULE_flonum);
 		try {
-			setState(85);
+			setState(95);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case FLONUM_2:
 				_localctx = new FlonumBinContext(_localctx);
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(81);
+				setState(91);
 				match(FLONUM_2);
 				}
 				break;
@@ -1056,7 +1119,7 @@ public class ScemeParser extends Parser {
 				_localctx = new FlonumOctContext(_localctx);
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(82);
+				setState(92);
 				match(FLONUM_8);
 				}
 				break;
@@ -1064,7 +1127,7 @@ public class ScemeParser extends Parser {
 				_localctx = new FlonumDecContext(_localctx);
 				enterOuterAlt(_localctx, 3);
 				{
-				setState(83);
+				setState(93);
 				match(FLONUM_10);
 				}
 				break;
@@ -1072,7 +1135,7 @@ public class ScemeParser extends Parser {
 				_localctx = new FlonumHexContext(_localctx);
 				enterOuterAlt(_localctx, 4);
 				{
-				setState(84);
+				setState(94);
 				match(FLONUM_16);
 				}
 				break;
@@ -1114,11 +1177,11 @@ public class ScemeParser extends Parser {
 
 	public final BytevectorContext bytevector() throws RecognitionException {
 		BytevectorContext _localctx = new BytevectorContext(_ctx, getState());
-		enterRule(_localctx, 20, RULE_bytevector);
+		enterRule(_localctx, 22, RULE_bytevector);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(87);
+			setState(97);
 			match(BYTEVECTOR);
 			}
 		}
@@ -1161,28 +1224,28 @@ public class ScemeParser extends Parser {
 
 	public final Proper_listContext proper_list() throws RecognitionException {
 		Proper_listContext _localctx = new Proper_listContext(_ctx, getState());
-		enterRule(_localctx, 22, RULE_proper_list);
+		enterRule(_localctx, 24, RULE_proper_list);
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(89);
+			setState(99);
 			match(T__0);
-			setState(93);
+			setState(103);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__0) | (1L << T__3) | (1L << T__4) | (1L << T__5) | (1L << T__6) | (1L << T__7) | (1L << BOOL_TRUE) | (1L << BOOL_FALSE) | (1L << NAMED_CHAR_LITERAL) | (1L << HEX_CHAR_LITERAL) | (1L << UNICODE_CHAR_LITERAL) | (1L << CHAR_LITERAL) | (1L << STRING) | (1L << BYTEVECTOR) | (1L << IDENTIFIER) | (1L << DELIMITED_IDENTIFIER) | (1L << PECULIAR_IDENTIFIER) | (1L << FIXNUM_2) | (1L << FLONUM_2) | (1L << FIXNUM_8) | (1L << FLONUM_8) | (1L << FIXNUM_10) | (1L << FLONUM_10) | (1L << FIXNUM_16) | (1L << FLONUM_16))) != 0)) {
 				{
 				{
-				setState(90);
+				setState(100);
 				datum();
 				}
 				}
-				setState(95);
+				setState(105);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
-			setState(96);
+			setState(106);
 			match(T__1);
 			}
 		}
@@ -1225,19 +1288,19 @@ public class ScemeParser extends Parser {
 
 	public final Improper_listContext improper_list() throws RecognitionException {
 		Improper_listContext _localctx = new Improper_listContext(_ctx, getState());
-		enterRule(_localctx, 24, RULE_improper_list);
+		enterRule(_localctx, 26, RULE_improper_list);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(98);
+			setState(108);
 			match(T__0);
-			setState(99);
+			setState(109);
 			improper_head();
-			setState(100);
+			setState(110);
 			match(T__2);
-			setState(101);
+			setState(111);
 			improper_tail();
-			setState(102);
+			setState(112);
 			match(T__1);
 			}
 		}
@@ -1280,22 +1343,22 @@ public class ScemeParser extends Parser {
 
 	public final Improper_headContext improper_head() throws RecognitionException {
 		Improper_headContext _localctx = new Improper_headContext(_ctx, getState());
-		enterRule(_localctx, 26, RULE_improper_head);
+		enterRule(_localctx, 28, RULE_improper_head);
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(105); 
+			setState(115); 
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			do {
 				{
 				{
-				setState(104);
+				setState(114);
 				datum();
 				}
 				}
-				setState(107); 
+				setState(117); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__0) | (1L << T__3) | (1L << T__4) | (1L << T__5) | (1L << T__6) | (1L << T__7) | (1L << BOOL_TRUE) | (1L << BOOL_FALSE) | (1L << NAMED_CHAR_LITERAL) | (1L << HEX_CHAR_LITERAL) | (1L << UNICODE_CHAR_LITERAL) | (1L << CHAR_LITERAL) | (1L << STRING) | (1L << BYTEVECTOR) | (1L << IDENTIFIER) | (1L << DELIMITED_IDENTIFIER) | (1L << PECULIAR_IDENTIFIER) | (1L << FIXNUM_2) | (1L << FLONUM_2) | (1L << FIXNUM_8) | (1L << FLONUM_8) | (1L << FIXNUM_10) | (1L << FLONUM_10) | (1L << FIXNUM_16) | (1L << FLONUM_16))) != 0) );
@@ -1337,11 +1400,11 @@ public class ScemeParser extends Parser {
 
 	public final Improper_tailContext improper_tail() throws RecognitionException {
 		Improper_tailContext _localctx = new Improper_tailContext(_ctx, getState());
-		enterRule(_localctx, 28, RULE_improper_tail);
+		enterRule(_localctx, 30, RULE_improper_tail);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(109);
+			setState(119);
 			datum();
 			}
 		}
@@ -1384,28 +1447,28 @@ public class ScemeParser extends Parser {
 
 	public final VectorContext vector() throws RecognitionException {
 		VectorContext _localctx = new VectorContext(_ctx, getState());
-		enterRule(_localctx, 30, RULE_vector);
+		enterRule(_localctx, 32, RULE_vector);
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(111);
+			setState(121);
 			match(T__3);
-			setState(115);
+			setState(125);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__0) | (1L << T__3) | (1L << T__4) | (1L << T__5) | (1L << T__6) | (1L << T__7) | (1L << BOOL_TRUE) | (1L << BOOL_FALSE) | (1L << NAMED_CHAR_LITERAL) | (1L << HEX_CHAR_LITERAL) | (1L << UNICODE_CHAR_LITERAL) | (1L << CHAR_LITERAL) | (1L << STRING) | (1L << BYTEVECTOR) | (1L << IDENTIFIER) | (1L << DELIMITED_IDENTIFIER) | (1L << PECULIAR_IDENTIFIER) | (1L << FIXNUM_2) | (1L << FLONUM_2) | (1L << FIXNUM_8) | (1L << FLONUM_8) | (1L << FIXNUM_10) | (1L << FLONUM_10) | (1L << FIXNUM_16) | (1L << FLONUM_16))) != 0)) {
 				{
 				{
-				setState(112);
+				setState(122);
 				datum();
 				}
 				}
-				setState(117);
+				setState(127);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
-			setState(118);
+			setState(128);
 			match(T__1);
 			}
 		}
@@ -1448,13 +1511,13 @@ public class ScemeParser extends Parser {
 
 	public final AbbreviationContext abbreviation() throws RecognitionException {
 		AbbreviationContext _localctx = new AbbreviationContext(_ctx, getState());
-		enterRule(_localctx, 32, RULE_abbreviation);
+		enterRule(_localctx, 34, RULE_abbreviation);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(120);
+			setState(130);
 			abbrev_prefix();
-			setState(121);
+			setState(131);
 			datum();
 			}
 		}
@@ -1547,16 +1610,16 @@ public class ScemeParser extends Parser {
 
 	public final Abbrev_prefixContext abbrev_prefix() throws RecognitionException {
 		Abbrev_prefixContext _localctx = new Abbrev_prefixContext(_ctx, getState());
-		enterRule(_localctx, 34, RULE_abbrev_prefix);
+		enterRule(_localctx, 36, RULE_abbrev_prefix);
 		try {
-			setState(127);
+			setState(137);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case T__4:
 				_localctx = new AbbrevQuoteContext(_localctx);
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(123);
+				setState(133);
 				match(T__4);
 				}
 				break;
@@ -1564,7 +1627,7 @@ public class ScemeParser extends Parser {
 				_localctx = new AbbrevQuasiQuoteContext(_localctx);
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(124);
+				setState(134);
 				match(T__5);
 				}
 				break;
@@ -1572,7 +1635,7 @@ public class ScemeParser extends Parser {
 				_localctx = new AbbrevUnquoteContext(_localctx);
 				enterOuterAlt(_localctx, 3);
 				{
-				setState(125);
+				setState(135);
 				match(T__6);
 				}
 				break;
@@ -1580,7 +1643,7 @@ public class ScemeParser extends Parser {
 				_localctx = new AbbrevUnquoteSplicingContext(_localctx);
 				enterOuterAlt(_localctx, 4);
 				{
-				setState(126);
+				setState(136);
 				match(T__7);
 				}
 				break;
@@ -1600,40 +1663,44 @@ public class ScemeParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3 \u0084\4\2\t\2\4"+
+		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3 \u008e\4\2\t\2\4"+
 		"\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\4\n\t\n\4\13\t"+
 		"\13\4\f\t\f\4\r\t\r\4\16\t\16\4\17\t\17\4\20\t\20\4\21\t\21\4\22\t\22"+
-		"\4\23\t\23\3\2\3\2\5\2)\n\2\3\3\3\3\3\3\3\3\3\3\3\3\5\3\61\n\3\3\4\3\4"+
-		"\3\4\3\4\5\4\67\n\4\3\5\3\5\3\5\5\5<\n\5\3\6\3\6\5\6@\n\6\3\7\3\7\3\7"+
-		"\3\7\5\7F\n\7\3\b\3\b\3\t\3\t\5\tL\n\t\3\n\3\n\3\n\3\n\5\nR\n\n\3\13\3"+
-		"\13\3\13\3\13\5\13X\n\13\3\f\3\f\3\r\3\r\7\r^\n\r\f\r\16\ra\13\r\3\r\3"+
-		"\r\3\16\3\16\3\16\3\16\3\16\3\16\3\17\6\17l\n\17\r\17\16\17m\3\20\3\20"+
-		"\3\21\3\21\7\21t\n\21\f\21\16\21w\13\21\3\21\3\21\3\22\3\22\3\22\3\23"+
-		"\3\23\3\23\3\23\5\23\u0082\n\23\3\23\2\2\24\2\4\6\b\n\f\16\20\22\24\26"+
-		"\30\32\34\36 \"$\2\2\2\u008d\2(\3\2\2\2\4\60\3\2\2\2\6\66\3\2\2\2\b;\3"+
-		"\2\2\2\n?\3\2\2\2\fE\3\2\2\2\16G\3\2\2\2\20K\3\2\2\2\22Q\3\2\2\2\24W\3"+
-		"\2\2\2\26Y\3\2\2\2\30[\3\2\2\2\32d\3\2\2\2\34k\3\2\2\2\36o\3\2\2\2 q\3"+
-		"\2\2\2\"z\3\2\2\2$\u0081\3\2\2\2&)\5\4\3\2\')\5\6\4\2(&\3\2\2\2(\'\3\2"+
-		"\2\2)\3\3\2\2\2*\61\5\n\6\2+\61\5\f\7\2,\61\5\16\b\2-\61\5\20\t\2.\61"+
-		"\5\26\f\2/\61\5\b\5\2\60*\3\2\2\2\60+\3\2\2\2\60,\3\2\2\2\60-\3\2\2\2"+
-		"\60.\3\2\2\2\60/\3\2\2\2\61\5\3\2\2\2\62\67\5\30\r\2\63\67\5\32\16\2\64"+
-		"\67\5 \21\2\65\67\5\"\22\2\66\62\3\2\2\2\66\63\3\2\2\2\66\64\3\2\2\2\66"+
-		"\65\3\2\2\2\67\7\3\2\2\28<\7\25\2\29<\7\26\2\2:<\7\30\2\2;8\3\2\2\2;9"+
-		"\3\2\2\2;:\3\2\2\2<\t\3\2\2\2=@\7\r\2\2>@\7\16\2\2?=\3\2\2\2?>\3\2\2\2"+
-		"@\13\3\2\2\2AF\7\17\2\2BF\7\20\2\2CF\7\21\2\2DF\7\22\2\2EA\3\2\2\2EB\3"+
-		"\2\2\2EC\3\2\2\2ED\3\2\2\2F\r\3\2\2\2GH\7\23\2\2H\17\3\2\2\2IL\5\22\n"+
-		"\2JL\5\24\13\2KI\3\2\2\2KJ\3\2\2\2L\21\3\2\2\2MR\7\31\2\2NR\7\33\2\2O"+
-		"R\7\35\2\2PR\7\37\2\2QM\3\2\2\2QN\3\2\2\2QO\3\2\2\2QP\3\2\2\2R\23\3\2"+
-		"\2\2SX\7\32\2\2TX\7\34\2\2UX\7\36\2\2VX\7 \2\2WS\3\2\2\2WT\3\2\2\2WU\3"+
-		"\2\2\2WV\3\2\2\2X\25\3\2\2\2YZ\7\24\2\2Z\27\3\2\2\2[_\7\3\2\2\\^\5\2\2"+
-		"\2]\\\3\2\2\2^a\3\2\2\2_]\3\2\2\2_`\3\2\2\2`b\3\2\2\2a_\3\2\2\2bc\7\4"+
-		"\2\2c\31\3\2\2\2de\7\3\2\2ef\5\34\17\2fg\7\5\2\2gh\5\36\20\2hi\7\4\2\2"+
-		"i\33\3\2\2\2jl\5\2\2\2kj\3\2\2\2lm\3\2\2\2mk\3\2\2\2mn\3\2\2\2n\35\3\2"+
-		"\2\2op\5\2\2\2p\37\3\2\2\2qu\7\6\2\2rt\5\2\2\2sr\3\2\2\2tw\3\2\2\2us\3"+
-		"\2\2\2uv\3\2\2\2vx\3\2\2\2wu\3\2\2\2xy\7\4\2\2y!\3\2\2\2z{\5$\23\2{|\5"+
-		"\2\2\2|#\3\2\2\2}\u0082\7\7\2\2~\u0082\7\b\2\2\177\u0082\7\t\2\2\u0080"+
-		"\u0082\7\n\2\2\u0081}\3\2\2\2\u0081~\3\2\2\2\u0081\177\3\2\2\2\u0081\u0080"+
-		"\3\2\2\2\u0082%\3\2\2\2\17(\60\66;?EKQW_mu\u0081";
+		"\4\23\t\23\4\24\t\24\3\2\7\2*\n\2\f\2\16\2-\13\2\3\2\3\2\3\3\3\3\5\3\63"+
+		"\n\3\3\4\3\4\3\4\3\4\3\4\3\4\5\4;\n\4\3\5\3\5\3\5\3\5\5\5A\n\5\3\6\3\6"+
+		"\3\6\5\6F\n\6\3\7\3\7\5\7J\n\7\3\b\3\b\3\b\3\b\5\bP\n\b\3\t\3\t\3\n\3"+
+		"\n\5\nV\n\n\3\13\3\13\3\13\3\13\5\13\\\n\13\3\f\3\f\3\f\3\f\5\fb\n\f\3"+
+		"\r\3\r\3\16\3\16\7\16h\n\16\f\16\16\16k\13\16\3\16\3\16\3\17\3\17\3\17"+
+		"\3\17\3\17\3\17\3\20\6\20v\n\20\r\20\16\20w\3\21\3\21\3\22\3\22\7\22~"+
+		"\n\22\f\22\16\22\u0081\13\22\3\22\3\22\3\23\3\23\3\23\3\24\3\24\3\24\3"+
+		"\24\5\24\u008c\n\24\3\24\2\2\25\2\4\6\b\n\f\16\20\22\24\26\30\32\34\36"+
+		" \"$&\2\2\2\u0097\2+\3\2\2\2\4\62\3\2\2\2\6:\3\2\2\2\b@\3\2\2\2\nE\3\2"+
+		"\2\2\fI\3\2\2\2\16O\3\2\2\2\20Q\3\2\2\2\22U\3\2\2\2\24[\3\2\2\2\26a\3"+
+		"\2\2\2\30c\3\2\2\2\32e\3\2\2\2\34n\3\2\2\2\36u\3\2\2\2 y\3\2\2\2\"{\3"+
+		"\2\2\2$\u0084\3\2\2\2&\u008b\3\2\2\2(*\5\4\3\2)(\3\2\2\2*-\3\2\2\2+)\3"+
+		"\2\2\2+,\3\2\2\2,.\3\2\2\2-+\3\2\2\2./\7\2\2\3/\3\3\2\2\2\60\63\5\6\4"+
+		"\2\61\63\5\b\5\2\62\60\3\2\2\2\62\61\3\2\2\2\63\5\3\2\2\2\64;\5\f\7\2"+
+		"\65;\5\16\b\2\66;\5\20\t\2\67;\5\22\n\28;\5\30\r\29;\5\n\6\2:\64\3\2\2"+
+		"\2:\65\3\2\2\2:\66\3\2\2\2:\67\3\2\2\2:8\3\2\2\2:9\3\2\2\2;\7\3\2\2\2"+
+		"<A\5\32\16\2=A\5\34\17\2>A\5\"\22\2?A\5$\23\2@<\3\2\2\2@=\3\2\2\2@>\3"+
+		"\2\2\2@?\3\2\2\2A\t\3\2\2\2BF\7\25\2\2CF\7\26\2\2DF\7\30\2\2EB\3\2\2\2"+
+		"EC\3\2\2\2ED\3\2\2\2F\13\3\2\2\2GJ\7\r\2\2HJ\7\16\2\2IG\3\2\2\2IH\3\2"+
+		"\2\2J\r\3\2\2\2KP\7\17\2\2LP\7\20\2\2MP\7\21\2\2NP\7\22\2\2OK\3\2\2\2"+
+		"OL\3\2\2\2OM\3\2\2\2ON\3\2\2\2P\17\3\2\2\2QR\7\23\2\2R\21\3\2\2\2SV\5"+
+		"\24\13\2TV\5\26\f\2US\3\2\2\2UT\3\2\2\2V\23\3\2\2\2W\\\7\31\2\2X\\\7\33"+
+		"\2\2Y\\\7\35\2\2Z\\\7\37\2\2[W\3\2\2\2[X\3\2\2\2[Y\3\2\2\2[Z\3\2\2\2\\"+
+		"\25\3\2\2\2]b\7\32\2\2^b\7\34\2\2_b\7\36\2\2`b\7 \2\2a]\3\2\2\2a^\3\2"+
+		"\2\2a_\3\2\2\2a`\3\2\2\2b\27\3\2\2\2cd\7\24\2\2d\31\3\2\2\2ei\7\3\2\2"+
+		"fh\5\4\3\2gf\3\2\2\2hk\3\2\2\2ig\3\2\2\2ij\3\2\2\2jl\3\2\2\2ki\3\2\2\2"+
+		"lm\7\4\2\2m\33\3\2\2\2no\7\3\2\2op\5\36\20\2pq\7\5\2\2qr\5 \21\2rs\7\4"+
+		"\2\2s\35\3\2\2\2tv\5\4\3\2ut\3\2\2\2vw\3\2\2\2wu\3\2\2\2wx\3\2\2\2x\37"+
+		"\3\2\2\2yz\5\4\3\2z!\3\2\2\2{\177\7\6\2\2|~\5\4\3\2}|\3\2\2\2~\u0081\3"+
+		"\2\2\2\177}\3\2\2\2\177\u0080\3\2\2\2\u0080\u0082\3\2\2\2\u0081\177\3"+
+		"\2\2\2\u0082\u0083\7\4\2\2\u0083#\3\2\2\2\u0084\u0085\5&\24\2\u0085\u0086"+
+		"\5\4\3\2\u0086%\3\2\2\2\u0087\u008c\7\7\2\2\u0088\u008c\7\b\2\2\u0089"+
+		"\u008c\7\t\2\2\u008a\u008c\7\n\2\2\u008b\u0087\3\2\2\2\u008b\u0088\3\2"+
+		"\2\2\u008b\u0089\3\2\2\2\u008b\u008a\3\2\2\2\u008c\'\3\2\2\2\20+\62:@"+
+		"EIOU[aiw\177\u008b";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {

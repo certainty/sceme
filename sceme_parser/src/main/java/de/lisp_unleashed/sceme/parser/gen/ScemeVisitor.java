@@ -11,6 +11,12 @@ import org.antlr.v4.runtime.tree.ParseTreeVisitor;
  */
 public interface ScemeVisitor<T> extends ParseTreeVisitor<T> {
 	/**
+	 * Visit a parse tree produced by {@link ScemeParser#program}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitProgram(ScemeParser.ProgramContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link ScemeParser#datum}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
