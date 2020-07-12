@@ -35,4 +35,4 @@ final case class PairSyntax(value: (List[Sexp], Sexp), sourceSection: SourceInfo
 
 final case class VectorSyntax(value: Vector[Sexp], sourceSection: SourceInformation) extends Syntax[Vector[Sexp]]
 
-final case class ByteVector(value: Vector[Byte], sourceSection: SourceInformation) extends Syntax[Vector[Byte]]
+final case class ByteVectorSyntax(value: Vector[Byte], sourceSection: SourceInformation) extends Syntax[Vector[Byte]]

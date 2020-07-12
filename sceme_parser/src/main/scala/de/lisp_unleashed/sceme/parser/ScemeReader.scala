@@ -2,6 +2,8 @@ package de.lisp_unleashed.sceme.parser
 import de.lisp_unleashed.sceme.parser.gen.{ ScemeBaseVisitor, ScemeParser }
 import org.antlr.v4.runtime.{ CharStreams, CodePointCharStream, CommonTokenStream, ParserRuleContext }
 
+class UnsupportedSyntaxException(message: String) extends Exception(message)
+
 class ScemeReader(sourceStream: CodePointCharStream) extends ScemeBaseVisitor[Syntax[_]] {
   def createAst(): Syntax[_] = {
     val tokenStream = new CommonTokenStream(new gen.ScemeLexer(sourceStream))
@@ -84,6 +86,28 @@ class ScemeReader(sourceStream: CodePointCharStream) extends ScemeBaseVisitor[Sy
   override def visitFixnumHex(ctx: ScemeParser.FixnumHexContext): Syntax[Long] = {
     val value = ctx.getText.drop(2)
     FixnumSyntax(java.lang.Long.valueOf(value, 16), createSourceInformation(ctx))
+  }
+
+  override def visitFlonumBin(ctx: ScemeParser.FlonumBinContext): Syntax[Double] =
+    throw new UnsupportedSyntaxException("Binary flonum literals not yet supported")
+
+  override def visitFlonumOct(ctx: ScemeParser.FlonumOctContext): Syntax[Double] =
+    throw new UnsupportedSyntaxException("Octal flonum literals not yet supported")
+
+  override def visitFlonumHex(ctx: ScemeParser.FlonumHexContext): Syntax[_] =
+    throw new UnsupportedSyntaxException("Hex flonum literals not yet supported")
+
+  override def visitFlonumDec(ctx: ScemeParser.FlonumDecContext): Syntax[_] = {
+    val value = ctx.getText
+    val num   = if (value.startsWith("#d")) value.drop(2) else value
+    FlonumSyntax(java.lang.Double.valueOf(num), createSourceInformation(ctx))
+  }
+
+  override def visitBytevector(ctx: ScemeParser.BytevectorContext): Syntax[Vector[Byte]] = {
+    val value    = ctx.getText
+    val byteText = value.substring(4, value.length - 1)
+    val bytes    = byteText.split("\\s+").map(java.lang.Short.valueOf(_).byteValue())
+    ByteVectorSyntax(bytes.toVector, createSourceInformation(ctx))
   }
 }
 

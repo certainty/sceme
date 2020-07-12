@@ -1,6 +1,7 @@
 package de.lisp_unleashed.de.sceme
 import de.lisp_unleashed.sceme.parser.{
   BooleanSyntax,
+  ByteVectorSyntax,
   CharacterSyntax,
   FixnumSyntax,
   ScemeReader,
@@ -94,6 +95,12 @@ class ReaderSpec extends Specification {
 
     read("""#false""") must beLike {
       case BooleanSyntax(value, _) => value must beFalse
+    }
+  }
+
+  "bytevector" >> {
+    read("""#u8(10 254 254)""") must beLike {
+      case ByteVectorSyntax(value, _) => value mustEqual Vector(10, -2, -2) // java does only know signed bytes
     }
   }
 

@@ -38,6 +38,15 @@ fragment STRING_ELEMENT
 fragment INLINE_HEX_ESCAPE: '\\x' HEX_SCALAR_VALUE;
 fragment MNEMONIC_ESCAPE: '\\' ('a' | 'b' | 't' | 'n' | 'r');
 
+// bytevector
+BYTEVECTOR: '#u8' '('  (' '* BYTE)* ')';
+fragment BYTE
+    : [0-9]
+    | [0-9] [0-9]
+    | '1' [0-9] [0-9]
+    | '2' [0-4] [0-9]
+    | '2' [0-5] [0-5];
+
 // identifier
 IDENTIFIER: INITIAL SUBSEQUENT* ;
 DELIMITED_IDENTIFIER: VERTICAL_LINE SYMBOL_ELEMENT* VERTICAL_LINE;

@@ -18,6 +18,16 @@ public interface ScemeListener extends ParseTreeListener {
 	 */
 	void exitDatum(ScemeParser.DatumContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link ScemeParser#simple_datum}.
+	 * @param ctx the parse tree
+	 */
+	void enterSimple_datum(ScemeParser.Simple_datumContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ScemeParser#simple_datum}.
+	 * @param ctx the parse tree
+	 */
+	void exitSimple_datum(ScemeParser.Simple_datumContext ctx);
+	/**
 	 * Enter a parse tree produced by the {@code symbolNormal}
 	 * labeled alternative in {@link ScemeParser#symbol}.
 	 * @param ctx the parse tree
@@ -241,4 +251,14 @@ public interface ScemeListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitFlonumHex(ScemeParser.FlonumHexContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link ScemeParser#bytevector}.
+	 * @param ctx the parse tree
+	 */
+	void enterBytevector(ScemeParser.BytevectorContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ScemeParser#bytevector}.
+	 * @param ctx the parse tree
+	 */
+	void exitBytevector(ScemeParser.BytevectorContext ctx);
 }

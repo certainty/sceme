@@ -28,6 +28,18 @@ public class ScemeBaseListener implements ScemeListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterSimple_datum(ScemeParser.Simple_datumContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitSimple_datum(ScemeParser.Simple_datumContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterSymbolNormal(ScemeParser.SymbolNormalContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -251,6 +263,18 @@ public class ScemeBaseListener implements ScemeListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitFlonumHex(ScemeParser.FlonumHexContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterBytevector(ScemeParser.BytevectorContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitBytevector(ScemeParser.BytevectorContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

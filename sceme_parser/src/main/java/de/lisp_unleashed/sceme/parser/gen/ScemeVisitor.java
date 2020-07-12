@@ -17,6 +17,12 @@ public interface ScemeVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitDatum(ScemeParser.DatumContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link ScemeParser#simple_datum}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSimple_datum(ScemeParser.Simple_datumContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code symbolNormal}
 	 * labeled alternative in {@link ScemeParser#symbol}.
 	 * @param ctx the parse tree
@@ -147,4 +153,10 @@ public interface ScemeVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitFlonumHex(ScemeParser.FlonumHexContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link ScemeParser#bytevector}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitBytevector(ScemeParser.BytevectorContext ctx);
 }

@@ -2,7 +2,13 @@
 grammar Sceme;
 import Common, Numbers;
 
-datum: bool | character | string | number | symbol;
+datum
+    : simple_datum
+    | compound_datum;
+
+simple_datum: bool | character | string | number | bytevector | symbol;
+
+compound_datum: proper_list | improper_list | vector | abbreviation;
 
 symbol
     : IDENTIFIER            # symbolNormal
@@ -43,82 +49,25 @@ flonum
     | FLONUM_16 # flonumHex
     ;
 
+bytevector: BYTEVECTOR;
+
+// compound
+proper_list: '(' datum* ')';
+
+improper_list: '(' datum+ '.' datum ')';
+
+vector
+    : '#(' datum* ')'
+    ;
+
+abbreviation: abbrev_prefix datum;
+abbrev_prefix
+    :'\''     # abbrevQuote
+    | '`'     # abbrevQuasiQuote
+    | ','     # abbrevUnquote
+    | ',@'    # abbrevUnquoteSplicing
+    ;
 /*
-program: command_or_definition+;
-
-command_or_definition
-    : L_PAREN 'begin' command_or_definition+ R_PAREN
-    | definition
-    | command
-    ;
-
-command: expression;
-
-definition
-    : L_PAREN 'define' identifier expression R_PAREN
-    | L_PAREN 'define' L_PAREN identifier def_formals R_PAREN body R_PAREN
-    //| syntax_definition
-    | L_PAREN 'defined-values' formals body R_PAREN
-    | L_PAREN 'defined-record-type' identifier constructor identifier field_spec* R_PAREN
-    | L_PAREN 'begin' definition* R_PAREN
-    ;
-
-def_formals
-    : identifier* '.' identifier
-    | identifier*
-    ;
-
-constructor: L_PAREN identifier field_name* R_PAREN;
-field_spec
-    : L_PAREN field_name accessor R_PAREN
-    | L_PAREN field_name accessor mutator R_PAREN
-    ;
-
-field_name: identifier;
-accessor: identifier;
-mutator: identifier;
-
-expression
-    : identifier
-    | literal
-    | conditional
-    | procedure_call
-    | lambda_expression
-    | assignment
-//    | derived_expression
-//    | macro_use
-//    | macro_block
-//    | includer
-    ;
-
-identifier: symbol;
-
-literal: quotation | self_evaluating;
-self_evaluating: BOOLEAN | NUMBER | vector | CHARACTER | STRING | BYTEVECTOR;
-quotation: '\'' datum | L_PAREN 'quote' datum R_PAREN;
-
-procedure_call: L_PAREN operator operand* R_PAREN;
-operator: expression;
-operand: expression;
-
-lambda_expression : L_PAREN 'lambda' formals body R_PAREN;
-formals
-    : L_PAREN identifier* R_PAREN
-    | L_PAREN identifier+ '.' identifier  R_PAREN
-    | IDENTIFIER
-    ;
-
-body: definition* sequence;
-sequence: command* expression;
-
-conditional: L_PAREN 'if' test consequent alternate R_PAREN;
-test: expression;
-consequent: expression;
-alternate: expression;
-
-assignment: L_PAREN 'set!' identifier expression R_PAREN;
-
-// HERE is where the actually used grammar starts
 // Datum
 datum
     : compound_datum
