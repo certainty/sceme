@@ -31,7 +31,10 @@ class ReaderSpec extends Specification {
 
   "numbers" >> {
     read("65") must beLike {
-      case FixnumSyntax(value, _) => value.toInt mustEqual 65
+      case FixnumSyntax(value, _) => value mustEqual 65
+    }
+    read("#x10") must beLike {
+      case FixnumSyntax(value, _) => value mustEqual 16
     }
   }
 

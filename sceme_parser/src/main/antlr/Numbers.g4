@@ -24,7 +24,7 @@ fragment PREFIX_2
 
 fragment PREFIX_8
     : RADIX_8 EXACTNESS
-    | EXACTNESS RADIX_2
+    | EXACTNESS RADIX_8
     ;
 
 fragment PREFIX_10
@@ -85,7 +85,7 @@ fragment INFNAN: '+inf.0' | '-inf.0' | '+nan.0' | '-nan.0';
 fragment EXACTNESS: '#i'? | '#e'?;
 
 fragment DIGIT_2: [0-1];
-fragment DIGIT_8: [0-8];
+fragment DIGIT_8: [0-7];
 fragment DIGIT_10: DIGIT;
-fragment DIGIT_16: DIGIT_10 [a-f];
+fragment DIGIT_16: DIGIT_10 | [a-f] | [A-F];
 fragment DIGIT: [0-9];

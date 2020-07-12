@@ -65,6 +65,26 @@ class ScemeReader(sourceStream: CodePointCharStream) extends ScemeBaseVisitor[Sy
     StringSyntax(value.substring(1, value.length - 1), createSourceInformation(ctx))
   }
 
+  override def visitFixnumBin(ctx: ScemeParser.FixnumBinContext): Syntax[Long] = {
+    val value = ctx.getText.drop(2)
+    FixnumSyntax(java.lang.Long.valueOf(value, 2), createSourceInformation(ctx))
+  }
+
+  override def visitFixnumOct(ctx: ScemeParser.FixnumOctContext): Syntax[Long] = {
+    val value = ctx.getText.drop(2)
+    FixnumSyntax(java.lang.Long.valueOf(value, 8), createSourceInformation(ctx))
+  }
+
+  override def visitFixnumDec(ctx: ScemeParser.FixnumDecContext): Syntax[Long] = {
+    val value = ctx.getText
+    val num   = if (value.startsWith("#d")) value.drop(2) else value
+    FixnumSyntax(java.lang.Long.valueOf(num), createSourceInformation(ctx))
+  }
+
+  override def visitFixnumHex(ctx: ScemeParser.FixnumHexContext): Syntax[Long] = {
+    val value = ctx.getText.drop(2)
+    FixnumSyntax(java.lang.Long.valueOf(value, 16), createSourceInformation(ctx))
+  }
 }
 
 object ScemeReader {
