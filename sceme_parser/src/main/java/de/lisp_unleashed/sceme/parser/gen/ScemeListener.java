@@ -28,6 +28,16 @@ public interface ScemeListener extends ParseTreeListener {
 	 */
 	void exitSimple_datum(ScemeParser.Simple_datumContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link ScemeParser#compound_datum}.
+	 * @param ctx the parse tree
+	 */
+	void enterCompound_datum(ScemeParser.Compound_datumContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ScemeParser#compound_datum}.
+	 * @param ctx the parse tree
+	 */
+	void exitCompound_datum(ScemeParser.Compound_datumContext ctx);
+	/**
 	 * Enter a parse tree produced by the {@code symbolNormal}
 	 * labeled alternative in {@link ScemeParser#symbol}.
 	 * @param ctx the parse tree
@@ -261,4 +271,112 @@ public interface ScemeListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitBytevector(ScemeParser.BytevectorContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link ScemeParser#proper_list}.
+	 * @param ctx the parse tree
+	 */
+	void enterProper_list(ScemeParser.Proper_listContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ScemeParser#proper_list}.
+	 * @param ctx the parse tree
+	 */
+	void exitProper_list(ScemeParser.Proper_listContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link ScemeParser#improper_list}.
+	 * @param ctx the parse tree
+	 */
+	void enterImproper_list(ScemeParser.Improper_listContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ScemeParser#improper_list}.
+	 * @param ctx the parse tree
+	 */
+	void exitImproper_list(ScemeParser.Improper_listContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link ScemeParser#improper_head}.
+	 * @param ctx the parse tree
+	 */
+	void enterImproper_head(ScemeParser.Improper_headContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ScemeParser#improper_head}.
+	 * @param ctx the parse tree
+	 */
+	void exitImproper_head(ScemeParser.Improper_headContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link ScemeParser#improper_tail}.
+	 * @param ctx the parse tree
+	 */
+	void enterImproper_tail(ScemeParser.Improper_tailContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ScemeParser#improper_tail}.
+	 * @param ctx the parse tree
+	 */
+	void exitImproper_tail(ScemeParser.Improper_tailContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link ScemeParser#vector}.
+	 * @param ctx the parse tree
+	 */
+	void enterVector(ScemeParser.VectorContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ScemeParser#vector}.
+	 * @param ctx the parse tree
+	 */
+	void exitVector(ScemeParser.VectorContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link ScemeParser#abbreviation}.
+	 * @param ctx the parse tree
+	 */
+	void enterAbbreviation(ScemeParser.AbbreviationContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ScemeParser#abbreviation}.
+	 * @param ctx the parse tree
+	 */
+	void exitAbbreviation(ScemeParser.AbbreviationContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code abbrevQuote}
+	 * labeled alternative in {@link ScemeParser#abbrev_prefix}.
+	 * @param ctx the parse tree
+	 */
+	void enterAbbrevQuote(ScemeParser.AbbrevQuoteContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code abbrevQuote}
+	 * labeled alternative in {@link ScemeParser#abbrev_prefix}.
+	 * @param ctx the parse tree
+	 */
+	void exitAbbrevQuote(ScemeParser.AbbrevQuoteContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code abbrevQuasiQuote}
+	 * labeled alternative in {@link ScemeParser#abbrev_prefix}.
+	 * @param ctx the parse tree
+	 */
+	void enterAbbrevQuasiQuote(ScemeParser.AbbrevQuasiQuoteContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code abbrevQuasiQuote}
+	 * labeled alternative in {@link ScemeParser#abbrev_prefix}.
+	 * @param ctx the parse tree
+	 */
+	void exitAbbrevQuasiQuote(ScemeParser.AbbrevQuasiQuoteContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code abbrevUnquote}
+	 * labeled alternative in {@link ScemeParser#abbrev_prefix}.
+	 * @param ctx the parse tree
+	 */
+	void enterAbbrevUnquote(ScemeParser.AbbrevUnquoteContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code abbrevUnquote}
+	 * labeled alternative in {@link ScemeParser#abbrev_prefix}.
+	 * @param ctx the parse tree
+	 */
+	void exitAbbrevUnquote(ScemeParser.AbbrevUnquoteContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code abbrevUnquoteSplicing}
+	 * labeled alternative in {@link ScemeParser#abbrev_prefix}.
+	 * @param ctx the parse tree
+	 */
+	void enterAbbrevUnquoteSplicing(ScemeParser.AbbrevUnquoteSplicingContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code abbrevUnquoteSplicing}
+	 * labeled alternative in {@link ScemeParser#abbrev_prefix}.
+	 * @param ctx the parse tree
+	 */
+	void exitAbbrevUnquoteSplicing(ScemeParser.AbbrevUnquoteSplicingContext ctx);
 }

@@ -4,9 +4,12 @@ import de.lisp_unleashed.sceme.parser.{
   ByteVectorSyntax,
   CharacterSyntax,
   FixnumSyntax,
+  PairSyntax,
+  ProperListSyntax,
   ScemeReader,
   StringSyntax,
-  SymbolSyntax
+  SymbolSyntax,
+  VectorSyntax
 }
 import org.specs2.mutable.Specification
 
@@ -101,6 +104,38 @@ class ReaderSpec extends Specification {
   "bytevector" >> {
     read("""#u8(10 254 254)""") must beLike {
       case ByteVectorSyntax(value, _) => value mustEqual Vector(10, -2, -2) // java does only know signed bytes
+    }
+  }
+
+  "list" >> {
+    read("""(10 foo)""") must beLike {
+      case ProperListSyntax(List(FixnumSyntax(fx, _), SymbolSyntax(sym, _, _)), _) => {
+        fx mustEqual 10
+        sym mustEqual "foo"
+      }
+    }
+
+    read("""((10 foo))""") must beLike {
+      case ProperListSyntax(List(ProperListSyntax(List(FixnumSyntax(fx, _), SymbolSyntax(sym, _, _)), _)), _) => {
+        fx mustEqual 10
+        sym mustEqual "foo"
+      }
+    }
+
+    read("""(10 10 . foo)""") must beLike {
+      case PairSyntax((List(FixnumSyntax(fx, _), FixnumSyntax(_, _)), SymbolSyntax(sym, _, _)), _) => {
+        fx mustEqual 10
+        sym mustEqual "foo"
+      }
+    }
+  }
+
+  "vector" >> {
+    read("""#(10 foo)""") must beLike {
+      case VectorSyntax(Vector(FixnumSyntax(fx, _), SymbolSyntax(sym, _, _)), _) => {
+        fx mustEqual 10
+        sym mustEqual "foo"
+      }
     }
   }
 

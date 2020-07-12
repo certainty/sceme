@@ -23,6 +23,12 @@ public interface ScemeVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitSimple_datum(ScemeParser.Simple_datumContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link ScemeParser#compound_datum}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitCompound_datum(ScemeParser.Compound_datumContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code symbolNormal}
 	 * labeled alternative in {@link ScemeParser#symbol}.
 	 * @param ctx the parse tree
@@ -159,4 +165,68 @@ public interface ScemeVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitBytevector(ScemeParser.BytevectorContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link ScemeParser#proper_list}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitProper_list(ScemeParser.Proper_listContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link ScemeParser#improper_list}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitImproper_list(ScemeParser.Improper_listContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link ScemeParser#improper_head}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitImproper_head(ScemeParser.Improper_headContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link ScemeParser#improper_tail}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitImproper_tail(ScemeParser.Improper_tailContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link ScemeParser#vector}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitVector(ScemeParser.VectorContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link ScemeParser#abbreviation}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitAbbreviation(ScemeParser.AbbreviationContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code abbrevQuote}
+	 * labeled alternative in {@link ScemeParser#abbrev_prefix}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitAbbrevQuote(ScemeParser.AbbrevQuoteContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code abbrevQuasiQuote}
+	 * labeled alternative in {@link ScemeParser#abbrev_prefix}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitAbbrevQuasiQuote(ScemeParser.AbbrevQuasiQuoteContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code abbrevUnquote}
+	 * labeled alternative in {@link ScemeParser#abbrev_prefix}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitAbbrevUnquote(ScemeParser.AbbrevUnquoteContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code abbrevUnquoteSplicing}
+	 * labeled alternative in {@link ScemeParser#abbrev_prefix}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitAbbrevUnquoteSplicing(ScemeParser.AbbrevUnquoteSplicingContext ctx);
 }

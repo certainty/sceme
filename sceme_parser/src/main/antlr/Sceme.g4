@@ -54,7 +54,9 @@ bytevector: BYTEVECTOR;
 // compound
 proper_list: '(' datum* ')';
 
-improper_list: '(' datum+ '.' datum ')';
+improper_list: '(' improper_head '.' improper_tail ')';
+improper_head: datum+;
+improper_tail: datum;
 
 vector
     : '#(' datum* ')'

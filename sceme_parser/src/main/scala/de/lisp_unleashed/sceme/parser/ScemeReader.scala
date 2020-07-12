@@ -1,6 +1,7 @@
 package de.lisp_unleashed.sceme.parser
 import de.lisp_unleashed.sceme.parser.gen.{ ScemeBaseVisitor, ScemeParser }
 import org.antlr.v4.runtime.{ CharStreams, CodePointCharStream, CommonTokenStream, ParserRuleContext }
+import scala.collection.JavaConverters._
 
 class UnsupportedSyntaxException(message: String) extends Exception(message)
 
@@ -109,6 +110,24 @@ class ScemeReader(sourceStream: CodePointCharStream) extends ScemeBaseVisitor[Sy
     val bytes    = byteText.split("\\s+").map(java.lang.Short.valueOf(_).byteValue())
     ByteVectorSyntax(bytes.toVector, createSourceInformation(ctx))
   }
+
+  override def visitProper_list(ctx: ScemeParser.Proper_listContext): Syntax[_] = {
+    val elements = ctx.datum().asScala.map(visit(_)).toList
+    ProperListSyntax(elements, createSourceInformation(ctx))
+  }
+
+  override def visitImproper_list(ctx: ScemeParser.Improper_listContext): Syntax[_] = {
+    val head = ctx.improper_head().datum().asScala.map(visit(_)).toList
+    val tail = visit(ctx.improper_tail().datum())
+
+    PairSyntax((head, tail), createSourceInformation(ctx))
+  }
+
+  override def visitVector(ctx: ScemeParser.VectorContext): Syntax[_] = {
+    val elements = ctx.datum().asScala.map(visit(_)).toVector
+    VectorSyntax(elements, createSourceInformation(ctx))
+  }
+
 }
 
 object ScemeReader {
