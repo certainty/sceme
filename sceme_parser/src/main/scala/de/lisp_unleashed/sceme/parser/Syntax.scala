@@ -35,12 +35,12 @@ final case class FlonumSyntax(value: Double, sourceSection: SourceInformation) e
 
 sealed trait Pair extends Sexp
 
-final case class ProperListSyntax(value: List[Sexp], sourceSection: SourceInformation) extends Pair with Syntax[List[Sexp]]
+final case class ProperListSyntax(value: List[Syntax[_]], sourceSection: SourceInformation) extends Pair with Syntax[List[Syntax[_]]]
 
-final case class ImproperListSyntax(value: (List[Sexp], Sexp), sourceSection: SourceInformation)
-    extends Pair with Syntax[(List[Sexp], Sexp)]
+final case class ImproperListSyntax(value: (List[Syntax[_]], Syntax[_]), sourceSection: SourceInformation)
+    extends Pair with Syntax[(List[Syntax[_]], Syntax[_])]
 
-final case class VectorSyntax(value: Vector[Sexp], sourceSection: SourceInformation) extends Syntax[Vector[Sexp]] with SelfEvaluating
+final case class VectorSyntax(value: Vector[Syntax[_]], sourceSection: SourceInformation) extends Syntax[Vector[Syntax[_]]] with SelfEvaluating
 
 final case class ByteVectorSyntax(value: Vector[Byte], sourceSection: SourceInformation) extends Syntax[Vector[Byte]] with SelfEvaluating
 
