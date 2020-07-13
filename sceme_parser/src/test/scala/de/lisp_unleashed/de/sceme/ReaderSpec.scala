@@ -4,7 +4,7 @@ import de.lisp_unleashed.sceme.parser.{
   ByteVectorSyntax,
   CharacterSyntax,
   FixnumSyntax,
-  PairSyntax,
+  ImproperListSyntax,
   ProperListSyntax,
   ScemeReader,
   StringSyntax,
@@ -14,6 +14,33 @@ import de.lisp_unleashed.sceme.parser.{
 import org.specs2.mutable.Specification
 
 class ReaderSpec extends Specification {
+  "abbreviation" >> {
+    read("'foo") must beLike {
+      case ProperListSyntax(List(SymbolSyntax(quotation, _, _), SymbolSyntax("foo",_,_)), _) => {
+        quotation mustEqual "quote"
+      }
+    }
+
+    read("`foo") must beLike {
+      case ProperListSyntax(List(SymbolSyntax(quotation, _, _), SymbolSyntax("foo",_,_)), _) => {
+        quotation mustEqual "quasi-quote"
+      }
+    }
+
+    read(",foo") must beLike {
+      case ProperListSyntax(List(SymbolSyntax(quotation, _, _), SymbolSyntax("foo",_,_)), _) => {
+        quotation mustEqual "unquote"
+      }
+    }
+
+    read(",@foo") must beLike {
+      case ProperListSyntax(List(SymbolSyntax(quotation, _, _), SymbolSyntax("foo",_,_)), _) => {
+        quotation mustEqual "unquote-splicing"
+      }
+    }
+
+
+  }
 
   "char" >> {
     read("""#\f""") must beLike {
@@ -123,7 +150,7 @@ class ReaderSpec extends Specification {
     }
 
     read("""(10 10 . foo)""") must beLike {
-      case PairSyntax((List(FixnumSyntax(fx, _), FixnumSyntax(_, _)), SymbolSyntax(sym, _, _)), _) => {
+      case ImproperListSyntax((List(FixnumSyntax(fx, _), FixnumSyntax(_, _)), SymbolSyntax(sym, _, _)), _) => {
         fx mustEqual 10
         sym mustEqual "foo"
       }

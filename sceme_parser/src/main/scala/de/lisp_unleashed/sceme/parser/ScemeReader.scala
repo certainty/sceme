@@ -1,6 +1,7 @@
 package de.lisp_unleashed.sceme.parser
-import de.lisp_unleashed.sceme.parser.gen.{ ScemeBaseVisitor, ScemeParser }
-import org.antlr.v4.runtime.{ CharStreams, CodePointCharStream, CommonTokenStream, ParserRuleContext }
+import de.lisp_unleashed.sceme.parser.gen.{ScemeBaseVisitor}
+import org.antlr.v4.runtime.{CharStreams, CodePointCharStream, CommonTokenStream, ParserRuleContext}
+
 import scala.collection.JavaConverters._
 
 class UnsupportedSyntaxException(message: String) extends Exception(message)
@@ -23,37 +24,37 @@ class ScemeReader(sourceStream: CodePointCharStream) extends ScemeBaseVisitor[Sy
                       ctx.start.getCharPositionInLine + 1,
                       ctx.stop.getStopIndex - ctx.start.getStartIndex)
 
-  override def visitBoolTrue(ctx: ScemeParser.BoolTrueContext): Syntax[Boolean] =
+  override def visitBoolTrue(ctx: gen.ScemeParser.BoolTrueContext): Syntax[Boolean] =
     BooleanSyntax(true, createSourceInformation(ctx))
 
-  override def visitBoolFalse(ctx: ScemeParser.BoolFalseContext): Syntax[Boolean] =
+  override def visitBoolFalse(ctx: gen.ScemeParser.BoolFalseContext): Syntax[Boolean] =
     BooleanSyntax(false, createSourceInformation(ctx))
 
-  override def visitSymbolDelimited(ctx: ScemeParser.SymbolDelimitedContext): Syntax[String] = {
+  override def visitSymbolDelimited(ctx: gen.ScemeParser.SymbolDelimitedContext): Syntax[String] = {
     val symbolText = ctx.getText
     SymbolSyntax(symbolText.substring(1, symbolText.length - 1), true, createSourceInformation(ctx))
   }
 
-  override def visitSymbolNormal(ctx: ScemeParser.SymbolNormalContext): Syntax[String] =
+  override def visitSymbolNormal(ctx: gen.ScemeParser.SymbolNormalContext): Syntax[String] =
     SymbolSyntax(ctx.getText, false, createSourceInformation(ctx))
 
-  override def visitSymbolPeculiar(ctx: ScemeParser.SymbolPeculiarContext): Syntax[String] =
+  override def visitSymbolPeculiar(ctx: gen.ScemeParser.SymbolPeculiarContext): Syntax[String] =
     SymbolSyntax(ctx.getText, false, createSourceInformation(ctx))
 
-  override def visitCharacterCharLiteral(ctx: ScemeParser.CharacterCharLiteralContext): Syntax[Char] =
+  override def visitCharacterCharLiteral(ctx: gen.ScemeParser.CharacterCharLiteralContext): Syntax[Char] =
     CharacterSyntax(ctx.getText.charAt(2), createSourceInformation(ctx))
 
-  override def visitCharacterHexLiteral(ctx: ScemeParser.CharacterHexLiteralContext): Syntax[Char] = {
+  override def visitCharacterHexLiteral(ctx: gen.ScemeParser.CharacterHexLiteralContext): Syntax[Char] = {
     val value = Integer.valueOf(ctx.getText.drop(3), 16)
     CharacterSyntax(value.toChar, createSourceInformation(ctx))
   }
 
-  override def visitCharacterUnicodeLiteral(ctx: ScemeParser.CharacterUnicodeLiteralContext): Syntax[Char] = {
+  override def visitCharacterUnicodeLiteral(ctx: gen.ScemeParser.CharacterUnicodeLiteralContext): Syntax[Char] = {
     val value = Integer.valueOf(ctx.getText.drop(3), 16)
     CharacterSyntax(value.toChar, createSourceInformation(ctx))
   }
 
-  override def visitCharacterNamed(ctx: ScemeParser.CharacterNamedContext): Syntax[Char] = {
+  override def visitCharacterNamed(ctx: gen.ScemeParser.CharacterNamedContext): Syntax[Char] = {
     val value = ctx.getText.drop(2) match {
       case "space"     => ' '
       case "newline"   => '\n'
@@ -68,72 +69,93 @@ class ScemeReader(sourceStream: CodePointCharStream) extends ScemeBaseVisitor[Sy
     CharacterSyntax(value, createSourceInformation(ctx))
   }
 
-  override def visitString(ctx: ScemeParser.StringContext): Syntax[_] = {
+  override def visitString(ctx: gen.ScemeParser.StringContext): Syntax[_] = {
     // TODO: add support for inline hex escapes
     val value = ctx.getText
     StringSyntax(value.substring(1, value.length - 1), createSourceInformation(ctx))
   }
 
-  override def visitFixnumBin(ctx: ScemeParser.FixnumBinContext): Syntax[Long] = {
+  override def visitFixnumBin(ctx: gen.ScemeParser.FixnumBinContext): Syntax[Long] = {
     val value = ctx.getText.drop(2)
     FixnumSyntax(java.lang.Long.valueOf(value, 2), createSourceInformation(ctx))
   }
 
-  override def visitFixnumOct(ctx: ScemeParser.FixnumOctContext): Syntax[Long] = {
+  override def visitFixnumOct(ctx: gen.ScemeParser.FixnumOctContext): Syntax[Long] = {
     val value = ctx.getText.drop(2)
     FixnumSyntax(java.lang.Long.valueOf(value, 8), createSourceInformation(ctx))
   }
 
-  override def visitFixnumDec(ctx: ScemeParser.FixnumDecContext): Syntax[Long] = {
+  override def visitFixnumDec(ctx: gen.ScemeParser.FixnumDecContext): Syntax[Long] = {
     val value = ctx.getText
     val num   = if (value.startsWith("#d")) value.drop(2) else value
     FixnumSyntax(java.lang.Long.valueOf(num), createSourceInformation(ctx))
   }
 
-  override def visitFixnumHex(ctx: ScemeParser.FixnumHexContext): Syntax[Long] = {
+  override def visitFixnumHex(ctx: gen.ScemeParser.FixnumHexContext): Syntax[Long] = {
     val value = ctx.getText.drop(2)
     FixnumSyntax(java.lang.Long.valueOf(value, 16), createSourceInformation(ctx))
   }
 
-  override def visitFlonumBin(ctx: ScemeParser.FlonumBinContext): Syntax[Double] =
+  override def visitFlonumBin(ctx: gen.ScemeParser.FlonumBinContext): Syntax[Double] =
     throw new UnsupportedSyntaxException("Binary flonum literals not yet supported")
 
-  override def visitFlonumOct(ctx: ScemeParser.FlonumOctContext): Syntax[Double] =
+  override def visitFlonumOct(ctx: gen.ScemeParser.FlonumOctContext): Syntax[Double] =
     throw new UnsupportedSyntaxException("Octal flonum literals not yet supported")
 
-  override def visitFlonumHex(ctx: ScemeParser.FlonumHexContext): Syntax[_] =
+  override def visitFlonumHex(ctx: gen.ScemeParser.FlonumHexContext): Syntax[_] =
     throw new UnsupportedSyntaxException("Hex flonum literals not yet supported")
 
-  override def visitFlonumDec(ctx: ScemeParser.FlonumDecContext): Syntax[_] = {
+  override def visitFlonumDec(ctx: gen.ScemeParser.FlonumDecContext): Syntax[_] = {
     val value = ctx.getText
     val num   = if (value.startsWith("#d")) value.drop(2) else value
     FlonumSyntax(java.lang.Double.valueOf(num), createSourceInformation(ctx))
   }
 
-  override def visitBytevector(ctx: ScemeParser.BytevectorContext): Syntax[Vector[Byte]] = {
+  override def visitBytevector(ctx: gen.ScemeParser.BytevectorContext): Syntax[Vector[Byte]] = {
     val value    = ctx.getText
     val byteText = value.substring(4, value.length - 1)
     val bytes    = byteText.split("\\s+").map(java.lang.Short.valueOf(_).byteValue())
     ByteVectorSyntax(bytes.toVector, createSourceInformation(ctx))
   }
 
-  override def visitProper_list(ctx: ScemeParser.Proper_listContext): Syntax[_] = {
+  override def visitProper_list(ctx: gen.ScemeParser.Proper_listContext): Syntax[_] = {
     val elements = ctx.datum().asScala.map(visit(_)).toList
     ProperListSyntax(elements, createSourceInformation(ctx))
   }
 
-  override def visitImproper_list(ctx: ScemeParser.Improper_listContext): Syntax[_] = {
+  override def visitImproper_list(ctx: gen.ScemeParser.Improper_listContext): Syntax[_] = {
     val head = ctx.improper_head().datum().asScala.map(visit(_)).toList
     val tail = visit(ctx.improper_tail().datum())
 
-    PairSyntax((head, tail), createSourceInformation(ctx))
+    ImproperListSyntax((head, tail), createSourceInformation(ctx))
   }
 
-  override def visitVector(ctx: ScemeParser.VectorContext): Syntax[_] = {
+  override def visitVector(ctx: gen.ScemeParser.VectorContext): Syntax[_] = {
     val elements = ctx.datum().asScala.map(visit(_)).toVector
     VectorSyntax(elements, createSourceInformation(ctx))
   }
 
+  override def visitAbbreviation(ctx: gen.ScemeParser.AbbreviationContext): Syntax[_] = {
+    val datum = visit(ctx.datum())
+    val quotation = visit(ctx.abbrev_prefix())
+    ProperListSyntax(List(quotation, datum), createSourceInformation(ctx))
+  }
+
+  override def visitAbbrevQuote(ctx: gen.ScemeParser.AbbrevQuoteContext): Syntax[_] = {
+    SymbolSyntax("quote", false, createSourceInformation(ctx))
+  }
+
+  override def visitAbbrevUnquote(ctx: gen.ScemeParser.AbbrevUnquoteContext): Syntax[_] = {
+    SymbolSyntax("unquote", false, createSourceInformation(ctx))
+  }
+
+  override def visitAbbrevUnquoteSplicing(ctx: gen.ScemeParser.AbbrevUnquoteSplicingContext): Syntax[_] = {
+    SymbolSyntax("unquote-splicing", false, createSourceInformation(ctx))
+  }
+
+  override def visitAbbrevQuasiQuote(ctx: gen.ScemeParser.AbbrevQuasiQuoteContext): Syntax[_] = {
+    SymbolSyntax("quasi-quote", false, createSourceInformation(ctx))
+  }
 }
 
 object ScemeReader {
