@@ -1,6 +1,6 @@
 package de.lisp_unleashed.sceme.repl
 import java.io.EOFException
-import de.lisp_unleashed.sceme.ReadError
+
 import de.lisp_unleashed.sceme.interpreter.{ Context, RuntimeError, ZIOInterpreter }
 import de.lisp_unleashed.sceme.parser.ParseError
 import de.lisp_unleashed.sceme.printer.{ Configuration, DefaultPrinter }
@@ -35,7 +35,6 @@ class SimpleRepl extends Repl[ZIO[Console, Throwable, Unit]] {
     console.putStrLn(printer.print(datum))
 
   private def handleErrors: PartialFunction[Throwable, ZIO[Console, Throwable, Unit]] = {
-    case e: ReadError    => console.putStrLn(s"Error: ${e.getMessage} caused by: ${e.getCause.getMessage}")
     case e: RuntimeError => console.putStrLn(e.getMessage)
     case e: ParseError   => console.putStrLn(e.getMessage)
   }

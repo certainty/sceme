@@ -14,6 +14,12 @@ import de.lisp_unleashed.sceme.parser.{
 import org.specs2.mutable.Specification
 
 class ReaderSpec extends Specification {
+  "bugs" >> {
+    // parses as number
+    read("(+ 10 20)") must beLike {
+      case ProperListSyntax(List(q: SymbolSyntax, _, _), _) =>
+    }
+  }
   "abbreviation" >> {
     read("'foo") must beLike {
       case ProperListSyntax(List(q: SymbolSyntax, sym: SymbolSyntax), _) => {
