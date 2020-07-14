@@ -21,8 +21,7 @@ public class ScemeParser extends Parser {
 		FLONUM_2=10, FIXNUM_8=11, FLONUM_8=12, FIXNUM_10=13, FLONUM_10=14, FIXNUM_16=15, 
 		FLONUM_16=16, WS=17, COMMENT=18, BOOL_TRUE=19, BOOL_FALSE=20, NAMED_CHAR_LITERAL=21, 
 		HEX_CHAR_LITERAL=22, UNICODE_CHAR_LITERAL=23, CHAR_LITERAL=24, STRING=25, 
-		BYTEVECTOR=26, IDENTIFIER=27, DELIMITED_IDENTIFIER=28, SYMBOL_ELEMENT=29, 
-		PECULIAR_IDENTIFIER=30;
+		BYTEVECTOR=26, IDENTIFIER=27, DELIMITED_IDENTIFIER=28, PECULIAR_IDENTIFIER=29;
 	public static final int
 		RULE_program = 0, RULE_datum = 1, RULE_simple_datum = 2, RULE_compound_datum = 3, 
 		RULE_symbol = 4, RULE_bool = 5, RULE_character = 6, RULE_string = 7, RULE_number = 8, 
@@ -51,7 +50,7 @@ public class ScemeParser extends Parser {
 			"FIXNUM_8", "FLONUM_8", "FIXNUM_10", "FLONUM_10", "FIXNUM_16", "FLONUM_16", 
 			"WS", "COMMENT", "BOOL_TRUE", "BOOL_FALSE", "NAMED_CHAR_LITERAL", "HEX_CHAR_LITERAL", 
 			"UNICODE_CHAR_LITERAL", "CHAR_LITERAL", "STRING", "BYTEVECTOR", "IDENTIFIER", 
-			"DELIMITED_IDENTIFIER", "SYMBOL_ELEMENT", "PECULIAR_IDENTIFIER"
+			"DELIMITED_IDENTIFIER", "PECULIAR_IDENTIFIER"
 		};
 	}
 	private static final String[] _SYMBOLIC_NAMES = makeSymbolicNames();
@@ -1662,9 +1661,9 @@ public class ScemeParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3 \u008e\4\2\t\2\4"+
-		"\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\4\n\t\n\4\13\t"+
-		"\13\4\f\t\f\4\r\t\r\4\16\t\16\4\17\t\17\4\20\t\20\4\21\t\21\4\22\t\22"+
+		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\37\u008e\4\2\t\2"+
+		"\4\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\4\n\t\n\4\13"+
+		"\t\13\4\f\t\f\4\r\t\r\4\16\t\16\4\17\t\17\4\20\t\20\4\21\t\21\4\22\t\22"+
 		"\4\23\t\23\4\24\t\24\3\2\7\2*\n\2\f\2\16\2-\13\2\3\2\3\2\3\3\3\3\5\3\63"+
 		"\n\3\3\4\3\4\3\4\3\4\3\4\3\4\5\4;\n\4\3\5\3\5\3\5\3\5\5\5A\n\5\3\6\3\6"+
 		"\3\6\5\6F\n\6\3\7\3\7\5\7J\n\7\3\b\3\b\3\b\3\b\5\bP\n\b\3\t\3\t\3\n\3"+
@@ -1682,8 +1681,8 @@ public class ScemeParser extends Parser {
 		"\65;\5\16\b\2\66;\5\20\t\2\67;\5\22\n\28;\5\30\r\29;\5\n\6\2:\64\3\2\2"+
 		"\2:\65\3\2\2\2:\66\3\2\2\2:\67\3\2\2\2:8\3\2\2\2:9\3\2\2\2;\7\3\2\2\2"+
 		"<A\5\32\16\2=A\5\34\17\2>A\5\"\22\2?A\5$\23\2@<\3\2\2\2@=\3\2\2\2@>\3"+
-		"\2\2\2@?\3\2\2\2A\t\3\2\2\2BF\7\35\2\2CF\7\36\2\2DF\7 \2\2EB\3\2\2\2E"+
-		"C\3\2\2\2ED\3\2\2\2F\13\3\2\2\2GJ\7\25\2\2HJ\7\26\2\2IG\3\2\2\2IH\3\2"+
+		"\2\2\2@?\3\2\2\2A\t\3\2\2\2BF\7\35\2\2CF\7\36\2\2DF\7\37\2\2EB\3\2\2\2"+
+		"EC\3\2\2\2ED\3\2\2\2F\13\3\2\2\2GJ\7\25\2\2HJ\7\26\2\2IG\3\2\2\2IH\3\2"+
 		"\2\2J\r\3\2\2\2KP\7\27\2\2LP\7\30\2\2MP\7\31\2\2NP\7\32\2\2OK\3\2\2\2"+
 		"OL\3\2\2\2OM\3\2\2\2ON\3\2\2\2P\17\3\2\2\2QR\7\33\2\2R\21\3\2\2\2SV\5"+
 		"\24\13\2TV\5\26\f\2US\3\2\2\2UT\3\2\2\2V\23\3\2\2\2W\\\7\13\2\2X\\\7\r"+

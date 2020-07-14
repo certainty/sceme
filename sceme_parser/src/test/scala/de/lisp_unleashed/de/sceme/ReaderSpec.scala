@@ -17,7 +17,7 @@ class ReaderSpec extends Specification {
   "bugs" >> {
     // parses as number
     read("(+ 10 20)") must beLike {
-      case ProperListSyntax(List(q: SymbolSyntax, _, _), _) =>
+      case ProperListSyntax(List(q: SymbolSyntax, _, _), _) => q.value mustEqual "+"
     }
   }
   "abbreviation" >> {
