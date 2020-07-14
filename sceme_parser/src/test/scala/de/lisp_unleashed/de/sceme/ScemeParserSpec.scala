@@ -1,27 +1,70 @@
 package de.lisp_unleashed.de.sceme
-import de.lisp_unleashed.sceme.parser.Expression.Lambda
-import de.lisp_unleashed.sceme.parser.{ProperListSyntax, ScemeParser}
+import de.lisp_unleashed.sceme.parser.Expression.{ FixedArity, Lambda, Literal, Quote, Single, Variable }
+import de.lisp_unleashed.sceme.parser._
 import org.specs2.mutable.Specification
-
 
 class ScemeParserSpec extends Specification {
 
-    "lambda" >> {
-        parse("(lambda x y)") must beLike {
-            case Lambda(Right(sym), _, _) => sym.value mustEqual("x")
-        }
+  "literal" >> {
+    parse("2343") must beLike {
+      case Literal(v: FixnumSyntax) => v.value mustEqual 2343
+    }
 
-        parse("(lambda () y)") must beLike {
-            case Lambda(Left(ProperListSyntax(v, _)), _, _) => v mustEqual Nil
-        }
+    parse("#t") must beLike {
+      case Literal(v: BooleanSyntax) => v.value mustEqual true
+    }
 
-      parse("(lambda (x) y)") must beLike {
-        case Lambda(Left(ProperListSyntax(List(s), _)), _, _) => s.value mustEqual "x"
+    parse("3.5") must beLike {
+      case Literal(v: FlonumSyntax) => v.value mustEqual 3.5
+    }
+
+    parse("#()") must beLike {
+      case Literal(v: VectorSyntax) => v.value must beEmpty
+    }
+
+    parse("#u8(10)") must beLike {
+      case Literal(v: ByteVectorSyntax) => v.value mustEqual Vector(10.toByte)
+    }
+
+    parse("#\\a") must beLike {
+      case Literal(v: CharacterSyntax) => v.value mustEqual 'a'
+    }
+
+    parse(""" "foo"  """) must beLike {
+      case Literal(v: StringSyntax) => v.value mustEqual "foo"
+    }
+  }
+
+  "variable" >> {
+    parse("x") must beLike {
+      case Variable(v: SymbolSyntax) => v.value mustEqual "x"
+    }
+  }
+
+  "quotation" >> {
+    parse("'foo") must beLike {
+      case Quote(v: SymbolSyntax) => v.value mustEqual "foo"
+    }
+  }
+
+  "lambda" >> {
+    parse("(lambda x y)") must beLike {
+      case Lambda(Single(x), _, _) => {
+        x.value mustEqual "x"
       }
     }
 
-    private def parse(input: String) = {
-       parser.parse(input)
+    parse("(lambda () y)") must beLike {
+      case Lambda(FixedArity(ls), _, _) => ls mustEqual Nil
     }
-    private val parser = new ScemeParser
+
+    parse("(lambda (x) y)") must beLike {
+      case Lambda(FixedArity(List(x)), _, _) => x.value mustEqual "x"
+    }
+  }
+
+  private def parse(input: String) =
+    parser.parse(input)
+
+  private val parser = new ScemeParser
 }

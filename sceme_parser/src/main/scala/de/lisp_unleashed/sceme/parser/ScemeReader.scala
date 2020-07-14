@@ -1,6 +1,6 @@
 package de.lisp_unleashed.sceme.parser
-import de.lisp_unleashed.sceme.parser.gen.{ScemeBaseVisitor}
-import org.antlr.v4.runtime.{CharStreams, CodePointCharStream, CommonTokenStream, ParserRuleContext}
+import de.lisp_unleashed.sceme.parser.gen.{ ScemeBaseVisitor }
+import org.antlr.v4.runtime.{ CharStreams, CodePointCharStream, CommonTokenStream, ParserRuleContext }
 
 import scala.collection.JavaConverters._
 
@@ -136,26 +136,22 @@ class ScemeReader(sourceStream: CodePointCharStream) extends ScemeBaseVisitor[Sy
   }
 
   override def visitAbbreviation(ctx: gen.ScemeParser.AbbreviationContext): Syntax[_] = {
-    val datum = visit(ctx.datum())
+    val datum     = visit(ctx.datum())
     val quotation = visit(ctx.abbrev_prefix())
     ProperListSyntax(List(quotation, datum), createSourceInformation(ctx))
   }
 
-  override def visitAbbrevQuote(ctx: gen.ScemeParser.AbbrevQuoteContext): Syntax[_] = {
+  override def visitAbbrevQuote(ctx: gen.ScemeParser.AbbrevQuoteContext): Syntax[_] =
     SymbolSyntax("quote", false, createSourceInformation(ctx))
-  }
 
-  override def visitAbbrevUnquote(ctx: gen.ScemeParser.AbbrevUnquoteContext): Syntax[_] = {
+  override def visitAbbrevUnquote(ctx: gen.ScemeParser.AbbrevUnquoteContext): Syntax[_] =
     SymbolSyntax("unquote", false, createSourceInformation(ctx))
-  }
 
-  override def visitAbbrevUnquoteSplicing(ctx: gen.ScemeParser.AbbrevUnquoteSplicingContext): Syntax[_] = {
+  override def visitAbbrevUnquoteSplicing(ctx: gen.ScemeParser.AbbrevUnquoteSplicingContext): Syntax[_] =
     SymbolSyntax("unquote-splicing", false, createSourceInformation(ctx))
-  }
 
-  override def visitAbbrevQuasiQuote(ctx: gen.ScemeParser.AbbrevQuasiQuoteContext): Syntax[_] = {
-    SymbolSyntax("quasi-quote", false, createSourceInformation(ctx))
-  }
+  override def visitAbbrevQuasiQuote(ctx: gen.ScemeParser.AbbrevQuasiQuoteContext): Syntax[_] =
+    SymbolSyntax("quasiquote", false, createSourceInformation(ctx))
 }
 
 object ScemeReader {

@@ -16,29 +16,32 @@ import org.specs2.mutable.Specification
 class ReaderSpec extends Specification {
   "abbreviation" >> {
     read("'foo") must beLike {
-      case ProperListSyntax(List(SymbolSyntax(quotation, _, _), SymbolSyntax("foo",_,_)), _) => {
-        quotation mustEqual "quote"
+      case ProperListSyntax(List(q: SymbolSyntax, sym: SymbolSyntax), _) => {
+        q.value mustEqual "quote"
+        sym.value mustEqual "foo"
       }
     }
 
     read("`foo") must beLike {
-      case ProperListSyntax(List(SymbolSyntax(quotation, _, _), SymbolSyntax("foo",_,_)), _) => {
-        quotation mustEqual "quasi-quote"
+      case ProperListSyntax(List(q: SymbolSyntax, sym: SymbolSyntax), _) => {
+        q.value mustEqual "quasiquote"
+        sym.value mustEqual "foo"
       }
     }
 
     read(",foo") must beLike {
-      case ProperListSyntax(List(SymbolSyntax(quotation, _, _), SymbolSyntax("foo",_,_)), _) => {
-        quotation mustEqual "unquote"
+      case ProperListSyntax(List(q: SymbolSyntax, sym: SymbolSyntax), _) => {
+        q.value mustEqual "unquote"
+        sym.value mustEqual "foo"
       }
     }
 
     read(",@foo") must beLike {
-      case ProperListSyntax(List(SymbolSyntax(quotation, _, _), SymbolSyntax("foo",_,_)), _) => {
-        quotation mustEqual "unquote-splicing"
+      case ProperListSyntax(List(q: SymbolSyntax, sym: SymbolSyntax), _) => {
+        q.value mustEqual "unquote-splicing"
+        sym.value mustEqual "foo"
       }
     }
-
 
   }
 
