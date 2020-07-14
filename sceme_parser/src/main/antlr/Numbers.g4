@@ -1,0 +1,91 @@
+lexer grammar Numbers;
+
+FIXNUM_2: PREFIX_2 FIXNUM_PART_2;
+FLONUM_2: PREFIX_2 FLONUM_PART_2;
+
+FIXNUM_8: PREFIX_8 FIXNUM_PART_8;
+FLONUM_8: PREFIX_8 FLONUM_PART_8;
+
+FIXNUM_10: PREFIX_10 FIXNUM_PART_10;
+FLONUM_10: PREFIX_10 FLONUM_PART_10;
+
+FIXNUM_16: PREFIX_16 FIXNUM_PART_16;
+FLONUM_16: PREFIX_16 FLONUM_PART_16;
+
+fragment RADIX_2: '#b';
+fragment RADIX_8: '#o';
+fragment RADIX_10: '#d'?;
+fragment RADIX_16: '#x';
+
+fragment PREFIX_2
+    : RADIX_2 EXACTNESS
+    | EXACTNESS RADIX_2
+    ;
+
+fragment PREFIX_8
+    : RADIX_8 EXACTNESS
+    | EXACTNESS RADIX_8
+    ;
+
+fragment PREFIX_10
+     : RADIX_10 EXACTNESS
+     | EXACTNESS RADIX_10
+     ;
+
+fragment PREFIX_16
+    : RADIX_16 EXACTNESS
+    | EXACTNESS RADIX_16
+    ;
+
+fragment FIXNUM_PART_2: SIGN UINTEGER_2;
+fragment FLONUM_PART_2: SIGN DECIMAL_2 | INFNAN;
+
+fragment FIXNUM_PART_8: SIGN UINTEGER_8;
+fragment FLONUM_PART_8: SIGN DECIMAL_8 | INFNAN;
+
+fragment FIXNUM_PART_10: SIGN UINTEGER_10;
+fragment FLONUM_PART_10: SIGN DECIMAL_10 | INFNAN;
+
+fragment FIXNUM_PART_16: SIGN UINTEGER_16;
+fragment FLONUM_PART_16: SIGN DECIMAL_16 | INFNAN;
+
+fragment UINTEGER_2: DIGIT_2+;
+fragment UINTEGER_8: DIGIT_8+;
+fragment UINTEGER_10: DIGIT_10+;
+fragment UINTEGER_16: DIGIT_16+;
+
+fragment DECIMAL_2
+    : UINTEGER_2 SUFFIX
+    | '.' DIGIT_2+ SUFFIX
+    | DIGIT_2+ '.' DIGIT_2* SUFFIX
+    ;
+
+fragment DECIMAL_8
+    : UINTEGER_8 SUFFIX
+    | '.' DIGIT_8+ SUFFIX
+    | DIGIT_8+ '.' DIGIT_8* SUFFIX
+    ;
+
+fragment DECIMAL_10
+    : UINTEGER_10 SUFFIX
+    | '.' DIGIT_10+ SUFFIX
+    | DIGIT_10+ '.' DIGIT_10* SUFFIX
+    ;
+
+fragment DECIMAL_16
+    : UINTEGER_16 SUFFIX
+    | '.' DIGIT_16+ SUFFIX
+    | DIGIT_16+ '.' DIGIT_16* SUFFIX
+    ;
+
+fragment SUFFIX: (EXPONENT_MARKER SIGN DIGIT_10+)?;
+fragment EXPONENT_MARKER: 'e';
+fragment SIGN: '+'? | '-'?;
+fragment INFNAN: '+inf.0' | '-inf.0' | '+nan.0' | '-nan.0';
+fragment EXACTNESS: '#i'? | '#e'?;
+
+fragment DIGIT_2: [0-1];
+fragment DIGIT_8: [0-7];
+fragment DIGIT_10: DIGIT;
+fragment DIGIT_16: DIGIT_10 | [a-f] | [A-F];
+fragment DIGIT: [0-9];
