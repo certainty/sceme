@@ -3,7 +3,7 @@ package de.lisp_unleashed.sceme.parser
 import de.lisp_unleashed.sceme.parser.Expression._
 
 class ParseError(message: String, sourceInformation: SourceInformation) extends Exception(message) {
-  val getSourceInformation: SourceInformation = sourceInformation
+  def getSourceInformation: SourceInformation = sourceInformation
 }
 
 class NotYetSupportedException(str: String) extends Exception(str)
@@ -20,8 +20,8 @@ class ScemeParser {
 
   def parse(datum: Syntax[_]): Expression = datum match {
     // self evaluating
-    case v: SymbolSyntax   => Variable(v)
-    case v: SelfEvaluating => Literal(v)
+    case v: SymbolSyntax      => Variable(v)
+    case v: SelfEvaluating[_] => Literal(v)
     case form @ ProperListSyntax((sym: SymbolSyntax) :: _, _) =>
       sym.value match {
         case "quote"         => parseQuotation(form)
@@ -33,7 +33,9 @@ class ScemeParser {
         case "define-values" => parseDefineValues(form)
         case _               => parseApplication(form)
       }
-    case _ => parseError(datum, "None")
+    case form: ProperListSyntax => parseApplication(form)
+    case _                      => parseError(datum, "None")
+
   }
 
   private def parseVariable(syntax: Syntax[_]): Variable = syntax match {
@@ -49,7 +51,7 @@ class ScemeParser {
   private def parseQuasiQuotation(syntax: ProperListSyntax): QuasiQuote = syntax.value match {
     case List(_, ls: ProperListSyntax)   => QuasiQuote(parseQuasiQuotePattern(ls))
     case List(_, ls: ImproperListSyntax) => QuasiQuote(parseQuasiQuotePattern(ls))
-    case List(_, v: SelfEvaluating)      => QuasiQuote(Literal(v))
+    case List(_, v: SelfEvaluating[_])   => QuasiQuote(Literal(v))
     case _                               => parseError(syntax, "(quasiquote form)")
   }
 
@@ -86,13 +88,13 @@ class ScemeParser {
   }
 
   private def parseAssign(syntax: ProperListSyntax): Assign = syntax.value match {
-    case List(_, identifier: SymbolSyntax, value) => Assign(identifier, parse(value))
-    case _                                        => parseError(syntax, "(set! identifier expression)")
+    case List(_, identifier, value) => Assign(parseVariable(identifier), parse(value))
+    case _                          => parseError(syntax, "(set! identifier expression)")
   }
 
   private def parseApplication(syntax: ProperListSyntax): Application = syntax.value match {
-    case _ :: operator :: operands => Application(parse(operator), operands.map(parse).toVector, syntax.sourceSection)
-    case _                         => parseError(syntax, "(operator operands ...)")
+    case operator :: operands => Application(parse(operator), operands.map(parse).toVector, syntax.sourceSection)
+    case _                    => parseError(syntax, "(operator operands ...)")
   }
 
   private def parseDefine(syntax: ProperListSyntax): Definition = syntax.value match {

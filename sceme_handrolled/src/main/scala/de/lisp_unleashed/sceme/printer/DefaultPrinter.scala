@@ -1,6 +1,6 @@
 package de.lisp_unleashed.sceme.printer
 import de.lisp_unleashed.sceme.Printer
-import de.lisp_unleashed.sceme.sexp.Value
+import de.lisp_unleashed.sceme.runtime.Value
 
 class DefaultPrinter(config: Configuration) extends Printer {
   override def print(datum: Value): String = {
@@ -16,51 +16,51 @@ class DefaultPrinter(config: Configuration) extends Printer {
   }
 
   private def print(datum: Value, builder: StringBuilder): StringBuilder = datum match {
-    case Value.Char(value, _) => builder.append(charLiteral(value))
-    case Value.String(value, _) =>
+    case Value.Char(value) => builder.append(charLiteral(value))
+    case Value.String(value) =>
       builder.append("\"")
       ellipsis(value, config.maxStringLength, builder)
       builder.append("\"")
-    case Value.Symbol(value, _) => builder.append(value)
+    case Value.Symbol(value) => builder.append(value)
 
-    case Value.Fixnum(value, _) => builder.append(value.toString())
+    case Value.Fixnum(value) => builder.append(value.toString())
 
-    case Value.Flonum(value, _) => builder.append(value.toString())
+    case Value.Flonum(value) => builder.append(value.toString())
 
     case num: Value.Number[_] => builder.appendAll(num.value.toString)
 
-    case Value.Boolean(value, _) =>
+    case Value.Boolean(value) =>
       if (value) {
         builder.append("#t")
       } else {
         builder.append("#f")
       }
 
-    case Value.ImproperList((values, tail), _) => {
+    case Value.ImproperList((values, tail)) => {
       builder.append("'(")
       ellipsis(values, config.maxCollectionElements, builder)
       builder.append(" . ")
       print(tail, builder)
       builder.append(")")
     }
-    case Value.ProperList(Nil, _) => builder.appendAll("'()")
+    case Value.ProperList(Nil) => builder.appendAll("'()")
 
-    case Value.ProperList(ls, _) =>
+    case Value.ProperList(ls) =>
       builder.append("'(")
       ellipsis(ls, config.maxCollectionElements, builder)
       builder.append(")")
-    case Value.Vector(v, _) =>
+    case Value.Vector(v) =>
       builder.append("'#(")
       ellipsis(v, config.maxCollectionElements, builder)
       builder.append(")")
 
-    case Value.Void(_) => builder.appendAll("#<void>")
+    case Value.Void => builder.appendAll("#<void>")
 
-    case Value.Procedure(_, _, _) => builder.appendAll("#<procedure>")
+    case Value.Procedure(_, _) => builder.appendAll("#<procedure>")
 
     case _: Value.ForeignLambda => builder.appendAll("#<procedure>")
 
-    case Value.MultipleValues(values, _) => {
+    case Value.MultipleValues(values) => {
       values.foreach { v =>
         print(v, builder)
         builder.append("\n")

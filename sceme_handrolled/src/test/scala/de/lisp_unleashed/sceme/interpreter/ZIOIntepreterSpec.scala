@@ -34,7 +34,7 @@ class ZIOIntepreterSpec extends Specification {
 
   private def interpret(p: String) = {
     val program = for {
-      result <- ZIOInterpreter.interpret(p, "test", new Context(Primitives.env))
+      result <- ZIOInterpreter.interpret(p, new Context(Primitives.env))
     } yield printer.print(result)
 
     Try(runtime.unsafeRun(program))

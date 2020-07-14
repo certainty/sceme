@@ -1,6 +1,6 @@
 package de.lisp_unleashed.sceme.interpreter
 import de.lisp_unleashed.sceme.interpreter.Environment.Bindings
-import de.lisp_unleashed.sceme.sexp.Value
+import de.lisp_unleashed.sceme.runtime.Value
 
 class Context(environment: Environment) {
   @volatile private var env = environment

@@ -8,26 +8,30 @@ trait Syntax[T] extends Sexp {
   def sourceSection: SourceInformation
 }
 
-sealed trait SelfEvaluating
+sealed trait SelfEvaluating[T] extends Syntax[T]
 
-final case class StringSyntax(value: String, sourceSection: SourceInformation) extends Syntax[String] with SelfEvaluating
+final case class StringSyntax(value: String, sourceSection: SourceInformation) extends SelfEvaluating[String]
 
-final case class CharacterSyntax(value: Char, sourceSection: SourceInformation) extends Syntax[Char] with SelfEvaluating
+final case class CharacterSyntax(value: Char, sourceSection: SourceInformation) extends SelfEvaluating[Char]
 
 final case class SymbolSyntax(value: String, delimited: Boolean, sourceSection: SourceInformation)
-    extends Syntax[String] with SelfEvaluating
+    extends SelfEvaluating[String]
 
-final case class BooleanSyntax(value: Boolean, sourceSection: SourceInformation) extends Syntax[Boolean] with SelfEvaluating
+final case class BooleanSyntax(value: Boolean, sourceSection: SourceInformation) extends SelfEvaluating[Boolean]
 
-sealed trait Number extends Sexp with SelfEvaluating
+sealed trait NumberSyntax extends Sexp
 
-sealed trait ExactNumber   extends Number
+sealed trait ExactNumberSyntax extends NumberSyntax
 
-sealed trait InexactNumber extends Number
+sealed trait InexactNumberSyntax extends NumberSyntax
 
-final case class FixnumSyntax(value: Long, sourceSection: SourceInformation) extends Syntax[Long] with ExactNumber
+final case class FixnumSyntax(value: Long, sourceSection: SourceInformation)
+    extends SelfEvaluating[Long]
+    with ExactNumberSyntax
 
-final case class FlonumSyntax(value: Double, sourceSection: SourceInformation) extends Syntax[Double] with InexactNumber
+final case class FlonumSyntax(value: Double, sourceSection: SourceInformation)
+    extends SelfEvaluating[Double]
+    with InexactNumberSyntax
 
 // TODO: add rational & complex numbers
 
@@ -35,13 +39,16 @@ final case class FlonumSyntax(value: Double, sourceSection: SourceInformation) e
 
 sealed trait Pair extends Sexp
 
-final case class ProperListSyntax(value: List[Syntax[_]], sourceSection: SourceInformation) extends Pair with Syntax[List[Syntax[_]]]
+final case class ProperListSyntax(value: List[Syntax[_]], sourceSection: SourceInformation)
+    extends Pair
+    with Syntax[List[Syntax[_]]]
 
 final case class ImproperListSyntax(value: (List[Syntax[_]], Syntax[_]), sourceSection: SourceInformation)
-    extends Pair with Syntax[(List[Syntax[_]], Syntax[_])]
+    extends Pair
+    with Syntax[(List[Syntax[_]], Syntax[_])]
 
-final case class VectorSyntax(value: Vector[Syntax[_]], sourceSection: SourceInformation) extends Syntax[Vector[Syntax[_]]] with SelfEvaluating
+final case class VectorSyntax(value: Vector[Syntax[_]], sourceSection: SourceInformation)
+    extends SelfEvaluating[Vector[Syntax[_]]]
 
-final case class ByteVectorSyntax(value: Vector[Byte], sourceSection: SourceInformation) extends Syntax[Vector[Byte]] with SelfEvaluating
-
-
+final case class ByteVectorSyntax(value: Vector[Byte], sourceSection: SourceInformation)
+    extends SelfEvaluating[Vector[Byte]]

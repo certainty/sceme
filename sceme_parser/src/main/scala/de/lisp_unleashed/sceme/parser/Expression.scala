@@ -4,7 +4,7 @@ package de.lisp_unleashed.sceme.parser
 sealed trait Expression
 
 object Expression {
-  final case class Literal(value: SelfEvaluating) extends Expression
+  final case class Literal(value: SelfEvaluating[_]) extends Expression
 
   sealed trait Quotation                                    extends Expression
   final case class Quote(datum: Syntax[_])                  extends Quotation
@@ -24,7 +24,7 @@ object Expression {
   final case class Application(operator: Expression, operands: Vector[Expression], sourceInformation: SourceInformation)
       extends Expression
   final case class If(test: Expression, consequent: Expression, alternate: Option[Expression]) extends Expression
-  final case class Assign(identifier: SymbolSyntax, value: Expression)                         extends Expression
+  final case class Assign(identifier: Variable, value: Expression)                             extends Expression
   final case class Begin(seq: Seq[Expression])                                                 extends Expression
 
   sealed trait Definition extends Expression

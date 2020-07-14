@@ -1,5 +1,5 @@
 package de.lisp_unleashed.de.sceme
-import de.lisp_unleashed.sceme.parser.Expression.{ FixedArity, Lambda, Literal, Quote, Single, Variable }
+import de.lisp_unleashed.sceme.parser.Expression.{ FixedArity, Lambda, Literal, QuasiQuote, Quote, Single, Variable }
 import de.lisp_unleashed.sceme.parser._
 import org.specs2.mutable.Specification
 
@@ -44,6 +44,16 @@ class ScemeParserSpec extends Specification {
   "quotation" >> {
     parse("'foo") must beLike {
       case Quote(v: SymbolSyntax) => v.value mustEqual "foo"
+    }
+
+    parse("`foo") must beLike {
+      case QuasiQuote(Literal(v: SymbolSyntax)) => v.value mustEqual "foo"
+    }
+  }
+
+  "smoke test" >> {
+    parse("(list 1 2)") must beLike {
+      case _ => true must beTrue
     }
   }
 

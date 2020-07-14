@@ -17,12 +17,12 @@ public class ScemeParser extends Parser {
 	protected static final PredictionContextCache _sharedContextCache =
 		new PredictionContextCache();
 	public static final int
-		T__0=1, T__1=2, T__2=3, T__3=4, T__4=5, T__5=6, T__6=7, T__7=8, WS=9, 
-		COMMENT=10, BOOL_TRUE=11, BOOL_FALSE=12, NAMED_CHAR_LITERAL=13, HEX_CHAR_LITERAL=14, 
-		UNICODE_CHAR_LITERAL=15, CHAR_LITERAL=16, STRING=17, BYTEVECTOR=18, IDENTIFIER=19, 
-		DELIMITED_IDENTIFIER=20, SYMBOL_ELEMENT=21, PECULIAR_IDENTIFIER=22, FIXNUM_2=23, 
-		FLONUM_2=24, FIXNUM_8=25, FLONUM_8=26, FIXNUM_10=27, FLONUM_10=28, FIXNUM_16=29, 
-		FLONUM_16=30;
+		T__0=1, T__1=2, T__2=3, T__3=4, T__4=5, T__5=6, T__6=7, T__7=8, FIXNUM_2=9, 
+		FLONUM_2=10, FIXNUM_8=11, FLONUM_8=12, FIXNUM_10=13, FLONUM_10=14, FIXNUM_16=15, 
+		FLONUM_16=16, WS=17, COMMENT=18, BOOL_TRUE=19, BOOL_FALSE=20, NAMED_CHAR_LITERAL=21, 
+		HEX_CHAR_LITERAL=22, UNICODE_CHAR_LITERAL=23, CHAR_LITERAL=24, STRING=25, 
+		BYTEVECTOR=26, IDENTIFIER=27, DELIMITED_IDENTIFIER=28, SYMBOL_ELEMENT=29, 
+		PECULIAR_IDENTIFIER=30;
 	public static final int
 		RULE_program = 0, RULE_datum = 1, RULE_simple_datum = 2, RULE_compound_datum = 3, 
 		RULE_symbol = 4, RULE_bool = 5, RULE_character = 6, RULE_string = 7, RULE_number = 8, 
@@ -47,12 +47,11 @@ public class ScemeParser extends Parser {
 	private static final String[] _LITERAL_NAMES = makeLiteralNames();
 	private static String[] makeSymbolicNames() {
 		return new String[] {
-			null, null, null, null, null, null, null, null, null, "WS", "COMMENT", 
-			"BOOL_TRUE", "BOOL_FALSE", "NAMED_CHAR_LITERAL", "HEX_CHAR_LITERAL", 
+			null, null, null, null, null, null, null, null, null, "FIXNUM_2", "FLONUM_2", 
+			"FIXNUM_8", "FLONUM_8", "FIXNUM_10", "FLONUM_10", "FIXNUM_16", "FLONUM_16", 
+			"WS", "COMMENT", "BOOL_TRUE", "BOOL_FALSE", "NAMED_CHAR_LITERAL", "HEX_CHAR_LITERAL", 
 			"UNICODE_CHAR_LITERAL", "CHAR_LITERAL", "STRING", "BYTEVECTOR", "IDENTIFIER", 
-			"DELIMITED_IDENTIFIER", "SYMBOL_ELEMENT", "PECULIAR_IDENTIFIER", "FIXNUM_2", 
-			"FLONUM_2", "FIXNUM_8", "FLONUM_8", "FIXNUM_10", "FLONUM_10", "FIXNUM_16", 
-			"FLONUM_16"
+			"DELIMITED_IDENTIFIER", "SYMBOL_ELEMENT", "PECULIAR_IDENTIFIER"
 		};
 	}
 	private static final String[] _SYMBOLIC_NAMES = makeSymbolicNames();
@@ -143,7 +142,7 @@ public class ScemeParser extends Parser {
 			setState(41);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__0) | (1L << T__3) | (1L << T__4) | (1L << T__5) | (1L << T__6) | (1L << T__7) | (1L << BOOL_TRUE) | (1L << BOOL_FALSE) | (1L << NAMED_CHAR_LITERAL) | (1L << HEX_CHAR_LITERAL) | (1L << UNICODE_CHAR_LITERAL) | (1L << CHAR_LITERAL) | (1L << STRING) | (1L << BYTEVECTOR) | (1L << IDENTIFIER) | (1L << DELIMITED_IDENTIFIER) | (1L << PECULIAR_IDENTIFIER) | (1L << FIXNUM_2) | (1L << FLONUM_2) | (1L << FIXNUM_8) | (1L << FLONUM_8) | (1L << FIXNUM_10) | (1L << FLONUM_10) | (1L << FIXNUM_16) | (1L << FLONUM_16))) != 0)) {
+			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__0) | (1L << T__3) | (1L << T__4) | (1L << T__5) | (1L << T__6) | (1L << T__7) | (1L << FIXNUM_2) | (1L << FLONUM_2) | (1L << FIXNUM_8) | (1L << FLONUM_8) | (1L << FIXNUM_10) | (1L << FLONUM_10) | (1L << FIXNUM_16) | (1L << FLONUM_16) | (1L << BOOL_TRUE) | (1L << BOOL_FALSE) | (1L << NAMED_CHAR_LITERAL) | (1L << HEX_CHAR_LITERAL) | (1L << UNICODE_CHAR_LITERAL) | (1L << CHAR_LITERAL) | (1L << STRING) | (1L << BYTEVECTOR) | (1L << IDENTIFIER) | (1L << DELIMITED_IDENTIFIER) | (1L << PECULIAR_IDENTIFIER))) != 0)) {
 				{
 				{
 				setState(38);
@@ -202,6 +201,14 @@ public class ScemeParser extends Parser {
 			setState(48);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
+			case FIXNUM_2:
+			case FLONUM_2:
+			case FIXNUM_8:
+			case FLONUM_8:
+			case FIXNUM_10:
+			case FLONUM_10:
+			case FIXNUM_16:
+			case FLONUM_16:
 			case BOOL_TRUE:
 			case BOOL_FALSE:
 			case NAMED_CHAR_LITERAL:
@@ -213,14 +220,6 @@ public class ScemeParser extends Parser {
 			case IDENTIFIER:
 			case DELIMITED_IDENTIFIER:
 			case PECULIAR_IDENTIFIER:
-			case FIXNUM_2:
-			case FLONUM_2:
-			case FIXNUM_8:
-			case FLONUM_8:
-			case FIXNUM_10:
-			case FLONUM_10:
-			case FIXNUM_16:
-			case FLONUM_16:
 				enterOuterAlt(_localctx, 1);
 				{
 				setState(46);
@@ -1234,7 +1233,7 @@ public class ScemeParser extends Parser {
 			setState(103);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__0) | (1L << T__3) | (1L << T__4) | (1L << T__5) | (1L << T__6) | (1L << T__7) | (1L << BOOL_TRUE) | (1L << BOOL_FALSE) | (1L << NAMED_CHAR_LITERAL) | (1L << HEX_CHAR_LITERAL) | (1L << UNICODE_CHAR_LITERAL) | (1L << CHAR_LITERAL) | (1L << STRING) | (1L << BYTEVECTOR) | (1L << IDENTIFIER) | (1L << DELIMITED_IDENTIFIER) | (1L << PECULIAR_IDENTIFIER) | (1L << FIXNUM_2) | (1L << FLONUM_2) | (1L << FIXNUM_8) | (1L << FLONUM_8) | (1L << FIXNUM_10) | (1L << FLONUM_10) | (1L << FIXNUM_16) | (1L << FLONUM_16))) != 0)) {
+			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__0) | (1L << T__3) | (1L << T__4) | (1L << T__5) | (1L << T__6) | (1L << T__7) | (1L << FIXNUM_2) | (1L << FLONUM_2) | (1L << FIXNUM_8) | (1L << FLONUM_8) | (1L << FIXNUM_10) | (1L << FLONUM_10) | (1L << FIXNUM_16) | (1L << FLONUM_16) | (1L << BOOL_TRUE) | (1L << BOOL_FALSE) | (1L << NAMED_CHAR_LITERAL) | (1L << HEX_CHAR_LITERAL) | (1L << UNICODE_CHAR_LITERAL) | (1L << CHAR_LITERAL) | (1L << STRING) | (1L << BYTEVECTOR) | (1L << IDENTIFIER) | (1L << DELIMITED_IDENTIFIER) | (1L << PECULIAR_IDENTIFIER))) != 0)) {
 				{
 				{
 				setState(100);
@@ -1361,7 +1360,7 @@ public class ScemeParser extends Parser {
 				setState(117); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
-			} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__0) | (1L << T__3) | (1L << T__4) | (1L << T__5) | (1L << T__6) | (1L << T__7) | (1L << BOOL_TRUE) | (1L << BOOL_FALSE) | (1L << NAMED_CHAR_LITERAL) | (1L << HEX_CHAR_LITERAL) | (1L << UNICODE_CHAR_LITERAL) | (1L << CHAR_LITERAL) | (1L << STRING) | (1L << BYTEVECTOR) | (1L << IDENTIFIER) | (1L << DELIMITED_IDENTIFIER) | (1L << PECULIAR_IDENTIFIER) | (1L << FIXNUM_2) | (1L << FLONUM_2) | (1L << FIXNUM_8) | (1L << FLONUM_8) | (1L << FIXNUM_10) | (1L << FLONUM_10) | (1L << FIXNUM_16) | (1L << FLONUM_16))) != 0) );
+			} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__0) | (1L << T__3) | (1L << T__4) | (1L << T__5) | (1L << T__6) | (1L << T__7) | (1L << FIXNUM_2) | (1L << FLONUM_2) | (1L << FIXNUM_8) | (1L << FLONUM_8) | (1L << FIXNUM_10) | (1L << FLONUM_10) | (1L << FIXNUM_16) | (1L << FLONUM_16) | (1L << BOOL_TRUE) | (1L << BOOL_FALSE) | (1L << NAMED_CHAR_LITERAL) | (1L << HEX_CHAR_LITERAL) | (1L << UNICODE_CHAR_LITERAL) | (1L << CHAR_LITERAL) | (1L << STRING) | (1L << BYTEVECTOR) | (1L << IDENTIFIER) | (1L << DELIMITED_IDENTIFIER) | (1L << PECULIAR_IDENTIFIER))) != 0) );
 			}
 		}
 		catch (RecognitionException re) {
@@ -1457,7 +1456,7 @@ public class ScemeParser extends Parser {
 			setState(125);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__0) | (1L << T__3) | (1L << T__4) | (1L << T__5) | (1L << T__6) | (1L << T__7) | (1L << BOOL_TRUE) | (1L << BOOL_FALSE) | (1L << NAMED_CHAR_LITERAL) | (1L << HEX_CHAR_LITERAL) | (1L << UNICODE_CHAR_LITERAL) | (1L << CHAR_LITERAL) | (1L << STRING) | (1L << BYTEVECTOR) | (1L << IDENTIFIER) | (1L << DELIMITED_IDENTIFIER) | (1L << PECULIAR_IDENTIFIER) | (1L << FIXNUM_2) | (1L << FLONUM_2) | (1L << FIXNUM_8) | (1L << FLONUM_8) | (1L << FIXNUM_10) | (1L << FLONUM_10) | (1L << FIXNUM_16) | (1L << FLONUM_16))) != 0)) {
+			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__0) | (1L << T__3) | (1L << T__4) | (1L << T__5) | (1L << T__6) | (1L << T__7) | (1L << FIXNUM_2) | (1L << FLONUM_2) | (1L << FIXNUM_8) | (1L << FLONUM_8) | (1L << FIXNUM_10) | (1L << FLONUM_10) | (1L << FIXNUM_16) | (1L << FLONUM_16) | (1L << BOOL_TRUE) | (1L << BOOL_FALSE) | (1L << NAMED_CHAR_LITERAL) | (1L << HEX_CHAR_LITERAL) | (1L << UNICODE_CHAR_LITERAL) | (1L << CHAR_LITERAL) | (1L << STRING) | (1L << BYTEVECTOR) | (1L << IDENTIFIER) | (1L << DELIMITED_IDENTIFIER) | (1L << PECULIAR_IDENTIFIER))) != 0)) {
 				{
 				{
 				setState(122);
@@ -1683,14 +1682,14 @@ public class ScemeParser extends Parser {
 		"\65;\5\16\b\2\66;\5\20\t\2\67;\5\22\n\28;\5\30\r\29;\5\n\6\2:\64\3\2\2"+
 		"\2:\65\3\2\2\2:\66\3\2\2\2:\67\3\2\2\2:8\3\2\2\2:9\3\2\2\2;\7\3\2\2\2"+
 		"<A\5\32\16\2=A\5\34\17\2>A\5\"\22\2?A\5$\23\2@<\3\2\2\2@=\3\2\2\2@>\3"+
-		"\2\2\2@?\3\2\2\2A\t\3\2\2\2BF\7\25\2\2CF\7\26\2\2DF\7\30\2\2EB\3\2\2\2"+
-		"EC\3\2\2\2ED\3\2\2\2F\13\3\2\2\2GJ\7\r\2\2HJ\7\16\2\2IG\3\2\2\2IH\3\2"+
-		"\2\2J\r\3\2\2\2KP\7\17\2\2LP\7\20\2\2MP\7\21\2\2NP\7\22\2\2OK\3\2\2\2"+
-		"OL\3\2\2\2OM\3\2\2\2ON\3\2\2\2P\17\3\2\2\2QR\7\23\2\2R\21\3\2\2\2SV\5"+
-		"\24\13\2TV\5\26\f\2US\3\2\2\2UT\3\2\2\2V\23\3\2\2\2W\\\7\31\2\2X\\\7\33"+
-		"\2\2Y\\\7\35\2\2Z\\\7\37\2\2[W\3\2\2\2[X\3\2\2\2[Y\3\2\2\2[Z\3\2\2\2\\"+
-		"\25\3\2\2\2]b\7\32\2\2^b\7\34\2\2_b\7\36\2\2`b\7 \2\2a]\3\2\2\2a^\3\2"+
-		"\2\2a_\3\2\2\2a`\3\2\2\2b\27\3\2\2\2cd\7\24\2\2d\31\3\2\2\2ei\7\3\2\2"+
+		"\2\2\2@?\3\2\2\2A\t\3\2\2\2BF\7\35\2\2CF\7\36\2\2DF\7 \2\2EB\3\2\2\2E"+
+		"C\3\2\2\2ED\3\2\2\2F\13\3\2\2\2GJ\7\25\2\2HJ\7\26\2\2IG\3\2\2\2IH\3\2"+
+		"\2\2J\r\3\2\2\2KP\7\27\2\2LP\7\30\2\2MP\7\31\2\2NP\7\32\2\2OK\3\2\2\2"+
+		"OL\3\2\2\2OM\3\2\2\2ON\3\2\2\2P\17\3\2\2\2QR\7\33\2\2R\21\3\2\2\2SV\5"+
+		"\24\13\2TV\5\26\f\2US\3\2\2\2UT\3\2\2\2V\23\3\2\2\2W\\\7\13\2\2X\\\7\r"+
+		"\2\2Y\\\7\17\2\2Z\\\7\21\2\2[W\3\2\2\2[X\3\2\2\2[Y\3\2\2\2[Z\3\2\2\2\\"+
+		"\25\3\2\2\2]b\7\f\2\2^b\7\16\2\2_b\7\20\2\2`b\7\22\2\2a]\3\2\2\2a^\3\2"+
+		"\2\2a_\3\2\2\2a`\3\2\2\2b\27\3\2\2\2cd\7\34\2\2d\31\3\2\2\2ei\7\3\2\2"+
 		"fh\5\4\3\2gf\3\2\2\2hk\3\2\2\2ig\3\2\2\2ij\3\2\2\2jl\3\2\2\2ki\3\2\2\2"+
 		"lm\7\4\2\2m\33\3\2\2\2no\7\3\2\2op\5\36\20\2pq\7\5\2\2qr\5 \21\2rs\7\4"+
 		"\2\2s\35\3\2\2\2tv\5\4\3\2ut\3\2\2\2vw\3\2\2\2wu\3\2\2\2wx\3\2\2\2x\37"+

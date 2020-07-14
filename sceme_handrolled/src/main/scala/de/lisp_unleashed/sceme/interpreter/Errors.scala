@@ -1,60 +1,49 @@
 package de.lisp_unleashed.sceme.interpreter
-import de.lisp_unleashed.sceme.parser.{ Location, SourceMapper }
-import de.lisp_unleashed.sceme.sexp.Value
+import de.lisp_unleashed.sceme.parser.SourceInformation
+import de.lisp_unleashed.sceme.runtime.Value
 
-class RuntimeError(errorType: String, message: String, location: Option[Location], sourceMapper: Option[SourceMapper])
-    extends Exception {
-  override def getMessage: String = {
-    val locInfo = location.flatMap(loc => sourceMapper.map(_.renderLocation(loc)))
-    val source  = location.flatMap(loc => sourceMapper.map(_.renderLinePosition(loc, "")))
-
-    s"""${errorType}: $message at ${locInfo.getOrElse("")}
-       |
-       |${source.getOrElse("")}
+class RuntimeError(errorType: String, message: String, location: Option[SourceInformation]) extends Exception {
+  override def getMessage: String =
+    s"""${errorType}: $message at ${location.getOrElse("")}
        |""".stripMargin
-  }
 }
 
-class UnboundVariableError(sym: Value.Symbol, sourceMapper: Option[SourceMapper])
-    extends RuntimeError("UnboundVariable", s"${sym.value} is unbound", sym.location, sourceMapper)
+class UnboundVariableError(sym: Value.Symbol, location: Option[SourceInformation])
+    extends RuntimeError("UnboundVariable", s"${sym.value} is unbound", location)
 
 object UnboundVariableError {
-  def apply(sym: Value.Symbol, sourceMapper: Option[SourceMapper] = None): UnboundVariableError =
-    new UnboundVariableError(sym, sourceMapper)
+  def apply(sym: Value.Symbol): UnboundVariableError =
+    new UnboundVariableError(sym, None)
 }
 
-sealed trait Arity
-case class Variadic(atLeast: Int) extends Arity
-case class Fixed(num: Int)        extends Arity
+sealed trait ExpectedArity
+case class Variadic(atLeast: Int) extends ExpectedArity
+case class ExpectFixed(num: Int)  extends ExpectedArity
 
-class ArityError(expected: Arity, actual: Int, location: Option[Location], sourceMapper: Option[SourceMapper])
+class ArityError(expected: ExpectedArity, actual: Int, location: Option[SourceInformation])
     extends RuntimeError(
       "ArityError",
       s"Invalid number of arguments. Expected ${expected} but got ${actual}.",
-      location,
-      sourceMapper
+      location
     )
 
 object ArityError {
   def apply(
-    expected: Arity,
+    expected: ExpectedArity,
     actual: Int,
-    location: Option[Location] = None,
-    sourceMapper: Option[SourceMapper] = None
+    location: Option[SourceInformation] = None,
   ): ArityError =
-    new ArityError(expected, actual, location, sourceMapper)
+    new ArityError(expected, actual, location)
 
 }
 
-class ArgumentError(message: String, location: Option[Location], sourceMapper: Option[SourceMapper])
-    extends RuntimeError("ArgumentError", message, location, sourceMapper)
+class ArgumentError(message: String, location: Option[SourceInformation])
+    extends RuntimeError("ArgumentError", message, location)
 
 object ArgumentError {
   def apply(
     message: String,
-    location: Option[Location] = None,
-    sourceMapper: Option[SourceMapper] = None
+    location: Option[SourceInformation] = None,
   ): ArgumentError =
-    new ArgumentError(message, location, sourceMapper)
-
+    new ArgumentError(message, location)
 }

@@ -1,6 +1,6 @@
 // https://small.r7rs.org/attachment/r7rs.pdf
 grammar Sceme;
-import Common, Numbers;
+import Numbers, Common;
 
 program: datum* EOF;
 

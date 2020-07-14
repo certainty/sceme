@@ -4,7 +4,7 @@ import de.lisp_unleashed.sceme.ReadError
 import de.lisp_unleashed.sceme.interpreter.{ Context, RuntimeError, ZIOInterpreter }
 import de.lisp_unleashed.sceme.parser.ParseError
 import de.lisp_unleashed.sceme.printer.{ Configuration, DefaultPrinter }
-import de.lisp_unleashed.sceme.sexp.Value
+import de.lisp_unleashed.sceme.runtime.Value
 import zio.console.Console
 import zio.{ console, ZIO }
 
@@ -22,7 +22,7 @@ class SimpleRepl extends Repl[ZIO[Console, Throwable, Unit]] {
 
   private def eval(input: String) =
     for {
-      value <- ZIOInterpreter.interpret(input, "repl", replContext)
+      value <- ZIOInterpreter.interpret(input, replContext)
     } yield value
 
   private val loop: ZIO[Console, Throwable, Unit] =

@@ -1,6 +1,5 @@
 package de.lisp_unleashed.sceme
-
-import de.lisp_unleashed.sceme.sexp.Value
+import de.lisp_unleashed.sceme.runtime.Value
 
 trait Printer {
   def print(datum: Value): String
