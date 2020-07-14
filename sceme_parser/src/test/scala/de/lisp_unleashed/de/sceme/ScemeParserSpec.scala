@@ -49,8 +49,8 @@ class ScemeParserSpec extends Specification {
 
   "lambda" >> {
     parse("(lambda x y)") must beLike {
-      case Lambda(Single(x), _, _) => {
-        x.value mustEqual "x"
+      case Lambda(Single(Variable(v)), _, _) => {
+        v.value mustEqual "x"
       }
     }
 
@@ -59,7 +59,7 @@ class ScemeParserSpec extends Specification {
     }
 
     parse("(lambda (x) y)") must beLike {
-      case Lambda(FixedArity(List(x)), _, _) => x.value mustEqual "x"
+      case Lambda(FixedArity(List(Variable(x))), _, _) => x.value mustEqual "x"
     }
   }
 
