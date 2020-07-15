@@ -1,54 +1,51 @@
 package de.lisp_unleashed.sceme.parser
+/*
+ * Syntax represents everything that is part of the external representation. So a datum in that sense.
+ * Scheme programs are made out of syntax at this level. There are higher order constructs created from these, which
+ * form the `Expressions`.
+ */
 
-// external representation
-sealed trait Sexp
-
-trait Syntax[T] extends Sexp {
+sealed trait Syntax[T] extends SourceInformation {
   def value: T
-  def sourceSection: SourceInformation
 }
 
 sealed trait SelfEvaluating[T] extends Syntax[T]
 
-final case class StringSyntax(value: String, sourceSection: SourceInformation) extends SelfEvaluating[String]
+final case class StringSyntax(value: String, location: Location) extends SelfEvaluating[String]
 
-final case class CharacterSyntax(value: Char, sourceSection: SourceInformation) extends SelfEvaluating[Char]
+final case class CharacterSyntax(value: Char, location: Location) extends SelfEvaluating[Char]
 
-final case class SymbolSyntax(value: String, delimited: Boolean, sourceSection: SourceInformation)
+final case class SymbolSyntax(value: String, delimited: Boolean, location: Location)
     extends SelfEvaluating[String]
 
-final case class BooleanSyntax(value: Boolean, sourceSection: SourceInformation) extends SelfEvaluating[Boolean]
+final case class BooleanSyntax(value: Boolean, location: Location) extends SelfEvaluating[Boolean]
 
-sealed trait NumberSyntax extends Sexp
+sealed trait NumberSyntax[T] extends SelfEvaluating[T]
+sealed trait ExactNumberSyntax[T] extends NumberSyntax[T]
+sealed trait InexactNumberSyntax[T] extends NumberSyntax[T]
 
-sealed trait ExactNumberSyntax extends NumberSyntax
+final case class FixnumSyntax(value: Long, location: Location) extends ExactNumberSyntax[Long]
 
-sealed trait InexactNumberSyntax extends NumberSyntax
-
-final case class FixnumSyntax(value: Long, sourceSection: SourceInformation)
-    extends SelfEvaluating[Long]
-    with ExactNumberSyntax
-
-final case class FlonumSyntax(value: Double, sourceSection: SourceInformation)
-    extends SelfEvaluating[Double]
-    with InexactNumberSyntax
+final case class FlonumSyntax(value: Double, location: Location) extends InexactNumberSyntax[Double]
 
 // TODO: add rational & complex numbers
 
 // TODO: add rational and complexs
 
-sealed trait Pair extends Sexp
-
-final case class ProperListSyntax(value: List[Syntax[_]], sourceSection: SourceInformation)
-    extends Pair
-    with Syntax[List[Syntax[_]]]
-
-final case class ImproperListSyntax(value: (List[Syntax[_]], Syntax[_]), sourceSection: SourceInformation)
-    extends Pair
-    with Syntax[(List[Syntax[_]], Syntax[_])]
-
-final case class VectorSyntax(value: Vector[Syntax[_]], sourceSection: SourceInformation)
+final case class VectorSyntax(value: Vector[Syntax[_]], location: Location)
     extends SelfEvaluating[Vector[Syntax[_]]]
 
-final case class ByteVectorSyntax(value: Vector[Byte], sourceSection: SourceInformation)
-    extends SelfEvaluating[Vector[Byte]]
+final case class ByteVectorSyntax(value: Vector[Byte], location: Location) extends SelfEvaluating[Vector[Byte]]
+
+sealed trait Pair[T] extends Syntax[T]
+
+final case class ProperListSyntax(value: List[Syntax[_]], location: Location)
+  extends Pair[List[Syntax[_]]]
+
+final case class ImproperListSyntax(value: (List[Syntax[_]], Syntax[_]), location: Location)
+  extends Pair[(List[Syntax[_]], Syntax[_])] {
+  val head: List[Syntax[_]] = value._1
+  val tail: Syntax[_] = value._2
+}
+
+

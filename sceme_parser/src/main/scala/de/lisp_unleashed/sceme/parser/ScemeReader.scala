@@ -1,28 +1,61 @@
 package de.lisp_unleashed.sceme.parser
-import de.lisp_unleashed.sceme.parser.gen.{ ScemeBaseVisitor }
-import org.antlr.v4.runtime.{ CharStreams, CodePointCharStream, CommonTokenStream, ParserRuleContext }
+
+import de.lisp_unleashed.sceme.parser.gen.ScemeBaseVisitor
+import org.antlr.v4.runtime.{CommonTokenStream, ParserRuleContext, RecognitionException}
 
 import scala.collection.JavaConverters._
 
 class UnsupportedSyntaxException(message: String) extends Exception(message)
 
-class ScemeReader(sourceStream: CodePointCharStream) extends ScemeBaseVisitor[Syntax[_]] {
+class ReadError(message: String, source: ScemeSource, location: Option[Location], cause: Throwable) extends Exception(message, cause) {
+  private val formattedLocation = location match {
+    case None => ""
+    case Some(loc) => s"Line: ${loc.lineNumber} Region: (${loc.start}, ${loc.stop})"
+  }
+
+  private val formattedSource = source match {
+    case URISource(uri) => uri.toString
+    case _ : StringSource => "StringInput"
+    case _ : ReaderSource => "ReaderInput"
+  }
+
+  def getFullMessge: String = {
+    s"""
+      |ReadError: ${message} at ${formattedSource} ${formattedLocation}
+      |
+      |
+      |""".stripMargin
+  }
+
+}
+
+class ScemeReader(scemeSource: ScemeSource) extends ScemeBaseVisitor[Syntax[_]] {
   def readDatum(): Syntax[_] = {
-    val tokenStream = new CommonTokenStream(new gen.ScemeLexer(sourceStream))
-    val scemeParser = new gen.ScemeParser(tokenStream)
-    visit(scemeParser.datum())
+    try {
+      val tokenStream = new CommonTokenStream(new gen.ScemeLexer(scemeSource.stream))
+      val scemeParser = new gen.ScemeParser(tokenStream)
+      visit(scemeParser.datum())
+    } catch {
+      case e: RecognitionException =>
+        val location = e.getCtx match {
+          case ctx: ParserRuleContext => Some(createSourceInformation(ctx))
+          case _ => None
+        }
+        throw new ReadError("Failed to recognize input", scemeSource, location, e)
+      case t: Throwable => throw new ReadError("Failed to read from input", scemeSource, None, t)
+    }
   }
 
   def readProgram(): Seq[Syntax[_]] = {
-    val tokenStream = new CommonTokenStream(new gen.ScemeLexer(sourceStream))
+    val tokenStream = new CommonTokenStream(new gen.ScemeLexer(scemeSource.stream))
     val scemeParser = new gen.ScemeParser(tokenStream)
     scemeParser.program().datum().asScala.map(visit)
   }
 
   private def createSourceInformation(ctx: ParserRuleContext) =
-    SourceInformation(ctx.start.getLine,
-                      ctx.start.getCharPositionInLine + 1,
-                      ctx.stop.getStopIndex - ctx.start.getStartIndex)
+    Location(ctx.start.getLine,
+      ctx.start.getCharPositionInLine + 1,
+      ctx.stop.getStopIndex - ctx.start.getStartIndex)
 
   override def visitBoolTrue(ctx: gen.ScemeParser.BoolTrueContext): Syntax[Boolean] =
     BooleanSyntax(true, createSourceInformation(ctx))
@@ -56,15 +89,15 @@ class ScemeReader(sourceStream: CodePointCharStream) extends ScemeBaseVisitor[Sy
 
   override def visitCharacterNamed(ctx: gen.ScemeParser.CharacterNamedContext): Syntax[Char] = {
     val value = ctx.getText.drop(2) match {
-      case "space"     => ' '
-      case "newline"   => '\n'
-      case "return"    => '\r'
-      case "tab"       => '\t'
-      case "alarm"     => 7.toChar
-      case "null"      => 0.toChar
+      case "space" => ' '
+      case "newline" => '\n'
+      case "return" => '\r'
+      case "tab" => '\t'
+      case "alarm" => 7.toChar
+      case "null" => 0.toChar
       case "backspace" => 8.toChar
-      case "delete"    => 24.toChar
-      case "escape"    => 27.toChar
+      case "delete" => 24.toChar
+      case "escape" => 27.toChar
     }
     CharacterSyntax(value, createSourceInformation(ctx))
   }
@@ -87,7 +120,7 @@ class ScemeReader(sourceStream: CodePointCharStream) extends ScemeBaseVisitor[Sy
 
   override def visitFixnumDec(ctx: gen.ScemeParser.FixnumDecContext): Syntax[Long] = {
     val value = ctx.getText
-    val num   = if (value.startsWith("#d")) value.drop(2) else value
+    val num = if (value.startsWith("#d")) value.drop(2) else value
     FixnumSyntax(java.lang.Long.valueOf(num), createSourceInformation(ctx))
   }
 
@@ -107,14 +140,14 @@ class ScemeReader(sourceStream: CodePointCharStream) extends ScemeBaseVisitor[Sy
 
   override def visitFlonumDec(ctx: gen.ScemeParser.FlonumDecContext): Syntax[_] = {
     val value = ctx.getText
-    val num   = if (value.startsWith("#d")) value.drop(2) else value
+    val num = if (value.startsWith("#d")) value.drop(2) else value
     FlonumSyntax(java.lang.Double.valueOf(num), createSourceInformation(ctx))
   }
 
   override def visitBytevector(ctx: gen.ScemeParser.BytevectorContext): Syntax[Vector[Byte]] = {
-    val value    = ctx.getText
+    val value = ctx.getText
     val byteText = value.substring(4, value.length - 1)
-    val bytes    = byteText.split("\\s+").map(java.lang.Short.valueOf(_).byteValue())
+    val bytes = byteText.split("\\s+").map(java.lang.Short.valueOf(_).byteValue())
     ByteVectorSyntax(bytes.toVector, createSourceInformation(ctx))
   }
 
@@ -136,7 +169,7 @@ class ScemeReader(sourceStream: CodePointCharStream) extends ScemeBaseVisitor[Sy
   }
 
   override def visitAbbreviation(ctx: gen.ScemeParser.AbbreviationContext): Syntax[_] = {
-    val datum     = visit(ctx.datum())
+    val datum = visit(ctx.datum())
     val quotation = visit(ctx.abbrev_prefix())
     ProperListSyntax(List(quotation, datum), createSourceInformation(ctx))
   }
@@ -155,16 +188,13 @@ class ScemeReader(sourceStream: CodePointCharStream) extends ScemeBaseVisitor[Sy
 }
 
 object ScemeReader {
-  def read(input: String): Syntax[_] =
-    new ScemeReader(CharStreams.fromString(input)).readDatum()
+  def read(source: ScemeSource): Syntax[_] =
+    new ScemeReader(source).readDatum()
 
-  def read(reader: java.io.Reader): Syntax[_] =
-    new ScemeReader(CharStreams.fromReader(reader)).readDatum()
-
-  def readProgram(input: String): Seq[Syntax[_]] =
-    new ScemeReader(CharStreams.fromString(input)).readProgram()
-
-  def readProgram(reader: java.io.Reader): Seq[Syntax[_]] =
-    new ScemeReader(CharStreams.fromReader(reader)).readProgram()
-
+  def readProgram(source: ScemeSource): Seq[Syntax[_]] = {
+    new ScemeReader(source).readProgram()
+  }
 }
+
+
+

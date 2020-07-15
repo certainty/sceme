@@ -1,16 +1,5 @@
 package de.lisp_unleashed.de.sceme
-import de.lisp_unleashed.sceme.parser.{
-  BooleanSyntax,
-  ByteVectorSyntax,
-  CharacterSyntax,
-  FixnumSyntax,
-  ImproperListSyntax,
-  ProperListSyntax,
-  ScemeReader,
-  StringSyntax,
-  SymbolSyntax,
-  VectorSyntax
-}
+import de.lisp_unleashed.sceme.parser.{BooleanSyntax, ByteVectorSyntax, CharacterSyntax, FixnumSyntax, ImproperListSyntax, ProperListSyntax, ScemeReader, StringSource, StringSyntax, SymbolSyntax, VectorSyntax}
 import org.specs2.mutable.Specification
 
 class ReaderSpec extends Specification {
@@ -176,5 +165,5 @@ class ReaderSpec extends Specification {
   }
 
   private def read(input: String) =
-    ScemeReader.read(input)
+    ScemeReader.read(StringSource(input))
 }
