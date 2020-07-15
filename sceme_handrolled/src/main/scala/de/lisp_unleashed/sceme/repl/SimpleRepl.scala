@@ -1,12 +1,12 @@
 package de.lisp_unleashed.sceme.repl
 import java.io.EOFException
 
-import de.lisp_unleashed.sceme.interpreter.{ Context, RuntimeError, ZIOInterpreter }
-import de.lisp_unleashed.sceme.parser.ParseError
-import de.lisp_unleashed.sceme.printer.{ Configuration, DefaultPrinter }
+import de.lisp_unleashed.sceme.interpreter.{Context, RuntimeError, ZIOInterpreter}
+import de.lisp_unleashed.sceme.parser.{ParseError, ReadError}
+import de.lisp_unleashed.sceme.printer.{Configuration, DefaultPrinter}
 import de.lisp_unleashed.sceme.runtime.Value
 import zio.console.Console
-import zio.{ console, ZIO }
+import zio.{ZIO, console}
 
 class SimpleRepl extends Repl[ZIO[Console, Throwable, Unit]] {
   private val printer     = new DefaultPrinter(Configuration.default)
@@ -37,6 +37,8 @@ class SimpleRepl extends Repl[ZIO[Console, Throwable, Unit]] {
   private def handleErrors: PartialFunction[Throwable, ZIO[Console, Throwable, Unit]] = {
     case e: RuntimeError => console.putStrLn(e.getMessage)
     case e: ParseError   => console.putStrLn(e.getMessage)
+    case e: ReadError => console.putStrLn(e.getFullMessge)
+    case t: Throwable => console.putStrLn(t.getMessage)
   }
 
   private val printBanner: ZIO[Console, Nothing, Unit] = console.putStrLn("""
