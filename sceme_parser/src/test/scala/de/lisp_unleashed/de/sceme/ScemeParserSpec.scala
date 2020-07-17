@@ -43,11 +43,11 @@ class ScemeParserSpec extends Specification {
 
   "quotation" >> {
     parse("'foo") must beLike {
-      case Quote(v: SymbolSyntax) => v.value mustEqual "foo"
+      case Quote(v: SymbolSyntax, _) => v.value mustEqual "foo"
     }
 
     parse("`foo") must beLike {
-      case QuasiQuote(Literal(v: SymbolSyntax)) => v.value mustEqual "foo"
+      case QuasiQuote(Literal(v: SymbolSyntax), _) => v.value mustEqual "foo"
     }
   }
 
@@ -74,7 +74,7 @@ class ScemeParserSpec extends Specification {
   }
 
   private def parse(input: String) =
-    parser.parse(input)
+    parser.parse(StringSource(input))
 
   private val parser = new ScemeParser
 }
