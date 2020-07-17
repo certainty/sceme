@@ -6,10 +6,8 @@ class ParseError(message: String, location: Location) extends Exception(message)
   def getLocation: Location = location
 }
 
-class NotYetSupportedException(str: String) extends Exception(str)
+class NotYetSupportedException(str: String) extends Exception(s"Not yet supported: ${str}")
 
-trait ScemeUnit
-case class ScemeModule(expressions: Seq[Expression], source: ScemeSource) extends ScemeUnit
 
 // extract scheme expression tree from AST
 class ScemeParser {
@@ -27,7 +25,7 @@ class ScemeParser {
 
   def parse(datum: Syntax[_]): Expression = datum match {
     // self evaluating
-    case v: SymbolSyntax      => Variable(v)
+    case v: SymbolSyntax      => parseVariable(v)
     case v: SelfEvaluating[_] => Literal(v)
     case form @ ProperListSyntax((sym: SymbolSyntax) :: _, _) =>
       sym.value match {

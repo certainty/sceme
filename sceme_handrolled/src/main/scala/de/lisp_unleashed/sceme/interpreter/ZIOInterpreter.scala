@@ -1,13 +1,14 @@
 package de.lisp_unleashed.sceme.interpreter
 
-import de.lisp_unleashed.sceme.{Parser, Printer}
 import de.lisp_unleashed.sceme.interpreter.interpreter.Op
 import de.lisp_unleashed.sceme.parser.Expression._
 import de.lisp_unleashed.sceme.parser._
 import de.lisp_unleashed.sceme.printer.{Configuration, DefaultPrinter}
 import de.lisp_unleashed.sceme.runtime.Value
 import de.lisp_unleashed.sceme.runtime.Value.{Callable, Procedure}
+import de.lisp_unleashed.sceme.{Parser, Printer}
 import zio.ZIO
+
 import scala.util.Try
 
 /**
